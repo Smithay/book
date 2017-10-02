@@ -14,6 +14,7 @@ branches:
 before_script:
   - export PATH=$HOME/.cargo/bin:$PATH
   - which mdbook || cargo install mdbook
+  - which cargo-install-update || cargo install cargo-update
   - cargo install-update -a
 
 os:
