@@ -1,0 +1,39 @@
+language: rust
+
+cache: cargo
+
+dist: trusty
+
+rust:
+  - stable
+
+branches:
+  only:
+    - master
+
+before_script:
+  - export PATH=$HOME/.cargo/bin:$PATH
+  - which mdbook || cargo install mdbook
+  - cargo install-update -a
+
+os:
+  - linux
+
+script:
+  - mdbook build
+
+deploy:
+    provider: pages
+    skip_cleanup: true
+    github_token: $GITHUB_TOKEN
+    local_dir: book
+    on:
+        branch: master
+
+notifications:
+    webhooks:
+        urls:
+            - "https://scalar.vector.im/api/neb/services/hooks/dHJhdmlzLWNpLyU0MGxldmFucyUzQXNhZmFyYWRlZy5uZXQvJTIxRkt4aGprSUNwakJWelZlQ2RGJTNBc2FmYXJhZGVnLm5ldA"
+        on_success: change
+        on_failure: always
+        on_start: never
