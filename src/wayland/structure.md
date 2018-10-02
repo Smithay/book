@@ -50,27 +50,7 @@ the form of concrete wayland objects.
 
 In the end, this kind of hierachy can be expected:
 
-```text
-+------------+      +-------------+      +---------------+      +------------+
-| wl_display |----->| wl_registry |--+-->| wl_compositor |--+-->| wl_surface |
-+------------+      +-------------+  |   +---------------+  |   +------------+
-                                     |                      |
-                                     |                      |   +------------+
-                                     |                      +-->| wl_surface |
-                                     |                          +------------+
-                                     |
-                                     |   +--------+      +-------------+      +-----------+
-                                     +-->| wl_shm |----->| wl_shm_pool |--+-->| wl_buffer |
-                                     |   +--------+      +-------------+  |   +-----------+
-                                     |                                    |
-                                     |                                    |   +-----------+
-                                     |                                    +-->| wl_buffer |
-                                     |                                        +-----------+
-                                     |
-                                     |   +---------+      +-------------+
-                                     +-->| wl_seat |----->| wl_keyboard |
-                                         +---------+      +-------------+
-```
+![hierachy](../resources/hierachy.svg)
 
 *(The details of what these objects are and do will come later, in the [core protocol][] section.)*
 
