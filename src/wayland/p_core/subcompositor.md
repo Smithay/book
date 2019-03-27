@@ -25,7 +25,7 @@ know if the pointer is on the decorations or the main surface (see [next chapter
 about pointer input). But in general subsurfaces should not be used for general UI composing: this
 is expected to be done client-side by the GUI library.
 
-[next chapter]: ./wayland/p_core/seat.html
+[next chapter]: ./seat.html
 
 &nbsp;
 
