@@ -58,4 +58,4 @@ keyboard to the computer, but the compositor could decide to merge the two keybo
 logical keyboard, as most computers do today. In any case, the compositor gets to decide what a
 "logical seat" is.
 
-[^2]: This is the exact function of the [wayland-kbd](https:/crates.io/crates/wayland-kbd) crate.
+[^2]: This is the exact function of the [wayland-kbd](https://crates.io/crates/wayland-kbd) crate.
