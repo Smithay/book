@@ -59,7 +59,7 @@ In the end, this kind of hierachy can be expected:
 ## Protocol extensions
 
 The set of objects and the list of their requests and events is defined in
-[an XML file](https://cgit.freedesktop.org/wayland/wayland/tree/protocol/wayland.xml). This approach allows wayland protocol extensions to be defined easily.
+[an XML file][wayland spec]. This approach allows wayland protocol extensions to be defined easily.
 
 A **protocol extension** is just another XML file, which defines another set of objects, some of
 them being globals, and thus serving as the entry points for the protocol extension.
@@ -71,6 +71,8 @@ compositor does not support the extension and the client can act accordingly (fa
 only the core protocol, or erroring out if the extension is crucial to the program).
 
 A compositor cannot force the clients to support an extension.
+
+[wayland spec]: https://cgit.freedesktop.org/wayland/wayland/tree/protocol/wayland.xml
 
 ## API versioning
 
