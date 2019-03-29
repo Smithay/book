@@ -1,0 +1,284 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Protocol structure - The rusty wayland handbook</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <ol class="chapter"><li class="affix"><a href="../intro.html">Introduction</a></li><li><a href="../wayland/intro.html"><strong aria-hidden="true">1.</strong> Wayland generalities</a></li><li><ol class="section"><li><a href="../wayland/structure.html" class="active"><strong aria-hidden="true">1.1.</strong> Protocol structure</a></li><li><a href="../wayland/p_core/intro.html"><strong aria-hidden="true">1.2.</strong> The Core protocol</a></li><li><ol class="section"><li><a href="../wayland/p_core/special.html"><strong aria-hidden="true">1.2.1.</strong> Special objects</a></li><li><a href="../wayland/p_core/compositor.html"><strong aria-hidden="true">1.2.2.</strong> The Compositor</a></li><li><a href="../wayland/p_core/shm.html"><strong aria-hidden="true">1.2.3.</strong> The SHM</a></li><li><a href="../wayland/p_core/shell.html"><strong aria-hidden="true">1.2.4.</strong> The Shell</a></li><li><a href="../wayland/p_core/subcompositor.html"><strong aria-hidden="true">1.2.5.</strong> The Subcompositor</a></li><li><a href="../wayland/p_core/seat.html"><strong aria-hidden="true">1.2.6.</strong> The Seats</a></li><li><a href="../wayland/p_core/output.html"><strong aria-hidden="true">1.2.7.</strong> The Outputs</a></li><li><a href="../wayland/p_core/data_device.html"><strong aria-hidden="true">1.2.8.</strong> The Data Device Manager</a></li></ol></li></ol></li><li><a href="../client/intro.html"><strong aria-hidden="true">2.</strong> Writing client apps</a></li><li><a href="../server/intro.html"><strong aria-hidden="true">3.</strong> Writing compositors</a></li></ol>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">The rusty wayland handbook</h1> 
+
+                        <div class="right-buttons">
+                            <a href="../print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <a class="header" href="#wayland-protocol-structure" id="wayland-protocol-structure"><h1>Wayland protocol structure</h1></a>
+<p>Before detailing the protocol contents, we need to have a look at its structure.</p>
+<p>This is an asynchronous message-based protocol, with an object-oriented structure.</p>
+<a class="header" href="#objects-requests-and-events" id="objects-requests-and-events"><h2>Objects, requests and events</h2></a>
+<p>Messages are exchanged between the client and the server via a common pool of objects. Each message
+is associated to an object and can refer to other objects. Some messages can result in the creation
+or the destruction of objects.</p>
+<p>Messages from the client to the server are called <strong>requests</strong>, and messages from the server to the
+client are called <strong>events</strong>.</p>
+<blockquote>
+<p><strong>Examples:</strong></p>
+<ul>
+<li>A client can have an object that represents the keyboard. This object will receive an event each
+time the user presses or releases a key.</li>
+<li>A client can have an object representing a surface on the screen. It can send a request to the
+server to associate a buffer to this surface, to define its contents in terms of pixel values.</li>
+</ul>
+</blockquote>
+<p>All objects are created by other objects, most of them via a request. The set of all living objects
+in a wayland session can thus be organised as a tree, on top of which lives a special object named
+<code>wl_display</code>.</p>
+<a class="header" href="#the-display-the-registry-and-the-globals" id="the-display-the-registry-and-the-globals"><h2>The display, the registry and the globals</h2></a>
+<p>A client session starts with a single object: the <code>wl_display</code>. This object represents the
+connection to the server, and remains alive until the end. This is the entry point of the wayland
+protocol: from it instances of <code>wl_registry</code> can be created.</p>
+<p>This registry is the real heart of the protocol. Upon creation, it will receive a stream of events
+that list to the client the set of <strong>globals</strong> the server presents to it. And this registry
+then allows the user to instantiate these global objects.</p>
+<p>Globals are of two kind:</p>
+<ul>
+<li>Singleton globals, that represent a capability of the compositor
+<ul>
+<li><em>For example, <code>wl_shm</code> represents the capability to manipulate shared-memory buffers.</em></li>
+</ul>
+</li>
+<li>Non-Singleton globals<sup class="footnote-reference"><a href="#1">1</a></sup>, that reprensent a device the compositor has access to
+<ul>
+<li><em>For example, the compositor can advertise a <code>wl_output</code> for each screen connected to the
+computer.</em></li>
+</ul>
+</li>
+</ul>
+<p>The second kind can appear and dissapear during a session, as devices are plugged or unplugged from
+the computer.</p>
+<p>In any case, the client can, from the registry, create any number of instances of each global, in
+the form of concrete wayland objects.</p>
+<p>In the end, this kind of hierachy can be expected:</p>
+<p><img src="../resources/hierachy.svg" alt="hierachy" /></p>
+<p><em>(The details of what these objects are and do will come later, in the <a href="./p_core.html">core protocol</a> section.)</em></p>
+<a class="header" href="#protocol-extensions" id="protocol-extensions"><h2>Protocol extensions</h2></a>
+<p>The set of objects and the list of their requests and events is defined in
+<a href="https://cgit.freedesktop.org/wayland/wayland/tree/protocol/wayland.xml">an XML file</a>. This approach allows wayland protocol extensions to be defined easily.</p>
+<p>A <strong>protocol extension</strong> is just another XML file, which defines another set of objects, some of
+them being globals, and thus serving as the entry points for the protocol extension.</p>
+<p>All compositors and clients are expected to fully implement the core protocol. However, nothing is
+forced regarding extensions. A client knows that a server supports a given extension if the
+global(s) it defines are advertised in the events of the registry. If they are not, then the
+compositor does not support the extension and the client can act accordingly (falling back to using
+only the core protocol, or erroring out if the extension is crucial to the program).</p>
+<p>A compositor cannot force the clients to support an extension.</p>
+<a class="header" href="#api-versioning" id="api-versioning"><h2>API versioning</h2></a>
+<p>The APIs defined by the protocol files are versioned as follows:</p>
+<ul>
+<li>Each global defines a sub-hierarchy of the objects that it can directly or indirectly create.
+This whole hierarchy shares the same version number.</li>
+<li>Every time a request or an event is added to an object, the whole hierarchy it belongs to has
+its version bumped (but several modifications can be made in a single version bump).</li>
+<li>A compositor advertises via the registry the maximum version of each global it supports, and
+must support any previous version as well.</li>
+<li>A client, when instanciating a global, can choose any version of it between 1 and the maximum
+supported by the compositor.</li>
+</ul>
+<a class="header" href="#error-handling" id="error-handling"><h2>Error handling</h2></a>
+<p>Error handling in the wayland protocol is very simple: whenever the client misuses an object (often
+sending a request with invalid arguments) it causes a protocol error. A protocol error is always
+fatal, and the server will close the connection whenever one occurs.</p>
+<p> </p>
+<hr />
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p>Sorry for the lack of a better name...</p>
+</div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../wayland/intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="../wayland/p_core/intro.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="../wayland/intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="../wayland/p_core/intro.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

@@ -1,0 +1,565 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>The rusty wayland handbook</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <ol class="chapter"><li class="affix"><a href="intro.html">Introduction</a></li><li><a href="wayland/intro.html"><strong aria-hidden="true">1.</strong> Wayland generalities</a></li><li><ol class="section"><li><a href="wayland/structure.html"><strong aria-hidden="true">1.1.</strong> Protocol structure</a></li><li><a href="wayland/p_core/intro.html"><strong aria-hidden="true">1.2.</strong> The Core protocol</a></li><li><ol class="section"><li><a href="wayland/p_core/special.html"><strong aria-hidden="true">1.2.1.</strong> Special objects</a></li><li><a href="wayland/p_core/compositor.html"><strong aria-hidden="true">1.2.2.</strong> The Compositor</a></li><li><a href="wayland/p_core/shm.html"><strong aria-hidden="true">1.2.3.</strong> The SHM</a></li><li><a href="wayland/p_core/shell.html"><strong aria-hidden="true">1.2.4.</strong> The Shell</a></li><li><a href="wayland/p_core/subcompositor.html"><strong aria-hidden="true">1.2.5.</strong> The Subcompositor</a></li><li><a href="wayland/p_core/seat.html"><strong aria-hidden="true">1.2.6.</strong> The Seats</a></li><li><a href="wayland/p_core/output.html"><strong aria-hidden="true">1.2.7.</strong> The Outputs</a></li><li><a href="wayland/p_core/data_device.html"><strong aria-hidden="true">1.2.8.</strong> The Data Device Manager</a></li></ol></li></ol></li><li><a href="client/intro.html"><strong aria-hidden="true">2.</strong> Writing client apps</a></li><li><a href="server/intro.html"><strong aria-hidden="true">3.</strong> Writing compositors</a></li></ol>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">The rusty wayland handbook</h1> 
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <a class="header" href="#introduction" id="introduction"><h1>Introduction</h1></a>
+<p>Welcome to the Rusty Wayland Handbook.</p>
+<p>This book is related to the <a href="https://crates.io/crates/wayland-client">wayland-client</a> and
+<a href="https://crates.io/crates/wayland-server">wayland-server</a> rust crates, and will detail how to use
+them to build wayland apps and compositors.</p>
+<p>The <a href="./wayland/intro.html">first section</a> is a general introduction on the Wayland protocol, its
+goals and architecture.</p>
+<p>The <a href="./client/intro.html">second section</a> is dedicated to the building of client apps, that can
+run natively in any wayland environment.</p>
+<p>The <a href="./server/intro.html">third section</a> focuses on build compositors (or wayland servers), that
+act as both window managers and display servers.</p>
+<p>Have a good read!</p>
+<a class="header" href="#the-wayland-protocol" id="the-wayland-protocol"><h1>The Wayland protocol</h1></a>
+<p>Wayland is a display protocol aiming to replace X11, and mostly developed and maintained by former
+X.org developers. It is a response to the fact that X11 is an old protocol that accumulated a lot
+of unnecessary features over the years, and that its centralised architecture<sup class="footnote-reference"><a href="#1">1</a></sup> is far too
+heavy and has performance issues.</p>
+<p>So the choice for waylands design was to make something much more minimalistic:</p>
+<ul>
+<li>Fuse the server, the compositor and the window manager into a single program. This means that
+there is no longer a single display server, but rather each desktop environment has its own. For
+example, both Gnome and KDE have now developed their own wayland compositor.</li>
+<li>Don't provide any drawing primitives to the clients. They are responsible for drawing the
+contents of their windows themselves, and only pass buffers to the compositor that will then
+blend them on the screen.</li>
+</ul>
+<p>The built protocol aims to be much smaller and simpler than the X11 one, making actually developing
+a wayland compositor a much more manageable task than building a new X11 server.</p>
+<p>The rest of this chapter is an extensive description of this protocol and what it implies for the
+clients and servers, but from a general point of view, and thus is not rust-specific at all.</p>
+<p> </p>
+<hr />
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p>The X11 server is at the heart of everything multiplexing between the clients, the window
+manager and the compositor</p>
+</div>
+<a class="header" href="#wayland-protocol-structure" id="wayland-protocol-structure"><h1>Wayland protocol structure</h1></a>
+<p>Before detailing the protocol contents, we need to have a look at its structure.</p>
+<p>This is an asynchronous message-based protocol, with an object-oriented structure.</p>
+<a class="header" href="#objects-requests-and-events" id="objects-requests-and-events"><h2>Objects, requests and events</h2></a>
+<p>Messages are exchanged between the client and the server via a common pool of objects. Each message
+is associated to an object and can refer to other objects. Some messages can result in the creation
+or the destruction of objects.</p>
+<p>Messages from the client to the server are called <strong>requests</strong>, and messages from the server to the
+client are called <strong>events</strong>.</p>
+<blockquote>
+<p><strong>Examples:</strong></p>
+<ul>
+<li>A client can have an object that represents the keyboard. This object will receive an event each
+time the user presses or releases a key.</li>
+<li>A client can have an object representing a surface on the screen. It can send a request to the
+server to associate a buffer to this surface, to define its contents in terms of pixel values.</li>
+</ul>
+</blockquote>
+<p>All objects are created by other objects, most of them via a request. The set of all living objects
+in a wayland session can thus be organised as a tree, on top of which lives a special object named
+<code>wl_display</code>.</p>
+<a class="header" href="#the-display-the-registry-and-the-globals" id="the-display-the-registry-and-the-globals"><h2>The display, the registry and the globals</h2></a>
+<p>A client session starts with a single object: the <code>wl_display</code>. This object represents the
+connection to the server, and remains alive until the end. This is the entry point of the wayland
+protocol: from it instances of <code>wl_registry</code> can be created.</p>
+<p>This registry is the real heart of the protocol. Upon creation, it will receive a stream of events
+that list to the client the set of <strong>globals</strong> the server presents to it. And this registry
+then allows the user to instantiate these global objects.</p>
+<p>Globals are of two kind:</p>
+<ul>
+<li>Singleton globals, that represent a capability of the compositor
+<ul>
+<li><em>For example, <code>wl_shm</code> represents the capability to manipulate shared-memory buffers.</em></li>
+</ul>
+</li>
+<li>Non-Singleton globals<sup class="footnote-reference"><a href="#1">1</a></sup>, that reprensent a device the compositor has access to
+<ul>
+<li><em>For example, the compositor can advertise a <code>wl_output</code> for each screen connected to the
+computer.</em></li>
+</ul>
+</li>
+</ul>
+<p>The second kind can appear and dissapear during a session, as devices are plugged or unplugged from
+the computer.</p>
+<p>In any case, the client can, from the registry, create any number of instances of each global, in
+the form of concrete wayland objects.</p>
+<p>In the end, this kind of hierachy can be expected:</p>
+<p><img src="../resources/hierachy.svg" alt="hierachy" /></p>
+<p><em>(The details of what these objects are and do will come later, in the <a href="./p_core.html">core protocol</a> section.)</em></p>
+<a class="header" href="#protocol-extensions" id="protocol-extensions"><h2>Protocol extensions</h2></a>
+<p>The set of objects and the list of their requests and events is defined in
+<a href="https://cgit.freedesktop.org/wayland/wayland/tree/protocol/wayland.xml">an XML file</a>. This approach allows wayland protocol extensions to be defined easily.</p>
+<p>A <strong>protocol extension</strong> is just another XML file, which defines another set of objects, some of
+them being globals, and thus serving as the entry points for the protocol extension.</p>
+<p>All compositors and clients are expected to fully implement the core protocol. However, nothing is
+forced regarding extensions. A client knows that a server supports a given extension if the
+global(s) it defines are advertised in the events of the registry. If they are not, then the
+compositor does not support the extension and the client can act accordingly (falling back to using
+only the core protocol, or erroring out if the extension is crucial to the program).</p>
+<p>A compositor cannot force the clients to support an extension.</p>
+<a class="header" href="#api-versioning" id="api-versioning"><h2>API versioning</h2></a>
+<p>The APIs defined by the protocol files are versioned as follows:</p>
+<ul>
+<li>Each global defines a sub-hierarchy of the objects that it can directly or indirectly create.
+This whole hierarchy shares the same version number.</li>
+<li>Every time a request or an event is added to an object, the whole hierarchy it belongs to has
+its version bumped (but several modifications can be made in a single version bump).</li>
+<li>A compositor advertises via the registry the maximum version of each global it supports, and
+must support any previous version as well.</li>
+<li>A client, when instanciating a global, can choose any version of it between 1 and the maximum
+supported by the compositor.</li>
+</ul>
+<a class="header" href="#error-handling" id="error-handling"><h2>Error handling</h2></a>
+<p>Error handling in the wayland protocol is very simple: whenever the client misuses an object (often
+sending a request with invalid arguments) it causes a protocol error. A protocol error is always
+fatal, and the server will close the connection whenever one occurs.</p>
+<p> </p>
+<hr />
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p>Sorry for the lack of a better name...</p>
+</div>
+<a class="header" href="#the-core-protocol" id="the-core-protocol"><h1>The Core protocol</h1></a>
+<p>As described in the previous section, the object hierarchy starts with the <code>wl_display</code>, then
+the <code>wl_registry</code>, and then come all the globals from the various protocols in use.</p>
+<p>The core wayland distribution comes with <a href="https://cgit.freedesktop.org/wayland/wayland/tree/protocol/wayland.xml">the core protocol specification</a>. It
+contains the <code>wl_display</code> and <code>wl_registry</code> objects<sup class="footnote-reference"><a href="#1">1</a></sup>, as well as some globals that are considered
+the common ground that all applications will need. Any fancier functionality is supposed to be
+developed in protocol extensions.</p>
+<p>This chapter will describe the globals (and their objects hierarchies) from this core protocol. This
+is not a complete detailed guide of all requests and events<sup class="footnote-reference"><a href="#2">2</a></sup>, but a general description of how
+they are used and interact with each other. It should be enought to properly get started with the
+protocol</p>
+<p><br /><br /></p>
+<hr />
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p>Even if <code>wl_display</code> and <code>wl_registry</code> are very special objects and kind of above all
+protocols, they are still specified in the core protocol file. But their API is completely set in
+stone and locked to version 1, while the rest of the core protocol can still backward-compatibly
+evolve.</p>
+</div>
+<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
+<p>Each of them is already detailed in the <a href="https://smithay.github.io/wayland-rs/wayland_client/protocol/index.html">API docs of wayland-client</a>, and there's
+no point copy-pasting all of it here.</p>
+</div>
+<a class="header" href="#special-objects" id="special-objects"><h1>Special objects</h1></a>
+<p>Some objects of this protocol are special, and don't belong in the hierarchy of a global.</p>
+<p>You already know two of them: <code>wl_display</code> and <code>wl_registry</code>.</p>
+<a class="header" href="#the-display" id="the-display"><h2>The Display</h2></a>
+<p>The <code>wl_display</code> represents the connection from a client to the compositor. It is automatically
+created upon creation of the connection, and can be used by the client to create the <code>wl_registry</code>
+and manage the dispatching of events.</p>
+<p>It also receives any protocol error generated by the client, allowing a diagnostic of what happened
+(but not recovery from it).</p>
+<a class="header" href="#the-registry" id="the-registry"><h2>The Registry</h2></a>
+<p>The <code>wl_registry</code> is the gate to all other globals. Upon creation, it receives as events the list of
+all existing globals, as well as notification during the whole life of the client whenever a new
+global is created or destroyed.</p>
+<p>The client can instantiate the registry several times. In this case, each instance will be notified
+of all globals.</p>
+<a class="header" href="#the-callback" id="the-callback"><h2>The Callback</h2></a>
+<p>The <code>wl_callback</code> object is created whenever a client asks the compositor to do something and
+requires to be notified when it is done. The callback object has no requests and a single event:
+<code>wl_callback::done</code>, which is called exactly once, when the task is finished.</p>
+<p>For example, the request <code>wl_display::sync</code> requires the composior to fire the callback just when it
+processed the request. It must process the requests in the same order as it receives them, which
+guarantees that all pending requests sent before this sync have been processed.</p>
+<a class="header" href="#the-compositor" id="the-compositor"><h1>The Compositor</h1></a>
+<p>The <code>wl_compositor</code> global is the most fundamental of the protocol: it represents the ability of the
+compositor (wayland server) to display content on the screen. It probably explains why they both
+have the same name (although it can be confusing at times...).</p>
+<p>It allows the creation of surface and region objects.</p>
+<a class="header" href="#the-surfaces" id="the-surfaces"><h2>The Surfaces</h2></a>
+<p>The <code>wl_surface</code> represents an abstract canvas on which the client can display content. A surface
+object by itself does nothing: it must first be assigned some content and a role to be displayed.</p>
+<p>The content of a surface is assigned by sending a <code>wl_surface::attach</code> request, attaching a
+<code>wl_buffer</code> to the surface (we'll learn how to create them in <a href="./shm.html">next chapter</a>).
+The buffer defines both the size and the pixel content of the surface. As such, a surface can be
+resized simply by attaching a new buffer of a different size to it.</p>
+<p>The role of a surface represents what it's used for. The core protocol includes 3 of them:</p>
+<ul>
+<li>Content of a window (see <a href="./shell.html">The Shell</a> for details)</li>
+<li>Image of the pointer (see <a href="./seat.html">The Seats</a> for details)</li>
+<li>Child surface of another surface (see <a href="./subcompositor.html">The Subcompositor</a> for
+details)</li>
+</ul>
+<p>But others can be introduced by other protocol extensions (for example background image,
+screensaver, widget...).</p>
+<p>A surface can only have a single role at a given time. A role is assigned to a surface by giving it
+as parameter to the request creating the object representing the role.</p>
+<p>Many of the properties of surfaces (often inherited from their roles) are double-buffered, and will
+all be applied at once when the request <code>wl_surface::commit</code> is sent. Whether a property is
+double-buffered is always stated in the API documentation of the requests changing it.</p>
+<a class="header" href="#the-regions" id="the-regions"><h2>The Regions</h2></a>
+<p>A <code>wl_region</code> represents a part of a surface. They are created as a combination of unions and
+differences of rectangles.</p>
+<p>They serve to requests the need to notify the wayland compositor about a part of a surface. For
+example, the request <code>wl_surface::set_damage</code> uses a region to notify the compositor when parts of a
+surface have changed and need to be redrawn.</p>
+<a class="header" href="#the-shm" id="the-shm"><h1>The SHM</h1></a>
+<p>The <code>wl_shm</code> object represents the capacity for the compositor to use SHared Memory. This is the
+most basic way for a client to send the compositor the contents of its surfaces, and the only one
+included in the core protocol.</p>
+<p>The SHM global allows the client to create several memory pools. Upon creation, it receives events
+for the various buffer formats supported by the compositor (such as ARGB8888 for example).</p>
+<a class="header" href="#the-shm-pools" id="the-shm-pools"><h2>The SHM Pools</h2></a>
+<p>The <code>wl_shm_pool</code> is created from the SHM global, and a file descriptor. This file descriptor is
+sent to the compositor, and is the shared memory. The compositor will read from it the content
+written by the client.</p>
+<p>From an SHM pool object, the client can create buffers. Each buffer refers to a certain part of
+the memory pool (specifying an offset, a width, a height and a stride).</p>
+<p>SHM pools can be resized by the client (via the <code>wl_shm_pool::resize</code> request), but only to make
+them bigger.</p>
+<p>Creating a buffer referring to content outside of the real size of the pool is an error. The
+effective behaviour of the compositor is platform-dependent: either it will read garbage (most
+likely zeroed memory) and the content of the surface will silently be corrupt, or it will encounter
+an error and trigger a protocol error as a consequence.</p>
+<a class="header" href="#the-buffers" id="the-buffers"><h2>The Buffers</h2></a>
+<p>The <code>wl_buffer</code> object is actually more generic than SHM pools. It can be created from SHM pools,
+but also from other medium in protocol extensions (DMABUF memories for example).</p>
+<p>In any case, it refers to some slice of memory at some place (that the compositor is supposed to
+have tracked at the creation of the buffer), and can be assigned to any surface.</p>
+<p>It possesses a single event <code>wl_buffer::release</code>, sent by the compositor when it has finished
+reading from the buffer, signaling the client that the underlying content can now be modified.</p>
+<a class="header" href="#the-shell" id="the-shell"><h1>The Shell</h1></a>
+<p>The <code>wl_shell</code> global allows the client to assign the role of a &quot;window&quot; to a surface by creating
+an associated shell surface object.</p>
+<blockquote>
+<p><strong>Note:</strong> This global is considered <em>deprecated</em> by the wayland dev team, and is apparently
+supposed to be replaced by the <code>xdg_shell</code> protocol extension.</p>
+<p>The reason for this is that this current interface is considered too simple to properly expose the
+functionality needed by popular GUI libraries (such as gtk+ or Qt), and cannot be fixed in a
+backwards-compatible way.</p>
+<p>However the <code>xdg_shell</code> extension is still in development and no stable version of it exists as of
+this writing.</p>
+</blockquote>
+<a class="header" href="#the-shell-surface" id="the-shell-surface"><h2>The Shell Surface</h2></a>
+<p>The <code>wl_shell_surface</code> is associated to a surface at creation. It adds to it various properties
+making it manipulable by the compositor (and the user of the program) as what we classicaly consider
+as a &quot;window&quot;: making it able to be grabbed and moved, resized, hidden, etc...</p>
+<p>A shell surface can be in 3 states:</p>
+<ul>
+<li><strong>Toplevel:</strong> this is your classic window, taking a rectangular space in you screen.</li>
+<li><strong>Fullscreen:</strong> takes up the whole screen. If the buffer associated to this surface does not match
+the dimensions of the screen, they'll be scaled and/or cropped by the compositor, depending on
+what the client requested.</li>
+<li><strong>Popup:</strong> this shell surface is associated to a parent shell surface, and must be hidden or
+displayed at the same time as it.</li>
+</ul>
+<p>The shell surface has a &quot;ping&quot; mechanism: whevener it receives a <code>wl_shell_surface::ping</code> event,
+it must answer with a <code>wl_shell_surface::pong</code> request. If the answer takes too much time, the
+compositor will consider this shell surface to be unresponsive and notify the user of it.</p>
+<p>It also contains the <code>wl_shell_surface::configure</code> event, which is sent whenever the size of the
+surface should change, hinting the client of the possible new size. For example when the user
+started an interactive resize of the window, or a tiling window manager reorganised the windows it
+displays. This new size is not an hard requirement, and the client is free to ignore it (if the
+window is not resizeable) or choose a more appropriate size (for example, a terminal emulator that
+can only have sizes a multiple of the size of a character).</p>
+<blockquote>
+<p><strong>Note:</strong> The state of decorations for windows is still uncertain. Some compositors (like Gnome)
+expect clients to draw their own decorations, while others (like KDE) will be drawing server-side
+decorations. State of tiling WM (which often expect no decorations at all) is uncertain.</p>
+<p>Sadly, there is not yet a clear negotiation protocol for applications and compositors to agree
+at runtime about who will handle the decorations.</p>
+</blockquote>
+<a class="header" href="#the-subcompositor" id="the-subcompositor"><h1>The Subcompositor</h1></a>
+<p>The <code>wl_subcompositor</code> object allows the client to assign the &quot;subsurface&quot; role to a <code>wl_surface</code> by
+creating an associated <code>wl_subsurface</code> object.</p>
+<a class="header" href="#the-subsurfaces" id="the-subsurfaces"><h2>The Subsurfaces</h2></a>
+<p>When a surface is assigned the <code>wl_subsurface</code> role, it is associated to a parent surface. The
+parent surface can be a subsurface of an other surface, and thus a tree of subsurface can be
+created.</p>
+<p>A tree of subsurfaces has the same visibility state as the surface at its root. This means the root
+surface must have a role other than &quot;subsurface&quot; for the tree to be displayed<sup class="footnote-reference"><a href="#1">1</a></sup>. The compositor is
+expected to handle the whole tree of subsurfaces as if it was a single big surface: the client can
+set the location of each subsurface relative to its parent (it is not required for it to be within
+the borders of the parent).</p>
+<p>Subsurfaces can typically be used for part of the UI that need to be updated by different means. For
+example, a video player could have the video itself being a subsurface of the GUI surface: this way
+it can update its contents with a buffer coming directly from the (possibly hardware) video decoding
+unit.</p>
+<p>Subsurfaces can also be used to draw window decorations: this gives an easy way for the client to
+know if the pointer is on the decorations or the main surface (see <a href="./seat.html">next chapter</a> for details
+about pointer input). But in general subsurfaces should not be used for general UI composing: this
+is expected to be done client-side by the GUI library.</p>
+<p> </p>
+<hr />
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p>This means while, strictly speaking, even if a cycle of subsurface is possible to create, the
+compositor will never attempt to display it. Thus creating such a cycle is both harmless and
+useless.</p>
+</div>
+<a class="header" href="#the-seats" id="the-seats"><h1>The Seats</h1></a>
+<p>A <code>wl_seat</code> global represent a logical group of input devices. Most of the time, setups will
+consist of a single seat: the mouse and keyboard of the computer. However some exotic setups can
+involve more than one seat<sup class="footnote-reference"><a href="#1">1</a></sup>. Seat globals can appear and dissapear as logical seats are created
+or destroyed.</p>
+<p>A seat can have 3 capabilities, each of them being instantiable as a different object to handle it:
+keyboard, pointer, and touch. These capabilities are advertised in an event of the <code>wl_seat</code> after
+its creation.</p>
+<a class="header" href="#keyboard" id="keyboard"><h2>Keyboard</h2></a>
+<p>A <code>wl_keyboard</code> object represents the fact that a keyboard is connected to the seat. It can be
+obtained via the <code>wl_seat::get_keyboard</code> request if the seat has this capability.</p>
+<p>This keyboard interface is very barebone: the compositor only sends the state of the modifier keys
+(control, alt, shift, ...) as well as the raw keycodes of pressed and released keys. Upon creation
+of the <code>wl_keyboard</code>, it will also send an event containing a file descriptor with a keymap file,
+which is the one currently used by the compositor. The client is then responsible to load it (or
+an other) into libxkbcommon to interpret the keystrokes as utf8 characters<sup class="footnote-reference"><a href="#2">2</a></sup>.</p>
+<p>The keyboard has a focus mechanism organised by surfaces. The client is notified whenever one of its
+surfaces gains or loses keyboard focus, and only receives keystrokes if one of its surfaces is
+currently focused.</p>
+<a class="header" href="#pointer" id="pointer"><h2>Pointer</h2></a>
+<p>The <code>wl_pointer</code> object represents the fact that a mouse or a trackpad is connected to the seat,
+allowing the user to move a pointer on the screen. It can be obtained via the <code>wl_seat::get_pointer</code>
+request if the seat has this capability.</p>
+<p>The client is not allowed to track the location of the pointer over the whole screen. Instead, it
+receives events whenever the pointer enters or leaves one of its surfaces, and pointer motion events
+are given in the surface local coordinates: relative to its top-right corner. The client does not
+receive any events if none of its surfaces are under the pointer.</p>
+<p>A surface can also be given the role of being the pointer's image, via the <code>wl_pointer::set_cursor</code>
+request. To ease this, the wayland C libraries include <code>libwayland-cursor</code>: an helper library for
+loading cursor themes and getting buffers of their contents and informations about their animations.</p>
+<a class="header" href="#touch" id="touch"><h2>Touch</h2></a>
+<p>The <code>wl_touch</code> object represents the fact that a touchscreen is connected to the seat, providing
+tactile capabilities. It can be obtained via the <code>wl_seat::get_touch</code> request if the seat has this
+capability.</p>
+<p>The events associated with the touch object allow representing multi-touch sequences, tracking the
+location of each touch point. They can be cancelled if the compositor decides that it'll be the one
+handling it.</p>
+<p> </p>
+<hr />
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p>I don't have realistic examples to present. A simple possibility would be to plug a second
+keyboard to the computer, but the compositor could decide to merge the two keyboard as a single
+logical keyboard, as most computers do today. In any case, the compositor gets to decide what a
+&quot;logical seat&quot; is.</p>
+</div>
+<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
+<p>This is the exact function of the <a href="https://crates.io/crates/wayland-kbd">wayland-kbd</a> crate.</p>
+</div>
+<a class="header" href="#the-outputs" id="the-outputs"><h1>The Outputs</h1></a>
+<p>A <code>wl_output</code> global reprensents an output the compositor has access to. Often it'll be a monitor
+or a TV connected to the computer. This global only provides the client information about the
+physical properties of the outputs, and can be used by other parts of the API as an identifier<sup class="footnote-reference"><a href="#1">1</a></sup>.</p>
+<p>The <code>wl_output</code> globals can appear and disappear as monitors are plugged into or unplugged from the
+computer.</p>
+<p>Among the information given to the client are:</p>
+<ul>
+<li>The textual name of this screen (will often be the model &amp; manufacturer if known, or something
+like <code>Output #0</code>).</li>
+<li>The physical dimensions of the screen as reported by it (the unit is unspecified)</li>
+<li>The currently used resolution and refresh rate</li>
+<li>Possibly the other supported resolutions</li>
+</ul>
+<p><code>wl_surface</code>s are notified when they enter or leave an output, but cannot know where they are
+located in the coordinate space of the output. The &quot;current output&quot; of a surface which is visible
+on more than one output is the one displaying the largest fraction of it.</p>
+<p> </p>
+<hr />
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p>For example, the <code>wl_shell::set_fullscreen</code> request can optionally be given an output as
+argument, if the client wants its surface to be set to fullscreen on a particular output.</p>
+</div>
+<a class="header" href="#the-data-device-manager" id="the-data-device-manager"><h1>The Data Device Manager</h1></a>
+<p><code>wl_data_device_manager</code></p>
+<a class="header" href="#the-data-sources" id="the-data-sources"><h2>The Data Sources</h2></a>
+<p><code>wl_data_source</code></p>
+<a class="header" href="#the-data-devices" id="the-data-devices"><h2>The Data Devices</h2></a>
+<p><code>wl_data_device</code></p>
+<a class="header" href="#the-data-offer" id="the-data-offer"><h2>The Data Offer</h2></a>
+<p><code>wl_data_offer</code></p>
+<a class="header" href="#writing-client-apps" id="writing-client-apps"><h1>Writing client apps</h1></a>
+<p>WIP</p>
+<a class="header" href="#writing-compositors" id="writing-compositors"><h1>Writing compositors</h1></a>
+<p>WIP</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+        
+        <script type="text/javascript">
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+        
+        
+
+    </body>
+</html>

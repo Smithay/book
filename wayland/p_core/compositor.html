@@ -1,0 +1,235 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>The Compositor - The rusty wayland handbook</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../../";
+            var default_theme = "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <ol class="chapter"><li class="affix"><a href="../../intro.html">Introduction</a></li><li><a href="../../wayland/intro.html"><strong aria-hidden="true">1.</strong> Wayland generalities</a></li><li><ol class="section"><li><a href="../../wayland/structure.html"><strong aria-hidden="true">1.1.</strong> Protocol structure</a></li><li><a href="../../wayland/p_core/intro.html"><strong aria-hidden="true">1.2.</strong> The Core protocol</a></li><li><ol class="section"><li><a href="../../wayland/p_core/special.html"><strong aria-hidden="true">1.2.1.</strong> Special objects</a></li><li><a href="../../wayland/p_core/compositor.html" class="active"><strong aria-hidden="true">1.2.2.</strong> The Compositor</a></li><li><a href="../../wayland/p_core/shm.html"><strong aria-hidden="true">1.2.3.</strong> The SHM</a></li><li><a href="../../wayland/p_core/shell.html"><strong aria-hidden="true">1.2.4.</strong> The Shell</a></li><li><a href="../../wayland/p_core/subcompositor.html"><strong aria-hidden="true">1.2.5.</strong> The Subcompositor</a></li><li><a href="../../wayland/p_core/seat.html"><strong aria-hidden="true">1.2.6.</strong> The Seats</a></li><li><a href="../../wayland/p_core/output.html"><strong aria-hidden="true">1.2.7.</strong> The Outputs</a></li><li><a href="../../wayland/p_core/data_device.html"><strong aria-hidden="true">1.2.8.</strong> The Data Device Manager</a></li></ol></li></ol></li><li><a href="../../client/intro.html"><strong aria-hidden="true">2.</strong> Writing client apps</a></li><li><a href="../../server/intro.html"><strong aria-hidden="true">3.</strong> Writing compositors</a></li></ol>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">The rusty wayland handbook</h1> 
+
+                        <div class="right-buttons">
+                            <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <a class="header" href="#the-compositor" id="the-compositor"><h1>The Compositor</h1></a>
+<p>The <code>wl_compositor</code> global is the most fundamental of the protocol: it represents the ability of the
+compositor (wayland server) to display content on the screen. It probably explains why they both
+have the same name (although it can be confusing at times...).</p>
+<p>It allows the creation of surface and region objects.</p>
+<a class="header" href="#the-surfaces" id="the-surfaces"><h2>The Surfaces</h2></a>
+<p>The <code>wl_surface</code> represents an abstract canvas on which the client can display content. A surface
+object by itself does nothing: it must first be assigned some content and a role to be displayed.</p>
+<p>The content of a surface is assigned by sending a <code>wl_surface::attach</code> request, attaching a
+<code>wl_buffer</code> to the surface (we'll learn how to create them in <a href="./shm.html">next chapter</a>).
+The buffer defines both the size and the pixel content of the surface. As such, a surface can be
+resized simply by attaching a new buffer of a different size to it.</p>
+<p>The role of a surface represents what it's used for. The core protocol includes 3 of them:</p>
+<ul>
+<li>Content of a window (see <a href="./shell.html">The Shell</a> for details)</li>
+<li>Image of the pointer (see <a href="./seat.html">The Seats</a> for details)</li>
+<li>Child surface of another surface (see <a href="./subcompositor.html">The Subcompositor</a> for
+details)</li>
+</ul>
+<p>But others can be introduced by other protocol extensions (for example background image,
+screensaver, widget...).</p>
+<p>A surface can only have a single role at a given time. A role is assigned to a surface by giving it
+as parameter to the request creating the object representing the role.</p>
+<p>Many of the properties of surfaces (often inherited from their roles) are double-buffered, and will
+all be applied at once when the request <code>wl_surface::commit</code> is sent. Whether a property is
+double-buffered is always stated in the API documentation of the requests changing it.</p>
+<a class="header" href="#the-regions" id="the-regions"><h2>The Regions</h2></a>
+<p>A <code>wl_region</code> represents a part of a surface. They are created as a combination of unions and
+differences of rectangles.</p>
+<p>They serve to requests the need to notify the wayland compositor about a part of a surface. For
+example, the request <code>wl_surface::set_damage</code> uses a region to notify the compositor when parts of a
+surface have changed and need to be redrawn.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../../wayland/p_core/special.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="../../wayland/p_core/shm.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="../../wayland/p_core/special.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="../../wayland/p_core/shm.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script src="../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>
