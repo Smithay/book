@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>The rusty wayland handbook</title>
+        <title>The Smithay Handbook</title>
         
         <meta name="robots" content="noindex" />
         
@@ -123,7 +123,7 @@
                         
                     </div>
 
-                    <h1 class="menu-title">The rusty wayland handbook</h1>
+                    <h1 class="menu-title">The Smithay Handbook</h1>
 
                     <div class="right-buttons">
                         <a href="print.html" title="Print this book" aria-label="Print this book">
@@ -158,16 +158,17 @@
                 <div id="content" class="content">
                     <main>
                         <h1><a class="header" href="#introduction" id="introduction">Introduction</a></h1>
-<p>Welcome to the Rusty Wayland Handbook.</p>
-<p>This book is related to the <a href="https://crates.io/crates/wayland-client">wayland-client</a> and
-<a href="https://crates.io/crates/wayland-server">wayland-server</a> rust crates, and will detail how to use
-them to build wayland apps and compositors.</p>
+<p>Welcome to the Smithay Handbook.</p>
+<p>This is a work in progress, and intended to serve as a general manual for building Wayland-related
+software in Rust, using the tools from the <a href="https://smithay.github.io/">Smithay project</a>.</p>
 <p>The <a href="./wayland/intro.html">first section</a> is a general introduction on the Wayland protocol, its
 goals and architecture.</p>
-<p>The <a href="./client/intro.html">second section</a> is dedicated to the building of client apps, that can
-run natively in any wayland environment.</p>
-<p>The <a href="./server/intro.html">third section</a> focuses on build compositors (or wayland servers), that
-act as both window managers and display servers.</p>
+<p>The <a href="./client/intro.html">second section</a> is dedicated to the building of client apps that can
+run natively in any wayland environment, using <a href="https://crates.io/crates/wayland-client">wayland-client</a>
+and <a href="https://crates.io/crates/smithay-client-toolkit">SCTK</a>.</p>
+<p>The <a href="./server/intro.html">third section</a> focuses on building compositors (or wayland servers) that
+act as both window managers and display servers, using <a href="https://crates.io/crates/wayland-server">wayland-server</a>
+and <a href="https://github.com/Smithay/smithay">Smithay</a>.</p>
 <p>Have a good read!</p>
 <h1><a class="header" href="#the-wayland-protocol" id="the-wayland-protocol">The Wayland protocol</a></h1>
 <p>Wayland is a display protocol aiming to replace X11, and mostly developed and maintained by former
@@ -241,7 +242,7 @@ the computer.</p>
 the form of concrete wayland objects.</p>
 <p>In the end, this kind of hierachy can be expected:</p>
 <p><img src="wayland/../resources/hierachy.svg" alt="hierachy" /></p>
-<p><em>(The details of what these objects are and do will come later, in the <a href="wayland/./p_core.html">core protocol</a> section.)</em></p>
+<p><em>(The details of what these objects are and do will come later, in the [core protocol][./p_core.md] section.)</em></p>
 <h2><a class="header" href="#protocol-extensions" id="protocol-extensions">Protocol extensions</a></h2>
 <p>The set of objects and the list of their requests and events is defined in
 <a href="https://cgit.freedesktop.org/wayland/wayland/tree/protocol/wayland.xml">an XML file</a>. This approach allows wayland protocol extensions to be defined easily.</p>
@@ -434,7 +435,7 @@ example, a video player could have the video itself being a subsurface of the GU
 it can update its contents with a buffer coming directly from the (possibly hardware) video decoding
 unit.</p>
 <p>Subsurfaces can also be used to draw window decorations: this gives an easy way for the client to
-know if the pointer is on the decorations or the main surface (see <a href="wayland/p_core/./seat.html">next chapter</a> for details
+know if the pointer is on the decorations or the main surface (see [next chapter][./seat.md] for details
 about pointer input). But in general subsurfaces should not be used for general UI composing: this
 is expected to be done client-side by the GUI library.</p>
 <p> </p>
