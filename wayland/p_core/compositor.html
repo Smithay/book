@@ -1,14 +1,23 @@
 <!DOCTYPE HTML>
-<html lang="en" class="sidebar-visible no-js">
+<html lang="en" class="sidebar-visible no-js light">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>The Compositor - The rusty wayland handbook</title>
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
+        <link rel="icon" href="../../favicon.svg">
         <link rel="shortcut icon" href="../../favicon.png">
         <link rel="stylesheet" href="../../css/variables.css">
         <link rel="stylesheet" href="../../css/general.css">
@@ -17,8 +26,9 @@
 
         <!-- Fonts -->
         <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
-        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+        
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="../../highlight.css">
@@ -30,11 +40,11 @@
 
         
     </head>
-    <body class="light">
+    <body>
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
             var path_to_root = "../../";
-            var default_theme = "light";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
@@ -56,10 +66,13 @@
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script type="text/javascript">
             var theme;
-            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
-            document.body.className = theme;
-            document.querySelector('html').className = theme + ' js';
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
         </script>
 
         <!-- Hide / unhide sidebar before it is displayed -->
@@ -75,44 +88,46 @@
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <ol class="chapter"><li class="affix"><a href="../../intro.html">Introduction</a></li><li><a href="../../wayland/intro.html"><strong aria-hidden="true">1.</strong> Wayland generalities</a></li><li><ol class="section"><li><a href="../../wayland/structure.html"><strong aria-hidden="true">1.1.</strong> Protocol structure</a></li><li><a href="../../wayland/p_core/intro.html"><strong aria-hidden="true">1.2.</strong> The Core protocol</a></li><li><ol class="section"><li><a href="../../wayland/p_core/special.html"><strong aria-hidden="true">1.2.1.</strong> Special objects</a></li><li><a href="../../wayland/p_core/compositor.html" class="active"><strong aria-hidden="true">1.2.2.</strong> The Compositor</a></li><li><a href="../../wayland/p_core/shm.html"><strong aria-hidden="true">1.2.3.</strong> The SHM</a></li><li><a href="../../wayland/p_core/shell.html"><strong aria-hidden="true">1.2.4.</strong> The Shell</a></li><li><a href="../../wayland/p_core/subcompositor.html"><strong aria-hidden="true">1.2.5.</strong> The Subcompositor</a></li><li><a href="../../wayland/p_core/seat.html"><strong aria-hidden="true">1.2.6.</strong> The Seats</a></li><li><a href="../../wayland/p_core/output.html"><strong aria-hidden="true">1.2.7.</strong> The Outputs</a></li><li><a href="../../wayland/p_core/data_device.html"><strong aria-hidden="true">1.2.8.</strong> The Data Device Manager</a></li></ol></li></ol></li><li><a href="../../client/intro.html"><strong aria-hidden="true">2.</strong> Writing client apps</a></li><li><a href="../../server/intro.html"><strong aria-hidden="true">3.</strong> Writing compositors</a></li></ol>
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="../../wayland/intro.html"><strong aria-hidden="true">1.</strong> Wayland generalities</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../wayland/structure.html"><strong aria-hidden="true">1.1.</strong> Protocol structure</a></li><li class="chapter-item expanded "><a href="../../wayland/p_core/intro.html"><strong aria-hidden="true">1.2.</strong> The Core protocol</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../wayland/p_core/special.html"><strong aria-hidden="true">1.2.1.</strong> Special objects</a></li><li class="chapter-item expanded "><a href="../../wayland/p_core/compositor.html" class="active"><strong aria-hidden="true">1.2.2.</strong> The Compositor</a></li><li class="chapter-item expanded "><a href="../../wayland/p_core/shm.html"><strong aria-hidden="true">1.2.3.</strong> The SHM</a></li><li class="chapter-item expanded "><a href="../../wayland/p_core/shell.html"><strong aria-hidden="true">1.2.4.</strong> The Shell</a></li><li class="chapter-item expanded "><a href="../../wayland/p_core/subcompositor.html"><strong aria-hidden="true">1.2.5.</strong> The Subcompositor</a></li><li class="chapter-item expanded "><a href="../../wayland/p_core/seat.html"><strong aria-hidden="true">1.2.6.</strong> The Seats</a></li><li class="chapter-item expanded "><a href="../../wayland/p_core/output.html"><strong aria-hidden="true">1.2.7.</strong> The Outputs</a></li><li class="chapter-item expanded "><a href="../../wayland/p_core/data_device.html"><strong aria-hidden="true">1.2.8.</strong> The Data Device Manager</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../../client/intro.html"><strong aria-hidden="true">2.</strong> Writing client apps</a></li><li class="chapter-item expanded "><a href="../../server/intro.html"><strong aria-hidden="true">3.</strong> Writing compositors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
                 
-                <div id="menu-bar" class="menu-bar">
-                    <div id="menu-bar-sticky-container">
-                        <div class="left-buttons">
-                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
-                                <i class="fa fa-bars"></i>
-                            </button>
-                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
-                                <i class="fa fa-paint-brush"></i>
-                            </button>
-                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
-                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
-                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
-                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
-                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
-                            </ul>
-                            
-                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
-                                <i class="fa fa-search"></i>
-                            </button>
-                            
-                        </div>
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
 
-                        <h1 class="menu-title">The rusty wayland handbook</h1> 
+                    <h1 class="menu-title">The rusty wayland handbook</h1>
 
-                        <div class="right-buttons">
-                            <a href="../../print.html" title="Print this book" aria-label="Print this book">
-                                <i id="print-button" class="fa fa-print"></i>
-                            </a>
-                            
-                        </div>
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
                     </div>
                 </div>
 
@@ -140,12 +155,12 @@
 
                 <div id="content" class="content">
                     <main>
-                        <a class="header" href="#the-compositor" id="the-compositor"><h1>The Compositor</h1></a>
+                        <h1><a class="header" href="#the-compositor" id="the-compositor">The Compositor</a></h1>
 <p>The <code>wl_compositor</code> global is the most fundamental of the protocol: it represents the ability of the
 compositor (wayland server) to display content on the screen. It probably explains why they both
 have the same name (although it can be confusing at times...).</p>
 <p>It allows the creation of surface and region objects.</p>
-<a class="header" href="#the-surfaces" id="the-surfaces"><h2>The Surfaces</h2></a>
+<h2><a class="header" href="#the-surfaces" id="the-surfaces">The Surfaces</a></h2>
 <p>The <code>wl_surface</code> represents an abstract canvas on which the client can display content. A surface
 object by itself does nothing: it must first be assigned some content and a role to be displayed.</p>
 <p>The content of a surface is assigned by sending a <code>wl_surface::attach</code> request, attaching a
@@ -166,7 +181,7 @@ as parameter to the request creating the object representing the role.</p>
 <p>Many of the properties of surfaces (often inherited from their roles) are double-buffered, and will
 all be applied at once when the request <code>wl_surface::commit</code> is sent. Whether a property is
 double-buffered is always stated in the API documentation of the requests changing it.</p>
-<a class="header" href="#the-regions" id="the-regions"><h2>The Regions</h2></a>
+<h2><a class="header" href="#the-regions" id="the-regions">The Regions</a></h2>
 <p>A <code>wl_region</code> represents a part of a surface. They are created as a combination of unions and
 differences of rectangles.</p>
 <p>They serve to requests the need to notify the wayland compositor about a part of a surface. For
@@ -196,13 +211,13 @@ surface have changed and need to be redrawn.</p>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a href="../../wayland/p_core/special.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../wayland/p_core/special.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
 
                 
-                    <a href="../../wayland/p_core/shm.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../../wayland/p_core/shm.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 
@@ -212,6 +227,14 @@ surface have changed and need to be redrawn.</p>
 
         
 
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
         
 
         
