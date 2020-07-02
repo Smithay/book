@@ -12,15 +12,15 @@ The `wl_surface` represents an abstract canvas on which the client can display c
 object by itself does nothing: it must first be assigned some content and a role to be displayed.
 
 The content of a surface is assigned by sending a `wl_surface::attach` request, attaching a
-`wl_buffer` to the surface (we'll learn how to create them in [next chapter](./shm.html)).
+`wl_buffer` to the surface (we'll learn how to create them in [next chapter](./shm.md)).
 The buffer defines both the size and the pixel content of the surface. As such, a surface can be
 resized simply by attaching a new buffer of a different size to it.
 
 The role of a surface represents what it's used for. The core protocol includes 3 of them:
 
-- Content of a window (see [The Shell](./shell.html) for details)
-- Image of the pointer (see [The Seats](./seat.html) for details)
-- Child surface of another surface (see [The Subcompositor](./subcompositor.html) for
+- Content of a window (see [The Shell](./shell.md) for details)
+- Image of the pointer (see [The Seats](./seat.md) for details)
+- Child surface of another surface (see [The Subcompositor](./subcompositor.md) for
   details)
 
 But others can be introduced by other protocol extensions (for example background image,

@@ -21,11 +21,9 @@ it can update its contents with a buffer coming directly from the (possibly hard
 unit.
 
 Subsurfaces can also be used to draw window decorations: this gives an easy way for the client to
-know if the pointer is on the decorations or the main surface (see [next chapter][] for details
+know if the pointer is on the decorations or the main surface (see [next chapter][./seat.md] for details
 about pointer input). But in general subsurfaces should not be used for general UI composing: this
 is expected to be done client-side by the GUI library.
-
-[next chapter]: ./seat.html
 
 &nbsp;
 

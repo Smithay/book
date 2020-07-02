@@ -52,9 +52,7 @@ In the end, this kind of hierachy can be expected:
 
 ![hierachy](../resources/hierachy.svg)
 
-*(The details of what these objects are and do will come later, in the [core protocol][] section.)*
-
-[core protocol]: ./p_core.html
+*(The details of what these objects are and do will come later, in the [core protocol][./p_core.md] section.)*
 
 ## Protocol extensions
 
