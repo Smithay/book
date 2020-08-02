@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Wayland generalities - The Smithay Handbook</title>
+        <title>General principles - The Smithay Handbook</title>
         
         
 
@@ -17,23 +17,23 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
-        <link rel="icon" href="../favicon.svg">
-        <link rel="shortcut icon" href="../favicon.png">
-        <link rel="stylesheet" href="../css/variables.css">
-        <link rel="stylesheet" href="../css/general.css">
-        <link rel="stylesheet" href="../css/chrome.css">
-        <link rel="stylesheet" href="../css/print.css" media="print">
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
         
-        <link rel="stylesheet" href="../fonts/fonts.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
         
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" href="../highlight.css">
-        <link rel="stylesheet" href="../tomorrow-night.css">
-        <link rel="stylesheet" href="../ayu-highlight.css">
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
         
@@ -43,7 +43,7 @@
     <body>
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
-            var path_to_root = "../";
+            var path_to_root = "../../";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
@@ -89,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="../wayland/intro.html" class="active"><strong aria-hidden="true">1.</strong> Wayland generalities</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../wayland/structure.html"><strong aria-hidden="true">1.1.</strong> Protocol structure</a></li><li class="chapter-item expanded "><a href="../wayland/p_core/intro.html"><strong aria-hidden="true">1.2.</strong> The Core protocol</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../wayland/p_core/special.html"><strong aria-hidden="true">1.2.1.</strong> Special objects</a></li><li class="chapter-item expanded "><a href="../wayland/p_core/compositor.html"><strong aria-hidden="true">1.2.2.</strong> The Compositor</a></li><li class="chapter-item expanded "><a href="../wayland/p_core/shm.html"><strong aria-hidden="true">1.2.3.</strong> The SHM</a></li><li class="chapter-item expanded "><a href="../wayland/p_core/shell.html"><strong aria-hidden="true">1.2.4.</strong> The Shell</a></li><li class="chapter-item expanded "><a href="../wayland/p_core/subcompositor.html"><strong aria-hidden="true">1.2.5.</strong> The Subcompositor</a></li><li class="chapter-item expanded "><a href="../wayland/p_core/seat.html"><strong aria-hidden="true">1.2.6.</strong> The Seats</a></li><li class="chapter-item expanded "><a href="../wayland/p_core/output.html"><strong aria-hidden="true">1.2.7.</strong> The Outputs</a></li><li class="chapter-item expanded "><a href="../wayland/p_core/data_device.html"><strong aria-hidden="true">1.2.8.</strong> The Data Device Manager</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../client/intro.html"><strong aria-hidden="true">2.</strong> Writing client apps</a></li><li class="chapter-item expanded "><a href="../server/intro.html"><strong aria-hidden="true">3.</strong> Writing compositors</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="../../client/intro.html"><strong aria-hidden="true">1.</strong> Wayland apps</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/general/intro.html" class="active"><strong aria-hidden="true">1.1.</strong> General principles</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/general/objects.html"><strong aria-hidden="true">1.1.1.</strong> Objects</a></li><li class="chapter-item expanded "><a href="../../client/general/event_queues.html"><strong aria-hidden="true">1.1.2.</strong> Event queues and filters</a></li><li class="chapter-item expanded "><a href="../../client/general/initializing.html"><strong aria-hidden="true">1.1.3.</strong> Initializing an app</a></li><li class="chapter-item expanded "><a href="../../client/general/registry.html"><strong aria-hidden="true">1.1.4.</strong> The registry and globals</a></li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.2.</strong> Getting started with SCTK</li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">1.2.1.</strong> The Environment</li><li class="chapter-item expanded "><strong aria-hidden="true">1.2.2.</strong> Creating a Window</li><li class="chapter-item expanded "><strong aria-hidden="true">1.2.3.</strong> Drawing to a Window</li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.</strong> Processing user input</li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">1.3.1.</strong> The seats</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.2.</strong> Pointers</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.3.</strong> Keyboards</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.4.</strong> Touchscreens</li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.4.</strong> Multiple outputs and HiDPI</li><li class="chapter-item expanded "><strong aria-hidden="true">1.5.</strong> Cliboard and Drag'n'Drop</li></ol></li><li class="chapter-item expanded "><a href="../../server/intro.html"><strong aria-hidden="true">2.</strong> Wayland Compositors</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -124,7 +124,7 @@
                     <h1 class="menu-title">The Smithay Handbook</h1>
 
                     <div class="right-buttons">
-                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
                         
@@ -155,43 +155,38 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#the-wayland-protocol" id="the-wayland-protocol">The Wayland protocol</a></h1>
-<p>Wayland is a display protocol aiming to replace X11, and mostly developed and maintained by former
-X.org developers. It is a response to the fact that X11 is an old protocol that accumulated a lot
-of unnecessary features over the years, and that its centralised architecture<sup class="footnote-reference"><a href="#1">1</a></sup> is far too
-heavy and has performance issues.</p>
-<p>So the choice for waylands design was to make something much more minimalistic:</p>
-<ul>
-<li>Fuse the server, the compositor and the window manager into a single program. This means that
-there is no longer a single display server, but rather each desktop environment has its own. For
-example, both Gnome and KDE have now developed their own wayland compositor.</li>
-<li>Don't provide any drawing primitives to the clients. They are responsible for drawing the
-contents of their windows themselves, and only pass buffers to the compositor that will then
-blend them on the screen.</li>
-</ul>
-<p>The built protocol aims to be much smaller and simpler than the X11 one, making actually developing
-a wayland compositor a much more manageable task than building a new X11 server.</p>
-<p>The rest of this chapter is an extensive description of this protocol and what it implies for the
-clients and servers, but from a general point of view, and thus is not rust-specific at all.</p>
-<p> </p>
-<hr />
-<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
-<p>The X11 server is at the heart of everything multiplexing between the clients, the window
-manager and the compositor</p>
-</div>
+                        <h1><a class="header" href="#general-principles" id="general-principles">General principles</a></h1>
+<p>The Wayland protocol follows a client-server architecture: the Wayland compositor listens
+on an UNIX socket, to which client apps then connect in order to present their graphical
+interface. This UNIX connection transports information in both directions: the client uses
+it to tell the server what it wants to display, and the server uses it to tell the client
+about user actions (such as keyboard or pointer input). The Wayland connection is thus the
+heart of a client app, and is the source of events that drives its event loop.</p>
+<p>The server tells to clients about the Wayland socket using the <code>WAYLAND_DISPLAY</code> environment
+variable. The listening socket is placed at <code>$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY</code>. This will
+typically be a path like <code>/run/user/1000/wayland-0</code>.</p>
+<p>When starting your app, it will need to find the Wayland socket and connect to it. The
+wayland-client crate does this for you with the
+<a href="https://docs.rs/wayland-client/*/wayland_client/struct.Display.html#method.connect_to_env"><code>Display::connect_to_env()</code></a>
+method. If no error occurs, this function will provide you with a <code>Display</code> object.</p>
+<p>This object is the very heart of your Wayland program. It represents your connection to the
+server, and this is from this object that everything will be further initialized. But to
+understand how this objects relates to the rest of the crate, we will first need to get a
+better understanding of the distinction between the protocol objects, and the Rust structs that
+your program will manipulate.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="../intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../client/intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
 
                         
-                            <a rel="next" href="../wayland/structure.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../../client/general/objects.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -203,13 +198,13 @@ manager and the compositor</p>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a rel="prev" href="../intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../client/intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
 
                 
-                    <a rel="next" href="../wayland/structure.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../../client/general/objects.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 
@@ -232,14 +227,14 @@ manager and the compositor</p>
         
 
         
-        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../searcher.js" type="text/javascript" charset="utf-8"></script>
         
 
-        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
         

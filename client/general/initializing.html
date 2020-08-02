@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>The Shell - The Smithay Handbook</title>
+        <title>Initializing an app - The Smithay Handbook</title>
         
         
 
@@ -89,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="../../wayland/intro.html"><strong aria-hidden="true">1.</strong> Wayland generalities</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../wayland/structure.html"><strong aria-hidden="true">1.1.</strong> Protocol structure</a></li><li class="chapter-item expanded "><a href="../../wayland/p_core/intro.html"><strong aria-hidden="true">1.2.</strong> The Core protocol</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../wayland/p_core/special.html"><strong aria-hidden="true">1.2.1.</strong> Special objects</a></li><li class="chapter-item expanded "><a href="../../wayland/p_core/compositor.html"><strong aria-hidden="true">1.2.2.</strong> The Compositor</a></li><li class="chapter-item expanded "><a href="../../wayland/p_core/shm.html"><strong aria-hidden="true">1.2.3.</strong> The SHM</a></li><li class="chapter-item expanded "><a href="../../wayland/p_core/shell.html" class="active"><strong aria-hidden="true">1.2.4.</strong> The Shell</a></li><li class="chapter-item expanded "><a href="../../wayland/p_core/subcompositor.html"><strong aria-hidden="true">1.2.5.</strong> The Subcompositor</a></li><li class="chapter-item expanded "><a href="../../wayland/p_core/seat.html"><strong aria-hidden="true">1.2.6.</strong> The Seats</a></li><li class="chapter-item expanded "><a href="../../wayland/p_core/output.html"><strong aria-hidden="true">1.2.7.</strong> The Outputs</a></li><li class="chapter-item expanded "><a href="../../wayland/p_core/data_device.html"><strong aria-hidden="true">1.2.8.</strong> The Data Device Manager</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../../client/intro.html"><strong aria-hidden="true">2.</strong> Writing client apps</a></li><li class="chapter-item expanded "><a href="../../server/intro.html"><strong aria-hidden="true">3.</strong> Writing compositors</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="../../client/intro.html"><strong aria-hidden="true">1.</strong> Wayland apps</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/general/intro.html"><strong aria-hidden="true">1.1.</strong> General principles</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/general/objects.html"><strong aria-hidden="true">1.1.1.</strong> Objects</a></li><li class="chapter-item expanded "><a href="../../client/general/event_queues.html"><strong aria-hidden="true">1.1.2.</strong> Event queues and filters</a></li><li class="chapter-item expanded "><a href="../../client/general/initializing.html" class="active"><strong aria-hidden="true">1.1.3.</strong> Initializing an app</a></li><li class="chapter-item expanded "><a href="../../client/general/registry.html"><strong aria-hidden="true">1.1.4.</strong> The registry and globals</a></li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.2.</strong> Getting started with SCTK</li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">1.2.1.</strong> The Environment</li><li class="chapter-item expanded "><strong aria-hidden="true">1.2.2.</strong> Creating a Window</li><li class="chapter-item expanded "><strong aria-hidden="true">1.2.3.</strong> Drawing to a Window</li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.</strong> Processing user input</li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">1.3.1.</strong> The seats</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.2.</strong> Pointers</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.3.</strong> Keyboards</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.4.</strong> Touchscreens</li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.4.</strong> Multiple outputs and HiDPI</li><li class="chapter-item expanded "><strong aria-hidden="true">1.5.</strong> Cliboard and Drag'n'Drop</li></ol></li><li class="chapter-item expanded "><a href="../../server/intro.html"><strong aria-hidden="true">2.</strong> Wayland Compositors</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -155,60 +155,52 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#the-shell" id="the-shell">The Shell</a></h1>
-<p>The <code>wl_shell</code> global allows the client to assign the role of a &quot;window&quot; to a surface by creating
-an associated shell surface object.</p>
-<blockquote>
-<p><strong>Note:</strong> This global is considered <em>deprecated</em> by the wayland dev team, and is apparently
-supposed to be replaced by the <code>xdg_shell</code> protocol extension.</p>
-<p>The reason for this is that this current interface is considered too simple to properly expose the
-functionality needed by popular GUI libraries (such as gtk+ or Qt), and cannot be fixed in a
-backwards-compatible way.</p>
-<p>However the <code>xdg_shell</code> extension is still in development and no stable version of it exists as of
-this writing.</p>
-</blockquote>
-<h2><a class="header" href="#the-shell-surface" id="the-shell-surface">The Shell Surface</a></h2>
-<p>The <code>wl_shell_surface</code> is associated to a surface at creation. It adds to it various properties
-making it manipulable by the compositor (and the user of the program) as what we classicaly consider
-as a &quot;window&quot;: making it able to be grabbed and moved, resized, hidden, etc...</p>
-<p>A shell surface can be in 3 states:</p>
-<ul>
-<li><strong>Toplevel:</strong> this is your classic window, taking a rectangular space in you screen.</li>
-<li><strong>Fullscreen:</strong> takes up the whole screen. If the buffer associated to this surface does not match
-the dimensions of the screen, they'll be scaled and/or cropped by the compositor, depending on
-what the client requested.</li>
-<li><strong>Popup:</strong> this shell surface is associated to a parent shell surface, and must be hidden or
-displayed at the same time as it.</li>
-</ul>
-<p>The shell surface has a &quot;ping&quot; mechanism: whevener it receives a <code>wl_shell_surface::ping</code> event,
-it must answer with a <code>wl_shell_surface::pong</code> request. If the answer takes too much time, the
-compositor will consider this shell surface to be unresponsive and notify the user of it.</p>
-<p>It also contains the <code>wl_shell_surface::configure</code> event, which is sent whenever the size of the
-surface should change, hinting the client of the possible new size. For example when the user
-started an interactive resize of the window, or a tiling window manager reorganised the windows it
-displays. This new size is not an hard requirement, and the client is free to ignore it (if the
-window is not resizeable) or choose a more appropriate size (for example, a terminal emulator that
-can only have sizes a multiple of the size of a character).</p>
-<blockquote>
-<p><strong>Note:</strong> The state of decorations for windows is still uncertain. Some compositors (like Gnome)
-expect clients to draw their own decorations, while others (like KDE) will be drawing server-side
-decorations. State of tiling WM (which often expect no decorations at all) is uncertain.</p>
-<p>Sadly, there is not yet a clear negotiation protocol for applications and compositors to agree
-at runtime about who will handle the decorations.</p>
-</blockquote>
+                        <h1><a class="header" href="#initializing-an-app" id="initializing-an-app">Initializing an app</a></h1>
+<p>As described previously, once initialized, <code>wayland-client</code> provides you with
+a <a href="https://docs.rs/wayland-client/*/wayland_client/struct.Display.html"><code>Display</code></a> object, representing your wayland connection. This is <em>not</em> a
+proxy for the initial <code>WlDisplay</code> protocol object, but it derefs to
+<code>&amp;Proxy&lt;WlDisplay&gt;</code>, for convenience.</p>
+<p>The first things to do are thus to create an event queue and attach the <code>WlDisplay</code>
+proxy to it, so that objects created from it will be attached to this event queue.</p>
+<p>The skeleton of a Wayland app may thus look like this:</p>
+<pre><pre class="playground"><code class="language-rust no_run">use wayland_client::Display;
+
+fn main() {
+    let display = Display::connect_to_env().expect(&quot;Failed to find a Wayland socket.&quot;);
+
+    let mut event_queue = display.create_event_queue();
+    let attached_display = display.attach(&amp;event_queue.token());
+
+    /*
+    * Proceed to initialize the rest of your app
+    */
+
+    // and the main loop
+    loop {
+        event_queue.dispatch(&amp;mut global_state, |_,_,_| panic!(&quot;Orphan event&quot;))
+            .expect(&quot;Wayland connection lost.&quot;);
+
+        /*
+        * Additionnal global processing
+        */
+    }
+}
+</code></pre></pre>
+<p>With that in place, we can now proceed to the final core concept of the protocol: the globals
+and the registry.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="../../wayland/p_core/shm.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../client/general/event_queues.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
 
                         
-                            <a rel="next" href="../../wayland/p_core/subcompositor.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../../client/general/registry.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -220,13 +212,13 @@ at runtime about who will handle the decorations.</p>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a rel="prev" href="../../wayland/p_core/shm.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../client/general/event_queues.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
 
                 
-                    <a rel="next" href="../../wayland/p_core/subcompositor.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../../client/general/registry.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 

@@ -89,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="intro.html" class="active">Introduction</a></li><li class="chapter-item expanded "><a href="wayland/intro.html"><strong aria-hidden="true">1.</strong> Wayland generalities</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="wayland/structure.html"><strong aria-hidden="true">1.1.</strong> Protocol structure</a></li><li class="chapter-item expanded "><a href="wayland/p_core/intro.html"><strong aria-hidden="true">1.2.</strong> The Core protocol</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="wayland/p_core/special.html"><strong aria-hidden="true">1.2.1.</strong> Special objects</a></li><li class="chapter-item expanded "><a href="wayland/p_core/compositor.html"><strong aria-hidden="true">1.2.2.</strong> The Compositor</a></li><li class="chapter-item expanded "><a href="wayland/p_core/shm.html"><strong aria-hidden="true">1.2.3.</strong> The SHM</a></li><li class="chapter-item expanded "><a href="wayland/p_core/shell.html"><strong aria-hidden="true">1.2.4.</strong> The Shell</a></li><li class="chapter-item expanded "><a href="wayland/p_core/subcompositor.html"><strong aria-hidden="true">1.2.5.</strong> The Subcompositor</a></li><li class="chapter-item expanded "><a href="wayland/p_core/seat.html"><strong aria-hidden="true">1.2.6.</strong> The Seats</a></li><li class="chapter-item expanded "><a href="wayland/p_core/output.html"><strong aria-hidden="true">1.2.7.</strong> The Outputs</a></li><li class="chapter-item expanded "><a href="wayland/p_core/data_device.html"><strong aria-hidden="true">1.2.8.</strong> The Data Device Manager</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="client/intro.html"><strong aria-hidden="true">2.</strong> Writing client apps</a></li><li class="chapter-item expanded "><a href="server/intro.html"><strong aria-hidden="true">3.</strong> Writing compositors</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="intro.html" class="active">Introduction</a></li><li class="chapter-item expanded "><a href="client/intro.html"><strong aria-hidden="true">1.</strong> Wayland apps</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="client/general/intro.html"><strong aria-hidden="true">1.1.</strong> General principles</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="client/general/objects.html"><strong aria-hidden="true">1.1.1.</strong> Objects</a></li><li class="chapter-item expanded "><a href="client/general/event_queues.html"><strong aria-hidden="true">1.1.2.</strong> Event queues and filters</a></li><li class="chapter-item expanded "><a href="client/general/initializing.html"><strong aria-hidden="true">1.1.3.</strong> Initializing an app</a></li><li class="chapter-item expanded "><a href="client/general/registry.html"><strong aria-hidden="true">1.1.4.</strong> The registry and globals</a></li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.2.</strong> Getting started with SCTK</li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">1.2.1.</strong> The Environment</li><li class="chapter-item expanded "><strong aria-hidden="true">1.2.2.</strong> Creating a Window</li><li class="chapter-item expanded "><strong aria-hidden="true">1.2.3.</strong> Drawing to a Window</li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.</strong> Processing user input</li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">1.3.1.</strong> The seats</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.2.</strong> Pointers</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.3.</strong> Keyboards</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.4.</strong> Touchscreens</li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.4.</strong> Multiple outputs and HiDPI</li><li class="chapter-item expanded "><strong aria-hidden="true">1.5.</strong> Cliboard and Drag'n'Drop</li></ol></li><li class="chapter-item expanded "><a href="server/intro.html"><strong aria-hidden="true">2.</strong> Wayland Compositors</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -159,15 +159,23 @@
 <p>Welcome to the Smithay Handbook.</p>
 <p>This is a work in progress, and intended to serve as a general manual for building Wayland-related
 software in Rust, using the tools from the <a href="https://smithay.github.io/">Smithay project</a>.</p>
-<p>The <a href="./wayland/intro.html">first section</a> is a general introduction on the Wayland protocol, its
-goals and architecture.</p>
-<p>The <a href="./client/intro.html">second section</a> is dedicated to the building of client apps that can
-run natively in any wayland environment, using <a href="https://crates.io/crates/wayland-client">wayland-client</a>
-and <a href="https://crates.io/crates/smithay-client-toolkit">SCTK</a>.</p>
-<p>The <a href="./server/intro.html">third section</a> focuses on building compositors (or wayland servers) that
-act as both window managers and display servers, using <a href="https://crates.io/crates/wayland-server">wayland-server</a>
-and <a href="https://github.com/Smithay/smithay">Smithay</a>.</p>
-<p>Have a good read!</p>
+<p>The project revolves around 3 main components:</p>
+<ul>
+<li>The <a href="https://github.com/Smithay/wayland-rs">wayland-rs</a> repository contains low-level bindings to the
+Wayland protocols, under the form of several crates. The two most notable being
+<a href="https://crates.io/crates/wayland-client"><code>wayland-client</code></a> and
+<a href="https://crates.io/crates/wayland-server"><code>wayland-server</code></a>, which are the core bindings for client-side
+and server-side apps.</li>
+<li><a href="https://crates.io/crates/smithay-client-toolkit">SCTK</a>, or Smithay Client ToolKit, is a crate designed
+to handle a significant portion of the plumbing required for writing Wayland client apps. It comes on top
+of wayland-client, and this book will present it as well.</li>
+<li><a href="https://github.com/Smithay/smithay">Smithay</a> is the flagship crate of the project, and is designed as
+a framework for writing Wayland servers (also called compositors). It is built on top of the wayland-server
+crate, and also handles most of the interaction with the system (input devices, graphics, udev, sessions, ...).</li>
+</ul>
+<p>The first part of this book is dedicated to client-side apps, while the second part focuses of server-side.
+If you are interested by the server-side stuff, it is recommended to first get familiar with the client-side,
+as it is easier to get into and a lot of its concepts map to server-side.</p>
 
                     </main>
 
@@ -176,7 +184,7 @@ and <a href="https://github.com/Smithay/smithay">Smithay</a>.</p>
                         
 
                         
-                            <a rel="next" href="wayland/intro.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="client/intro.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -190,7 +198,7 @@ and <a href="https://github.com/Smithay/smithay">Smithay</a>.</p>
                 
 
                 
-                    <a rel="next" href="wayland/intro.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="client/intro.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 

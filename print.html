@@ -91,7 +91,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="wayland/intro.html"><strong aria-hidden="true">1.</strong> Wayland generalities</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="wayland/structure.html"><strong aria-hidden="true">1.1.</strong> Protocol structure</a></li><li class="chapter-item expanded "><a href="wayland/p_core/intro.html"><strong aria-hidden="true">1.2.</strong> The Core protocol</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="wayland/p_core/special.html"><strong aria-hidden="true">1.2.1.</strong> Special objects</a></li><li class="chapter-item expanded "><a href="wayland/p_core/compositor.html"><strong aria-hidden="true">1.2.2.</strong> The Compositor</a></li><li class="chapter-item expanded "><a href="wayland/p_core/shm.html"><strong aria-hidden="true">1.2.3.</strong> The SHM</a></li><li class="chapter-item expanded "><a href="wayland/p_core/shell.html"><strong aria-hidden="true">1.2.4.</strong> The Shell</a></li><li class="chapter-item expanded "><a href="wayland/p_core/subcompositor.html"><strong aria-hidden="true">1.2.5.</strong> The Subcompositor</a></li><li class="chapter-item expanded "><a href="wayland/p_core/seat.html"><strong aria-hidden="true">1.2.6.</strong> The Seats</a></li><li class="chapter-item expanded "><a href="wayland/p_core/output.html"><strong aria-hidden="true">1.2.7.</strong> The Outputs</a></li><li class="chapter-item expanded "><a href="wayland/p_core/data_device.html"><strong aria-hidden="true">1.2.8.</strong> The Data Device Manager</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="client/intro.html"><strong aria-hidden="true">2.</strong> Writing client apps</a></li><li class="chapter-item expanded "><a href="server/intro.html"><strong aria-hidden="true">3.</strong> Writing compositors</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="client/intro.html"><strong aria-hidden="true">1.</strong> Wayland apps</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="client/general/intro.html"><strong aria-hidden="true">1.1.</strong> General principles</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="client/general/objects.html"><strong aria-hidden="true">1.1.1.</strong> Objects</a></li><li class="chapter-item expanded "><a href="client/general/event_queues.html"><strong aria-hidden="true">1.1.2.</strong> Event queues and filters</a></li><li class="chapter-item expanded "><a href="client/general/initializing.html"><strong aria-hidden="true">1.1.3.</strong> Initializing an app</a></li><li class="chapter-item expanded "><a href="client/general/registry.html"><strong aria-hidden="true">1.1.4.</strong> The registry and globals</a></li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.2.</strong> Getting started with SCTK</li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">1.2.1.</strong> The Environment</li><li class="chapter-item expanded "><strong aria-hidden="true">1.2.2.</strong> Creating a Window</li><li class="chapter-item expanded "><strong aria-hidden="true">1.2.3.</strong> Drawing to a Window</li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.</strong> Processing user input</li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">1.3.1.</strong> The seats</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.2.</strong> Pointers</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.3.</strong> Keyboards</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.4.</strong> Touchscreens</li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.4.</strong> Multiple outputs and HiDPI</li><li class="chapter-item expanded "><strong aria-hidden="true">1.5.</strong> Cliboard and Drag'n'Drop</li></ol></li><li class="chapter-item expanded "><a href="server/intro.html"><strong aria-hidden="true">2.</strong> Wayland Compositors</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -161,373 +161,337 @@
 <p>Welcome to the Smithay Handbook.</p>
 <p>This is a work in progress, and intended to serve as a general manual for building Wayland-related
 software in Rust, using the tools from the <a href="https://smithay.github.io/">Smithay project</a>.</p>
-<p>The <a href="./wayland/intro.html">first section</a> is a general introduction on the Wayland protocol, its
-goals and architecture.</p>
-<p>The <a href="./client/intro.html">second section</a> is dedicated to the building of client apps that can
-run natively in any wayland environment, using <a href="https://crates.io/crates/wayland-client">wayland-client</a>
-and <a href="https://crates.io/crates/smithay-client-toolkit">SCTK</a>.</p>
-<p>The <a href="./server/intro.html">third section</a> focuses on building compositors (or wayland servers) that
-act as both window managers and display servers, using <a href="https://crates.io/crates/wayland-server">wayland-server</a>
-and <a href="https://github.com/Smithay/smithay">Smithay</a>.</p>
-<p>Have a good read!</p>
-<h1><a class="header" href="#the-wayland-protocol" id="the-wayland-protocol">The Wayland protocol</a></h1>
-<p>Wayland is a display protocol aiming to replace X11, and mostly developed and maintained by former
-X.org developers. It is a response to the fact that X11 is an old protocol that accumulated a lot
-of unnecessary features over the years, and that its centralised architecture<sup class="footnote-reference"><a href="#1">1</a></sup> is far too
-heavy and has performance issues.</p>
-<p>So the choice for waylands design was to make something much more minimalistic:</p>
+<p>The project revolves around 3 main components:</p>
 <ul>
-<li>Fuse the server, the compositor and the window manager into a single program. This means that
-there is no longer a single display server, but rather each desktop environment has its own. For
-example, both Gnome and KDE have now developed their own wayland compositor.</li>
-<li>Don't provide any drawing primitives to the clients. They are responsible for drawing the
-contents of their windows themselves, and only pass buffers to the compositor that will then
-blend them on the screen.</li>
+<li>The <a href="https://github.com/Smithay/wayland-rs">wayland-rs</a> repository contains low-level bindings to the
+Wayland protocols, under the form of several crates. The two most notable being
+<a href="https://crates.io/crates/wayland-client"><code>wayland-client</code></a> and
+<a href="https://crates.io/crates/wayland-server"><code>wayland-server</code></a>, which are the core bindings for client-side
+and server-side apps.</li>
+<li><a href="https://crates.io/crates/smithay-client-toolkit">SCTK</a>, or Smithay Client ToolKit, is a crate designed
+to handle a significant portion of the plumbing required for writing Wayland client apps. It comes on top
+of wayland-client, and this book will present it as well.</li>
+<li><a href="https://github.com/Smithay/smithay">Smithay</a> is the flagship crate of the project, and is designed as
+a framework for writing Wayland servers (also called compositors). It is built on top of the wayland-server
+crate, and also handles most of the interaction with the system (input devices, graphics, udev, sessions, ...).</li>
 </ul>
-<p>The built protocol aims to be much smaller and simpler than the X11 one, making actually developing
-a wayland compositor a much more manageable task than building a new X11 server.</p>
-<p>The rest of this chapter is an extensive description of this protocol and what it implies for the
-clients and servers, but from a general point of view, and thus is not rust-specific at all.</p>
-<p> </p>
-<hr />
-<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
-<p>The X11 server is at the heart of everything multiplexing between the clients, the window
-manager and the compositor</p>
-</div>
-<h1><a class="header" href="#wayland-protocol-structure" id="wayland-protocol-structure">Wayland protocol structure</a></h1>
-<p>Before detailing the protocol contents, we need to have a look at its structure.</p>
-<p>This is an asynchronous message-based protocol, with an object-oriented structure.</p>
-<h2><a class="header" href="#objects-requests-and-events" id="objects-requests-and-events">Objects, requests and events</a></h2>
-<p>Messages are exchanged between the client and the server via a common pool of objects. Each message
-is associated to an object and can refer to other objects. Some messages can result in the creation
-or the destruction of objects.</p>
-<p>Messages from the client to the server are called <strong>requests</strong>, and messages from the server to the
-client are called <strong>events</strong>.</p>
-<blockquote>
-<p><strong>Examples:</strong></p>
+<p>The first part of this book is dedicated to client-side apps, while the second part focuses of server-side.
+If you are interested by the server-side stuff, it is recommended to first get familiar with the client-side,
+as it is easier to get into and a lot of its concepts map to server-side.</p>
+<h1><a class="header" href="#wayland-apps" id="wayland-apps">Wayland apps</a></h1>
+<p>This part of the book is dedicated to Wayland client apps, so writing programs that can run in
+a Wayland environment: display something to the screen, receive user input and process it. This
+include classic apps wich display a window with their content, but can also include programs such
+as desktop components (widgets, bars, animated backgrounds, lockscreens, ...).</p>
+<p>The first section will be dedicated to general principles of the wayland protocol, as well as the
+main objects of the <a href="https://crates.io/crates/wayland-client">wayland-client</a> crate. The following
+sections will explore in more details the actual process of writing an app.</p>
+<h1><a class="header" href="#general-principles" id="general-principles">General principles</a></h1>
+<p>The Wayland protocol follows a client-server architecture: the Wayland compositor listens
+on an UNIX socket, to which client apps then connect in order to present their graphical
+interface. This UNIX connection transports information in both directions: the client uses
+it to tell the server what it wants to display, and the server uses it to tell the client
+about user actions (such as keyboard or pointer input). The Wayland connection is thus the
+heart of a client app, and is the source of events that drives its event loop.</p>
+<p>The server tells to clients about the Wayland socket using the <code>WAYLAND_DISPLAY</code> environment
+variable. The listening socket is placed at <code>$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY</code>. This will
+typically be a path like <code>/run/user/1000/wayland-0</code>.</p>
+<p>When starting your app, it will need to find the Wayland socket and connect to it. The
+wayland-client crate does this for you with the
+<a href="https://docs.rs/wayland-client/*/wayland_client/struct.Display.html#method.connect_to_env"><code>Display::connect_to_env()</code></a>
+method. If no error occurs, this function will provide you with a <code>Display</code> object.</p>
+<p>This object is the very heart of your Wayland program. It represents your connection to the
+server, and this is from this object that everything will be further initialized. But to
+understand how this objects relates to the rest of the crate, we will first need to get a
+better understanding of the distinction between the protocol objects, and the Rust structs that
+your program will manipulate.</p>
+<h1><a class="header" href="#objects" id="objects">Objects</a></h1>
+<p>The Wayland protocol is an object-oriented protocol. This means that, as the client and
+server exchange messages, they build an abstract state made of several objects, which
+are represented by a numeric identifier. You can figure them as being scopes for messages:
+each message is associated with one of these protocol object. Each object has an &quot;interface&quot;,
+which is a definition of which messages can be associated with it.</p>
+<p>The messages are named &quot;requests&quot; when they are sent by the client to the server, and &quot;events&quot;
+when they are sent by the server to the client. An object interface is thus the list of which
+requests and which events can be associated with objects of this interface.</p>
+<p>For example, an object representing a keyboard would receive the events from the server informing
+about which keys are pressed by the user. An object representing a window would send requests
+to update its content, and receive events informing about user interaction (such as resizing).</p>
+<p>At the beginning, the protocol state contains a single object. Its identifier is 1, and its
+interface is <code>wl_display</code>. This is from it that the rest of the protocol state is setup by
+the client.</p>
+<h2><a class="header" href="#objects-and-proxies" id="objects-and-proxies">Objects and proxies</a></h2>
+<p>The protocol objects are created and destroyed by messages. A request sent by the client can
+have for effect the creation of a new object in the state, or the destruction of an object.
+Most of the time, creation and destruction of objects is done by the client, but there are
+exceptions. For this reason, protocol objects are not directly represented by Rust structs,
+but instead one layer of indirection is added. <code>wayland-client</code> provides you with Rust objects
+that we call &quot;proxies&quot;.</p>
+<p>Each proxy represents a protocol object, but several proxies can represent the same object. You
+can think of proxies as something akin <code>Rc&lt;_&gt;</code> or <code>Arc&lt;_&gt;</code>: they are an handle to the underlying
+protocol object. Furthermore, their lifetime is not tied to the protocol object's lifetime: they
+can outlive it. Once a protocol object has been destroyed, the proxies associated to it will
+become inert.</p>
+<h2><a class="header" href="#the-4-forms-of-a-proxy" id="the-4-forms-of-a-proxy">The 4 forms of a proxy</a></h2>
+<p>A proxy for a protocol object can be manipulated under four forms:</p>
 <ul>
-<li>A client can have an object that represents the keyboard. This object will receive an event each
-time the user presses or releases a key.</li>
-<li>A client can have an object representing a surface on the screen. It can send a request to the
-server to associate a buffer to this surface, to define its contents in terms of pixel values.</li>
+<li>As direct proxy, as a bare Wayland type, something like <code>WlFoo</code>. This form is the
+closest to the protocol object, and its methods map to the requests of the interface of
+this object.</li>
+<li>As a <code>Proxy&lt;WlFoo&gt;</code>. In this form, you can manipulate the proxy as a proxy, rather than
+as a protocol object. This lets you do things like check if the underlying object is still
+alive, retrieve its ID, or access the user data associated with it (see below).</li>
+<li>As an <code>Attached&lt;WlFoo&gt;</code>. This form is very similar to the bare <code>WlFoo</code>, but it additionnaly
+allows you to send requests that create new objects (doing so with a bare <code>WlFoo</code> will panic).</li>
+<li>As a <code>Main&lt;WlFoo&gt;</code>. This form is similar to <code>Attached&lt;WlFoo&gt;</code>, but additionnaly allows you to
+change the event handler associated with the Wayland object.</li>
 </ul>
-</blockquote>
-<p>All objects are created by other objects, most of them via a request. The set of all living objects
-in a wayland session can thus be organised as a tree, on top of which lives a special object named
-<code>wl_display</code>.</p>
-<h2><a class="header" href="#the-display-the-registry-and-the-globals" id="the-display-the-registry-and-the-globals">The display, the registry and the globals</a></h2>
-<p>A client session starts with a single object: the <code>wl_display</code>. This object represents the
-connection to the server, and remains alive until the end. This is the entry point of the wayland
-protocol: from it instances of <code>wl_registry</code> can be created.</p>
-<p>This registry is the real heart of the protocol. Upon creation, it will receive a stream of events
-that list to the client the set of <strong>globals</strong> the server presents to it. And this registry
-then allows the user to instantiate these global objects.</p>
-<p>Globals are of two kind:</p>
+<p>We will soon explain the role of event handlers and <code>Main&lt;_&gt;</code> and <code>Attached&lt;_&gt;</code> proxies in the
+context of event queues, but before that, a quick word about user data.</p>
+<h2><a class="header" href="#user-data" id="user-data">User data</a></h2>
+<p><code>wayland-client</code> makes it possible to associate some data with a protocol object, via the
+<a href="https://docs.rs/wayland-client/*/wayland_client/struct.Proxy.html#method.user_data"><code>Proxy&lt;_&gt;::user_data()</code></a>
+method. This method gives you access to a <code>&amp;UserData</code> value, which holds the associated data.
+The important part is that <em>all proxies associated to the same protocol object give you access
+to the same <code>&amp;UserData</code></em>. The value you associate with it is thus attached to the protocol
+object, rather than the proxy. This mechanism is largely used accross wayland apps, as it is
+not rare to have several proxies for the same object.</p>
+<p>The <a href="https://docs.rs/wayland-client/*/wayland_client/struct.UserData.html"><code>UserData</code></a> type is a
+set-once style container: you can only set its value once, and then you can get a <code>&amp;</code>-reference
+to its contents provided you know the type of the stored value. If you need the associated data
+to be mutable, you need to handle interior-mutability (by storing a <code>RefCell</code> or a <code>Mutex</code> for
+example).</p>
+<p>Lets now discuss event queues.</p>
+<h1><a class="header" href="#event-queues-and-filters" id="event-queues-and-filters">Event queues and filters</a></h1>
+<p>If the <a href="https://docs.rs/wayland-client/*/wayland_client/struct.Display.html"><code>Display</code></a> is the heart of your Wayland app, the <a href="https://docs.rs/wayland-client/*/wayland_client/struct.EventQueue.html"><code>EventQueue</code></a> will be its
+backbone. As described in the previous section, messages are sent in both directions,
+and so far we only discussed how to send requests (using the methods of bare proxies),
+but not how to receive events. This is done via event queues and callbacks.</p>
+<h2><a class="header" href="#event-callbacks" id="event-callbacks">Event callbacks</a></h2>
+<p>Each protocol object can be assigned to a callback, which will be invoked whenever
+this object receives an event. The event callback receives 3 arguments:</p>
 <ul>
-<li>Singleton globals, that represent a capability of the compositor
+<li>a <code>Main&lt;_&gt;</code> proxy to the object this event is associated to</li>
+<li>a the event itself, under the form of the <code>Event</code> enum of the interface of this object</li>
+<li>a mutable reference to the <code>DispatchData</code>, which is some global mutable state shared
+by the event queue (we will get into details about that when explaining the event queue)</li>
+</ul>
+<p>This callback should then contain the logic of your program for handling this event. This
+may require anything from just storing the new information somewhere to process it later,
+to directly responding to the server by sending a request, from within the callback.</p>
+<p>The direct way to assign a callback to an object is via the 
+<a href="https://docs.rs/wayland-client/*/wayland_client/struct.Main.html#method.quick_assign"><code>Main&lt;_&gt;::quick_assign()</code></a>
+method, which requires to be given a callback under the form of an <code>FnMut</code> closure. You can
+thus capture values in the callback, but it must be a <code>'static</code> closure, so it cannot
+capture references, only values (this implies it must be a <code>move</code> closure if it captures
+anything).</p>
+<p>An alternative approach is to use a <a href="https://docs.rs/wayland-client/*/wayland_client/struct.Filter.html"><code>Filter</code></a>. You can think of filters as a <code>Rc&lt;_&gt;</code> wrapper
+around a closure. Filters allow you to use the same closure to process events from several
+objects, making state sharing easier. They are a more advanced use, and we shall come back to
+them later.</p>
+<h2><a class="header" href="#event-queues-and-attached-proxies" id="event-queues-and-attached-proxies">Event queues and Attached proxies</a></h2>
+<p><a href="https://docs.rs/wayland-client/*/wayland_client/struct.EventQueue.html"><code>EventQueue</code></a>s are the type which actually read events from the Wayland socket, and
+invoke your appropriate callbacks. All protocol objects are associated at creation to an
+event queue so that their events are processed.</p>
+<p>This is where the <code>Attached&lt;_&gt;</code> proxies come into play. Given a <code>Proxy&lt;_&gt;</code>, you can attach
+it to an <a href="https://docs.rs/wayland-client/*/wayland_client/struct.EventQueue.html"><code>EventQueue</code></a> like so, using a event queue token:</p>
+<pre><pre class="playground"><code class="language-rust no_run">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let attached_proxy = proxy.attach(&amp;event_queue.token());
+<span class="boring">}
+</span></code></pre></pre>
+<p>Attaching a proxy only affects the proxy, not the protocol object. The effect is that whenever
+a request is sent that creates a new object, this newly created object will be associated to
+the event queue to which its creator proxy is attached. Given an object must always be associated
+with an event queue, requests creating new object are thus only allowed from <code>Attached&lt;_&gt;</code>
+proxies. <code>Main&lt;_&gt;</code> proxies behave like <code>Attached&lt;_&gt;</code> ones, being attached to the same queue
+as the one the underlying object is associated to. Creating new objects directly from the
+same event queue as their parent object is by far the most frequent case.</p>
+<p><a href="https://docs.rs/wayland-client/*/wayland_client/struct.EventQueue.html"><code>EventQueue</code></a>s are cannot be shared between threads (they are <code>!Send</code> and <code>!Sync</code>),
+this mechanism thus allow to associate different objects to different queues, and
+potentially different threads, and is required for handling that in a threadsafe way.
+Following that, <code>Attached&lt;WlFoo&gt;</code> and <code>Main&lt;WlFoo&gt;</code> are not <code>Send</code> either, while
+<code>WlFoo</code> and <code>Proxy&lt;WlFoo&gt;</code> are.</p>
+<h2><a class="header" href="#dispatching-event-queues" id="dispatching-event-queues">Dispatching event queues</a></h2>
+<p>To receive events, it is necessary to read the Wayland socket and call the appropriate callbacks.
+We call this process &quot;dispatching&quot;, and as <code>wayland-client</code> does not take the control-flow away
+from you, you need to tell it to do it.</p>
+<p>The simplest way to achieve that is with the
+<a href="https://docs.rs/wayland-client/*/wayland_client/struct.EventQueue.html#method.dispatch"><code>EventQueue::dispatch()</code></a>
+method. This method does 3 things:</p>
 <ul>
-<li><em>For example, <code>wl_shm</code> represents the capability to manipulate shared-memory buffers.</em></li>
+<li>Flush the outgoing buffer (when sending a request, it is not directly written to the socket but instead
+buffered, to improve performance)</li>
+<li>Read pending events from the socket, if none are available block until some are received, and distribute
+these events to the internal buffer of their target event queue</li>
+<li>Empty the internal buffer of the event queue on which the method was called by invoking the appropriate
+callbacks</li>
 </ul>
-</li>
-<li>Non-Singleton globals<sup class="footnote-reference"><a href="#1">1</a></sup>, that reprensent a device the compositor has access to
+<p>This method also requires you to provide two additional arguments:</p>
 <ul>
-<li><em>For example, the compositor can advertise a <code>wl_output</code> for each screen connected to the
-computer.</em></li>
+<li>A mutable reference to some value <code>&amp;mut T</code>: this reference is accessible from all callbacks invoked by this
+event queue as the <code>&amp;mut DispatchData</code> argument. If they wish to use it, the callbacks need to handle the
+downcasting using the methods provided by <a href="https://docs.rs/wayland-client/*/wayland_client/struct.DispatchData.html"><code>DispatchData</code></a>, in a similar fashion as <code>Any</code>. This value is
+typically used to serve as the global state of your app.</li>
+<li>A fallback closure. This closure will be invoked for all events associated to an object which has not been
+assigned to a callback using <code>quick_assign()</code> or <code>assign()</code>. This is aimed at providing an alternative
+way to handle messages in a more centralized fashion, but at the moment the API is still very limited.
+You can check <a href="https://github.com/Smithay/wayland-rs/issues/287">this Github issue</a> to follow its evolution.</li>
 </ul>
-</li>
-</ul>
-<p>The second kind can appear and dissapear during a session, as devices are plugged or unplugged from
-the computer.</p>
-<p>In any case, the client can, from the registry, create any number of instances of each global, in
-the form of concrete wayland objects.</p>
-<p>In the end, this kind of hierachy can be expected:</p>
-<p><img src="wayland/../resources/hierachy.svg" alt="hierachy" /></p>
-<p><em>(The details of what these objects are and do will come later, in the [core protocol][./p_core.md] section.)</em></p>
-<h2><a class="header" href="#protocol-extensions" id="protocol-extensions">Protocol extensions</a></h2>
-<p>The set of objects and the list of their requests and events is defined in
-<a href="https://cgit.freedesktop.org/wayland/wayland/tree/protocol/wayland.xml">an XML file</a>. This approach allows wayland protocol extensions to be defined easily.</p>
-<p>A <strong>protocol extension</strong> is just another XML file, which defines another set of objects, some of
-them being globals, and thus serving as the entry points for the protocol extension.</p>
-<p>All compositors and clients are expected to fully implement the core protocol. However, nothing is
-forced regarding extensions. A client knows that a server supports a given extension if the
-global(s) it defines are advertised in the events of the registry. If they are not, then the
-compositor does not support the extension and the client can act accordingly (falling back to using
-only the core protocol, or erroring out if the extension is crucial to the program).</p>
-<p>A compositor cannot force the clients to support an extension.</p>
-<h2><a class="header" href="#api-versioning" id="api-versioning">API versioning</a></h2>
-<p>The APIs defined by the protocol files are versioned as follows:</p>
+<p>If most of your logic resides in callbacks, the main loop of your app can thus be as simple as:</p>
+<pre><pre class="playground"><code class="language-rust no_run">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>loop {
+    let ret = event_queue.dispatch(
+        &amp;mut global_state,
+        |_,_,_| panic!(&quot;An event was received not assigned to any callback!&quot;)
+    );
+    if let Err(e) = ret {
+        // Some error was returned, this means that the Wayland connection is lost
+        // most of the time there is nothing more to do than print a nice error message
+        // and exit
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>If you need a more complex handling of the dispatching (in the case of a multithreaded app, or
+if you have more than one source of events to handle), the three steps (flushing the outgoing buffer,
+reading the socket, and dispatching the events) can be done independently using respectively
+<a href="https://docs.rs/wayland-client/*/wayland_client/struct.Display.html#method.flush"><code>Display::flush()</code></a>,
+<a href="https://docs.rs/wayland-client/*/wayland_client/struct.EventQueue.html#method.prepare_read"><code>EventQueue::prepare_read()</code></a>, and
+<a href="https://docs.rs/wayland-client/*/wayland_client/struct.EventQueue.html#method.dispatch_pending"><code>EventQueue::dispatch_pending()</code></a>.</p>
+<p>Having this in mind, let's see in the next part how to proceed to the initial setup of a Wayland app.</p>
+<h1><a class="header" href="#initializing-an-app" id="initializing-an-app">Initializing an app</a></h1>
+<p>As described previously, once initialized, <code>wayland-client</code> provides you with
+a <a href="https://docs.rs/wayland-client/*/wayland_client/struct.Display.html"><code>Display</code></a> object, representing your wayland connection. This is <em>not</em> a
+proxy for the initial <code>WlDisplay</code> protocol object, but it derefs to
+<code>&amp;Proxy&lt;WlDisplay&gt;</code>, for convenience.</p>
+<p>The first things to do are thus to create an event queue and attach the <code>WlDisplay</code>
+proxy to it, so that objects created from it will be attached to this event queue.</p>
+<p>The skeleton of a Wayland app may thus look like this:</p>
+<pre><pre class="playground"><code class="language-rust no_run">use wayland_client::Display;
+
+fn main() {
+    let display = Display::connect_to_env().expect(&quot;Failed to find a Wayland socket.&quot;);
+
+    let mut event_queue = display.create_event_queue();
+    let attached_display = display.attach(&amp;event_queue.token());
+
+    /*
+    * Proceed to initialize the rest of your app
+    */
+
+    // and the main loop
+    loop {
+        event_queue.dispatch(&amp;mut global_state, |_,_,_| panic!(&quot;Orphan event&quot;))
+            .expect(&quot;Wayland connection lost.&quot;);
+
+        /*
+        * Additionnal global processing
+        */
+    }
+}
+</code></pre></pre>
+<p>With that in place, we can now proceed to the final core concept of the protocol: the globals
+and the registry.</p>
+<h1><a class="header" href="#the-registry-and-globals" id="the-registry-and-globals">The registry and globals</a></h1>
+<p>The Wayland protocol is designed in a modular fashion: all capabilities proposed by
+the server to clients are each represented by modules, that are called &quot;globals&quot; in
+the Wayland jargon.</p>
+<p>A global is a blueprint advertized by the Wayland server to its clients, that the
+client can instanciate into a Wayland protocol object, which will expose the
+appropriate requests and events for interacting with the capability they represent.
+This process of advertizing and instanciating is done with an other special
+protocol object: the registry.</p>
+<h2><a class="header" href="#the-registry" id="the-registry">The registry</a></h2>
+<p>The registry is a protocol object with interface <code>wl_registry</code>. It is created from
+an attached <code>wl_display</code> via its
+<a href="https://docs.rs/wayland-client/*/wayland_client/protocol/wl_display/struct.WlDisplay.html#method.get_registry"><code>get_registry()</code></a>
+method. Upon creation, the server will send it a stream of events telling the client
+about which globals are available.</p>
+<p>A global advertisement is composed of 3 values:</p>
 <ul>
-<li>Each global defines a sub-hierarchy of the objects that it can directly or indirectly create.
-This whole hierarchy shares the same version number.</li>
-<li>Every time a request or an event is added to an object, the whole hierarchy it belongs to has
-its version bumped (but several modifications can be made in a single version bump).</li>
-<li>A compositor advertises via the registry the maximum version of each global it supports, and
-must support any previous version as well.</li>
-<li>A client, when instanciating a global, can choose any version of it between 1 and the maximum
-supported by the compositor. </li>
+<li>the global name, an <code>u32</code> identifier which represents the global within the globals list
+(it is <em>not</em> the same thing as the protocol id of the objects created by instanciating this
+global)</li>
+<li>the global interface, a string containing the name of the interface of the protocol objects
+created from this global</li>
+<li>the global version, an <code>u32</code> greater or equal to 1, which is used for protocol versionning</li>
 </ul>
-<h2><a class="header" href="#error-handling" id="error-handling">Error handling</a></h2>
-<p>Error handling in the wayland protocol is very simple: whenever the client misuses an object (often
-sending a request with invalid arguments) it causes a protocol error. A protocol error is always
-fatal, and the server will close the connection whenever one occurs.</p>
-<p> </p>
-<hr />
-<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
-<p>Sorry for the lack of a better name...</p>
-</div>
-<h1><a class="header" href="#the-core-protocol" id="the-core-protocol">The Core protocol</a></h1>
-<p>As described in the previous section, the object hierarchy starts with the <code>wl_display</code>, then
-the <code>wl_registry</code>, and then come all the globals from the various protocols in use.</p>
-<p>The core wayland distribution comes with <a href="https://cgit.freedesktop.org/wayland/wayland/tree/protocol/wayland.xml">the core protocol specification</a>. It
-contains the <code>wl_display</code> and <code>wl_registry</code> objects<sup class="footnote-reference"><a href="#1">1</a></sup>, as well as some globals that are considered
-the common ground that all applications will need. Any fancier functionality is supposed to be
-developed in protocol extensions.</p>
-<p>This chapter will describe the globals (and their objects hierarchies) from this core protocol. This
-is not a complete detailed guide of all requests and events<sup class="footnote-reference"><a href="#2">2</a></sup>, but a general description of how
-they are used and interact with each other. It should be enought to properly get started with the
-protocol</p>
-<p><br /><br /></p>
-<hr />
-<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
-<p>Even if <code>wl_display</code> and <code>wl_registry</code> are very special objects and kind of above all
-protocols, they are still specified in the core protocol file. But their API is completely set in
-stone and locked to version 1, while the rest of the core protocol can still backward-compatibly
-evolve.</p>
-</div>
-<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
-<p>Each of them is already detailed in the <a href="https://smithay.github.io/wayland-rs/wayland_client/protocol/index.html">API docs of wayland-client</a>, and there's
-no point copy-pasting all of it here.</p>
-</div>
-<h1><a class="header" href="#special-objects" id="special-objects">Special objects</a></h1>
-<p>Some objects of this protocol are special, and don't belong in the hierarchy of a global.</p>
-<p>You already know two of them: <code>wl_display</code> and <code>wl_registry</code>.</p>
-<h2><a class="header" href="#the-display" id="the-display">The Display</a></h2>
-<p>The <code>wl_display</code> represents the connection from a client to the compositor. It is automatically
-created upon creation of the connection, and can be used by the client to create the <code>wl_registry</code>
-and manage the dispatching of events.</p>
-<p>It also receives any protocol error generated by the client, allowing a diagnostic of what happened
-(but not recovery from it).</p>
-<h2><a class="header" href="#the-registry" id="the-registry">The Registry</a></h2>
-<p>The <code>wl_registry</code> is the gate to all other globals. Upon creation, it receives as events the list of
-all existing globals, as well as notification during the whole life of the client whenever a new
-global is created or destroyed.</p>
-<p>The client can instantiate the registry several times. In this case, each instance will be notified
-of all globals.</p>
-<h2><a class="header" href="#the-callback" id="the-callback">The Callback</a></h2>
-<p>The <code>wl_callback</code> object is created whenever a client asks the compositor to do something and
-requires to be notified when it is done. The callback object has no requests and a single event:
-<code>wl_callback::done</code>, which is called exactly once, when the task is finished.</p>
-<p>For example, the request <code>wl_display::sync</code> requires the composior to fire the callback just when it
-processed the request. It must process the requests in the same order as it receives them, which
-guarantees that all pending requests sent before this sync have been processed.</p>
-<h1><a class="header" href="#the-compositor" id="the-compositor">The Compositor</a></h1>
-<p>The <code>wl_compositor</code> global is the most fundamental of the protocol: it represents the ability of the
-compositor (wayland server) to display content on the screen. It probably explains why they both
-have the same name (although it can be confusing at times...).</p>
-<p>It allows the creation of surface and region objects.</p>
-<h2><a class="header" href="#the-surfaces" id="the-surfaces">The Surfaces</a></h2>
-<p>The <code>wl_surface</code> represents an abstract canvas on which the client can display content. A surface
-object by itself does nothing: it must first be assigned some content and a role to be displayed.</p>
-<p>The content of a surface is assigned by sending a <code>wl_surface::attach</code> request, attaching a
-<code>wl_buffer</code> to the surface (we'll learn how to create them in <a href="wayland/p_core/./shm.html">next chapter</a>).
-The buffer defines both the size and the pixel content of the surface. As such, a surface can be
-resized simply by attaching a new buffer of a different size to it.</p>
-<p>The role of a surface represents what it's used for. The core protocol includes 3 of them:</p>
-<ul>
-<li>Content of a window (see <a href="wayland/p_core/./shell.html">The Shell</a> for details)</li>
-<li>Image of the pointer (see <a href="wayland/p_core/./seat.html">The Seats</a> for details)</li>
-<li>Child surface of another surface (see <a href="wayland/p_core/./subcompositor.html">The Subcompositor</a> for
-details)</li>
-</ul>
-<p>But others can be introduced by other protocol extensions (for example background image,
-screensaver, widget...).</p>
-<p>A surface can only have a single role at a given time. A role is assigned to a surface by giving it
-as parameter to the request creating the object representing the role.</p>
-<p>Many of the properties of surfaces (often inherited from their roles) are double-buffered, and will
-all be applied at once when the request <code>wl_surface::commit</code> is sent. Whether a property is
-double-buffered is always stated in the API documentation of the requests changing it.</p>
-<h2><a class="header" href="#the-regions" id="the-regions">The Regions</a></h2>
-<p>A <code>wl_region</code> represents a part of a surface. They are created as a combination of unions and
-differences of rectangles.</p>
-<p>They serve to requests the need to notify the wayland compositor about a part of a surface. For
-example, the request <code>wl_surface::set_damage</code> uses a region to notify the compositor when parts of a
-surface have changed and need to be redrawn.</p>
-<h1><a class="header" href="#the-shm" id="the-shm">The SHM</a></h1>
-<p>The <code>wl_shm</code> object represents the capacity for the compositor to use SHared Memory. This is the
-most basic way for a client to send the compositor the contents of its surfaces, and the only one
-included in the core protocol.</p>
-<p>The SHM global allows the client to create several memory pools. Upon creation, it receives events
-for the various buffer formats supported by the compositor (such as ARGB8888 for example).</p>
-<h2><a class="header" href="#the-shm-pools" id="the-shm-pools">The SHM Pools</a></h2>
-<p>The <code>wl_shm_pool</code> is created from the SHM global, and a file descriptor. This file descriptor is
-sent to the compositor, and is the shared memory. The compositor will read from it the content
-written by the client.</p>
-<p>From an SHM pool object, the client can create buffers. Each buffer refers to a certain part of
-the memory pool (specifying an offset, a width, a height and a stride).</p>
-<p>SHM pools can be resized by the client (via the <code>wl_shm_pool::resize</code> request), but only to make
-them bigger.</p>
-<p>Creating a buffer referring to content outside of the real size of the pool is an error. The
-effective behaviour of the compositor is platform-dependent: either it will read garbage (most
-likely zeroed memory) and the content of the surface will silently be corrupt, or it will encounter
-an error and trigger a protocol error as a consequence.</p>
-<h2><a class="header" href="#the-buffers" id="the-buffers">The Buffers</a></h2>
-<p>The <code>wl_buffer</code> object is actually more generic than SHM pools. It can be created from SHM pools,
-but also from other medium in protocol extensions (DMABUF memories for example).</p>
-<p>In any case, it refers to some slice of memory at some place (that the compositor is supposed to
-have tracked at the creation of the buffer), and can be assigned to any surface.</p>
-<p>It possesses a single event <code>wl_buffer::release</code>, sent by the compositor when it has finished
-reading from the buffer, signaling the client that the underlying content can now be modified.</p>
-<h1><a class="header" href="#the-shell" id="the-shell">The Shell</a></h1>
-<p>The <code>wl_shell</code> global allows the client to assign the role of a &quot;window&quot; to a surface by creating
-an associated shell surface object.</p>
-<blockquote>
-<p><strong>Note:</strong> This global is considered <em>deprecated</em> by the wayland dev team, and is apparently
-supposed to be replaced by the <code>xdg_shell</code> protocol extension.</p>
-<p>The reason for this is that this current interface is considered too simple to properly expose the
-functionality needed by popular GUI libraries (such as gtk+ or Qt), and cannot be fixed in a
-backwards-compatible way.</p>
-<p>However the <code>xdg_shell</code> extension is still in development and no stable version of it exists as of
-this writing.</p>
-</blockquote>
-<h2><a class="header" href="#the-shell-surface" id="the-shell-surface">The Shell Surface</a></h2>
-<p>The <code>wl_shell_surface</code> is associated to a surface at creation. It adds to it various properties
-making it manipulable by the compositor (and the user of the program) as what we classicaly consider
-as a &quot;window&quot;: making it able to be grabbed and moved, resized, hidden, etc...</p>
-<p>A shell surface can be in 3 states:</p>
-<ul>
-<li><strong>Toplevel:</strong> this is your classic window, taking a rectangular space in you screen.</li>
-<li><strong>Fullscreen:</strong> takes up the whole screen. If the buffer associated to this surface does not match
-the dimensions of the screen, they'll be scaled and/or cropped by the compositor, depending on
-what the client requested.</li>
-<li><strong>Popup:</strong> this shell surface is associated to a parent shell surface, and must be hidden or
-displayed at the same time as it.</li>
-</ul>
-<p>The shell surface has a &quot;ping&quot; mechanism: whevener it receives a <code>wl_shell_surface::ping</code> event,
-it must answer with a <code>wl_shell_surface::pong</code> request. If the answer takes too much time, the
-compositor will consider this shell surface to be unresponsive and notify the user of it.</p>
-<p>It also contains the <code>wl_shell_surface::configure</code> event, which is sent whenever the size of the
-surface should change, hinting the client of the possible new size. For example when the user
-started an interactive resize of the window, or a tiling window manager reorganised the windows it
-displays. This new size is not an hard requirement, and the client is free to ignore it (if the
-window is not resizeable) or choose a more appropriate size (for example, a terminal emulator that
-can only have sizes a multiple of the size of a character).</p>
-<blockquote>
-<p><strong>Note:</strong> The state of decorations for windows is still uncertain. Some compositors (like Gnome)
-expect clients to draw their own decorations, while others (like KDE) will be drawing server-side
-decorations. State of tiling WM (which often expect no decorations at all) is uncertain.</p>
-<p>Sadly, there is not yet a clear negotiation protocol for applications and compositors to agree
-at runtime about who will handle the decorations.</p>
-</blockquote>
-<h1><a class="header" href="#the-subcompositor" id="the-subcompositor">The Subcompositor</a></h1>
-<p>The <code>wl_subcompositor</code> object allows the client to assign the &quot;subsurface&quot; role to a <code>wl_surface</code> by
-creating an associated <code>wl_subsurface</code> object.</p>
-<h2><a class="header" href="#the-subsurfaces" id="the-subsurfaces">The Subsurfaces</a></h2>
-<p>When a surface is assigned the <code>wl_subsurface</code> role, it is associated to a parent surface. The
-parent surface can be a subsurface of an other surface, and thus a tree of subsurface can be
-created.</p>
-<p>A tree of subsurfaces has the same visibility state as the surface at its root. This means the root
-surface must have a role other than &quot;subsurface&quot; for the tree to be displayed<sup class="footnote-reference"><a href="#1">1</a></sup>. The compositor is
-expected to handle the whole tree of subsurfaces as if it was a single big surface: the client can
-set the location of each subsurface relative to its parent (it is not required for it to be within
-the borders of the parent).</p>
-<p>Subsurfaces can typically be used for part of the UI that need to be updated by different means. For
-example, a video player could have the video itself being a subsurface of the GUI surface: this way
-it can update its contents with a buffer coming directly from the (possibly hardware) video decoding
-unit.</p>
-<p>Subsurfaces can also be used to draw window decorations: this gives an easy way for the client to
-know if the pointer is on the decorations or the main surface (see [next chapter][./seat.md] for details
-about pointer input). But in general subsurfaces should not be used for general UI composing: this
-is expected to be done client-side by the GUI library.</p>
-<p> </p>
-<hr />
-<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
-<p>This means while, strictly speaking, even if a cycle of subsurface is possible to create, the
-compositor will never attempt to display it. Thus creating such a cycle is both harmless and
-useless.</p>
-</div>
-<h1><a class="header" href="#the-seats" id="the-seats">The Seats</a></h1>
-<p>A <code>wl_seat</code> global represent a logical group of input devices. Most of the time, setups will
-consist of a single seat: the mouse and keyboard of the computer. However some exotic setups can
-involve more than one seat<sup class="footnote-reference"><a href="#1">1</a></sup>. Seat globals can appear and dissapear as logical seats are created
-or destroyed.</p>
-<p>A seat can have 3 capabilities, each of them being instantiable as a different object to handle it:
-keyboard, pointer, and touch. These capabilities are advertised in an event of the <code>wl_seat</code> after
-its creation.</p>
-<h2><a class="header" href="#keyboard" id="keyboard">Keyboard</a></h2>
-<p>A <code>wl_keyboard</code> object represents the fact that a keyboard is connected to the seat. It can be
-obtained via the <code>wl_seat::get_keyboard</code> request if the seat has this capability.</p>
-<p>This keyboard interface is very barebone: the compositor only sends the state of the modifier keys
-(control, alt, shift, ...) as well as the raw keycodes of pressed and released keys. Upon creation
-of the <code>wl_keyboard</code>, it will also send an event containing a file descriptor with a keymap file,
-which is the one currently used by the compositor. The client is then responsible to load it (or
-an other) into libxkbcommon to interpret the keystrokes as utf8 characters<sup class="footnote-reference"><a href="#2">2</a></sup>.</p>
-<p>The keyboard has a focus mechanism organised by surfaces. The client is notified whenever one of its
-surfaces gains or loses keyboard focus, and only receives keystrokes if one of its surfaces is
-currently focused.</p>
-<h2><a class="header" href="#pointer" id="pointer">Pointer</a></h2>
-<p>The <code>wl_pointer</code> object represents the fact that a mouse or a trackpad is connected to the seat,
-allowing the user to move a pointer on the screen. It can be obtained via the <code>wl_seat::get_pointer</code>
-request if the seat has this capability.</p>
-<p>The client is not allowed to track the location of the pointer over the whole screen. Instead, it
-receives events whenever the pointer enters or leaves one of its surfaces, and pointer motion events
-are given in the surface local coordinates: relative to its top-right corner. The client does not
-receive any events if none of its surfaces are under the pointer.</p>
-<p>A surface can also be given the role of being the pointer's image, via the <code>wl_pointer::set_cursor</code>
-request. To ease this, the wayland C libraries include <code>libwayland-cursor</code>: an helper library for
-loading cursor themes and getting buffers of their contents and informations about their animations.</p>
-<h2><a class="header" href="#touch" id="touch">Touch</a></h2>
-<p>The <code>wl_touch</code> object represents the fact that a touchscreen is connected to the seat, providing
-tactile capabilities. It can be obtained via the <code>wl_seat::get_touch</code> request if the seat has this
-capability.</p>
-<p>The events associated with the touch object allow representing multi-touch sequences, tracking the
-location of each touch point. They can be cancelled if the compositor decides that it'll be the one
-handling it.</p>
-<p> </p>
-<hr />
-<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
-<p>I don't have realistic examples to present. A simple possibility would be to plug a second
-keyboard to the computer, but the compositor could decide to merge the two keyboard as a single
-logical keyboard, as most computers do today. In any case, the compositor gets to decide what a
-&quot;logical seat&quot; is.</p>
-</div>
-<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
-<p>This is the exact function of the <a href="https://crates.io/crates/wayland-kbd">wayland-kbd</a> crate.</p>
-</div>
-<h1><a class="header" href="#the-outputs" id="the-outputs">The Outputs</a></h1>
-<p>A <code>wl_output</code> global reprensents an output the compositor has access to. Often it'll be a monitor
-or a TV connected to the computer. This global only provides the client information about the
-physical properties of the outputs, and can be used by other parts of the API as an identifier<sup class="footnote-reference"><a href="#1">1</a></sup>.</p>
-<p>The <code>wl_output</code> globals can appear and disappear as monitors are plugged into or unplugged from the
-computer.</p>
-<p>Among the information given to the client are:</p>
-<ul>
-<li>The textual name of this screen (will often be the model &amp; manufacturer if known, or something
-like <code>Output #0</code>).</li>
-<li>The physical dimensions of the screen as reported by it (the unit is unspecified)</li>
-<li>The currently used resolution and refresh rate</li>
-<li>Possibly the other supported resolutions</li>
-</ul>
-<p><code>wl_surface</code>s are notified when they enter or leave an output, but cannot know where they are
-located in the coordinate space of the output. The &quot;current output&quot; of a surface which is visible
-on more than one output is the one displaying the largest fraction of it.</p>
-<p> </p>
-<hr />
-<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
-<p>For example, the <code>wl_shell::set_fullscreen</code> request can optionally be given an output as
-argument, if the client wants its surface to be set to fullscreen on a particular output.</p>
-</div>
-<h1><a class="header" href="#the-data-device-manager" id="the-data-device-manager">The Data Device Manager</a></h1>
-<p><code>wl_data_device_manager</code></p>
-<h2><a class="header" href="#the-data-sources" id="the-data-sources">The Data Sources</a></h2>
-<p><code>wl_data_source</code></p>
-<h2><a class="header" href="#the-data-devices" id="the-data-devices">The Data Devices</a></h2>
-<p><code>wl_data_device</code></p>
-<h2><a class="header" href="#the-data-offer" id="the-data-offer">The Data Offer</a></h2>
-<p><code>wl_data_offer</code></p>
-<h1><a class="header" href="#writing-client-apps" id="writing-client-apps">Writing client apps</a></h1>
-<p>WIP</p>
-<h1><a class="header" href="#writing-compositors" id="writing-compositors">Writing compositors</a></h1>
-<p>WIP</p>
+<p>The Wayland protocol can evolve, and the interfaces are versionned. The number the server sends
+is the highest version it supports. The server must support all lower versions as well.</p>
+<p>Upon receiving this list, the client can then instanciate the globals it whishes to use into
+protocol objects using the
+<a href="https://docs.rs/wayland-client/0.27.0/wayland_client/protocol/wl_registry/struct.WlRegistry.html#method.bind"><code>bind</code></a>
+method of the registry.</p>
+<h2><a class="header" href="#the-two-kinds-of-globals" id="the-two-kinds-of-globals">The two kinds of globals</a></h2>
+<p>The various globals that a Wayland server can advertize can be roughtly classified in two kinds,
+depending on whether they can be advertized multiple times by the server.</p>
+<p><em>Singleton globals</em> represent a capability of the compositor. This is something the Wayland server
+makes possible for clients to do. They generally exist from the start, never change and are
+advertized only once.</p>
+<p><em>Multi globals</em> however represent some device the server has access to. For example a monitor,
+or an input device. These globals can thus exist with multiplicity. For example, the
+server will advertized one <code>wl_output</code> global for each monitor that is plugged in the computer,
+each with a different <code>name</code>. Furthermore, these globals can appear or dissapear during the
+lifetime of the app, as such devices are plugged in or out.</p>
+<p>The registry <code>Global</code> event signals a new global, while its <code>GlobalRemove</code> event signals that a
+given global has been removed. When a such a global is removed, all the protocol objects derived
+from it will generally become inert, and the client is then expected to do cleanup by destroying
+them using the appropriate requests.</p>
+<h2><a class="header" href="#the-globalmanager" id="the-globalmanager">The GlobalManager</a></h2>
+<p>Tracking the list of globals, their versions, and instanciating them requires some work that can be
+automated away, as such, <code>wayland-client</code> provides an abstraction which simplifies this work for you,
+the <a href="https://docs.rs/wayland-client/0.27.0/wayland_client/struct.GlobalManager.html"><code>GlobalManager</code></a>.
+SCTK further provides other abstractions on top of it, for more convenience, which will be presented
+in the following sections. The rest of the client-side half of book will be dedicated to understanding
+the different globals and how to use them.</p>
+<p>Before jumping to that, lets put all this together with a small app that connects to the wayland server,
+receives the list of globals, and prints them to the console:</p>
+<pre><pre class="playground"><code class="language-rust">use wayland_client::{Display, GlobalManager};
+
+fn main() {
+    // Connect to the server
+    let display = Display::connect_to_env().unwrap();
+
+    // Create the event queue
+    let mut event_queue = display.create_event_queue();
+    // Attach the display
+    let attached_display = display.attach(event_queue.token());
+
+    // We use the GlobalManager convenience provided by the crate, it covers
+    // most classic use cases and avoids us the trouble to manually implement
+    // the registry
+    let globals = GlobalManager::new(&amp;attached_display);
+
+    // sync_roundtrip is a special kind of dispatching for the event queue.
+    // Rather than just blocking once waiting for replies, it'll block
+    // in a loop until the server has signalled that it has processed and
+    // replied accordingly to all requests previously sent by the client.
+    //
+    // In our case, this allows us to be sure that after this call returns,
+    // we have received the full list of globals.
+    event_queue.sync_roundtrip(
+        // we don't use a global state for this example
+        &amp;mut (),
+        // The only object that can receive events is the WlRegistry, and the
+        // GlobalManager already takes care of assigning it to a callback, so
+        // we cannot receive orphan events at this point
+        |_, _, _| unreachable!()
+    ).unwrap();
+
+    // GlobalManager::list() provides a list of all globals advertized by the
+    // server
+    println!(&quot;Available globals:&quot;);
+    for (name, interface, version) in globals.list() {
+        println!(&quot;{}: {} (version {})&quot;, name, interface, version);
+    }
+}
+</code></pre></pre>
+<h1><a class="header" href="#wayland-compositors" id="wayland-compositors">Wayland Compositors</a></h1>
+<p>Work in Progress.</p>
 
                     </main>
 

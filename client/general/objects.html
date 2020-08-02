@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>The Outputs - The Smithay Handbook</title>
+        <title>Objects - The Smithay Handbook</title>
         
         
 
@@ -89,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="../../wayland/intro.html"><strong aria-hidden="true">1.</strong> Wayland generalities</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../wayland/structure.html"><strong aria-hidden="true">1.1.</strong> Protocol structure</a></li><li class="chapter-item expanded "><a href="../../wayland/p_core/intro.html"><strong aria-hidden="true">1.2.</strong> The Core protocol</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../wayland/p_core/special.html"><strong aria-hidden="true">1.2.1.</strong> Special objects</a></li><li class="chapter-item expanded "><a href="../../wayland/p_core/compositor.html"><strong aria-hidden="true">1.2.2.</strong> The Compositor</a></li><li class="chapter-item expanded "><a href="../../wayland/p_core/shm.html"><strong aria-hidden="true">1.2.3.</strong> The SHM</a></li><li class="chapter-item expanded "><a href="../../wayland/p_core/shell.html"><strong aria-hidden="true">1.2.4.</strong> The Shell</a></li><li class="chapter-item expanded "><a href="../../wayland/p_core/subcompositor.html"><strong aria-hidden="true">1.2.5.</strong> The Subcompositor</a></li><li class="chapter-item expanded "><a href="../../wayland/p_core/seat.html"><strong aria-hidden="true">1.2.6.</strong> The Seats</a></li><li class="chapter-item expanded "><a href="../../wayland/p_core/output.html" class="active"><strong aria-hidden="true">1.2.7.</strong> The Outputs</a></li><li class="chapter-item expanded "><a href="../../wayland/p_core/data_device.html"><strong aria-hidden="true">1.2.8.</strong> The Data Device Manager</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../../client/intro.html"><strong aria-hidden="true">2.</strong> Writing client apps</a></li><li class="chapter-item expanded "><a href="../../server/intro.html"><strong aria-hidden="true">3.</strong> Writing compositors</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="../../client/intro.html"><strong aria-hidden="true">1.</strong> Wayland apps</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/general/intro.html"><strong aria-hidden="true">1.1.</strong> General principles</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/general/objects.html" class="active"><strong aria-hidden="true">1.1.1.</strong> Objects</a></li><li class="chapter-item expanded "><a href="../../client/general/event_queues.html"><strong aria-hidden="true">1.1.2.</strong> Event queues and filters</a></li><li class="chapter-item expanded "><a href="../../client/general/initializing.html"><strong aria-hidden="true">1.1.3.</strong> Initializing an app</a></li><li class="chapter-item expanded "><a href="../../client/general/registry.html"><strong aria-hidden="true">1.1.4.</strong> The registry and globals</a></li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.2.</strong> Getting started with SCTK</li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">1.2.1.</strong> The Environment</li><li class="chapter-item expanded "><strong aria-hidden="true">1.2.2.</strong> Creating a Window</li><li class="chapter-item expanded "><strong aria-hidden="true">1.2.3.</strong> Drawing to a Window</li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.</strong> Processing user input</li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">1.3.1.</strong> The seats</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.2.</strong> Pointers</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.3.</strong> Keyboards</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.4.</strong> Touchscreens</li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.4.</strong> Multiple outputs and HiDPI</li><li class="chapter-item expanded "><strong aria-hidden="true">1.5.</strong> Cliboard and Drag'n'Drop</li></ol></li><li class="chapter-item expanded "><a href="../../server/intro.html"><strong aria-hidden="true">2.</strong> Wayland Compositors</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -155,42 +155,76 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#the-outputs" id="the-outputs">The Outputs</a></h1>
-<p>A <code>wl_output</code> global reprensents an output the compositor has access to. Often it'll be a monitor
-or a TV connected to the computer. This global only provides the client information about the
-physical properties of the outputs, and can be used by other parts of the API as an identifier<sup class="footnote-reference"><a href="#1">1</a></sup>.</p>
-<p>The <code>wl_output</code> globals can appear and disappear as monitors are plugged into or unplugged from the
-computer.</p>
-<p>Among the information given to the client are:</p>
+                        <h1><a class="header" href="#objects" id="objects">Objects</a></h1>
+<p>The Wayland protocol is an object-oriented protocol. This means that, as the client and
+server exchange messages, they build an abstract state made of several objects, which
+are represented by a numeric identifier. You can figure them as being scopes for messages:
+each message is associated with one of these protocol object. Each object has an &quot;interface&quot;,
+which is a definition of which messages can be associated with it.</p>
+<p>The messages are named &quot;requests&quot; when they are sent by the client to the server, and &quot;events&quot;
+when they are sent by the server to the client. An object interface is thus the list of which
+requests and which events can be associated with objects of this interface.</p>
+<p>For example, an object representing a keyboard would receive the events from the server informing
+about which keys are pressed by the user. An object representing a window would send requests
+to update its content, and receive events informing about user interaction (such as resizing).</p>
+<p>At the beginning, the protocol state contains a single object. Its identifier is 1, and its
+interface is <code>wl_display</code>. This is from it that the rest of the protocol state is setup by
+the client.</p>
+<h2><a class="header" href="#objects-and-proxies" id="objects-and-proxies">Objects and proxies</a></h2>
+<p>The protocol objects are created and destroyed by messages. A request sent by the client can
+have for effect the creation of a new object in the state, or the destruction of an object.
+Most of the time, creation and destruction of objects is done by the client, but there are
+exceptions. For this reason, protocol objects are not directly represented by Rust structs,
+but instead one layer of indirection is added. <code>wayland-client</code> provides you with Rust objects
+that we call &quot;proxies&quot;.</p>
+<p>Each proxy represents a protocol object, but several proxies can represent the same object. You
+can think of proxies as something akin <code>Rc&lt;_&gt;</code> or <code>Arc&lt;_&gt;</code>: they are an handle to the underlying
+protocol object. Furthermore, their lifetime is not tied to the protocol object's lifetime: they
+can outlive it. Once a protocol object has been destroyed, the proxies associated to it will
+become inert.</p>
+<h2><a class="header" href="#the-4-forms-of-a-proxy" id="the-4-forms-of-a-proxy">The 4 forms of a proxy</a></h2>
+<p>A proxy for a protocol object can be manipulated under four forms:</p>
 <ul>
-<li>The textual name of this screen (will often be the model &amp; manufacturer if known, or something
-like <code>Output #0</code>).</li>
-<li>The physical dimensions of the screen as reported by it (the unit is unspecified)</li>
-<li>The currently used resolution and refresh rate</li>
-<li>Possibly the other supported resolutions</li>
+<li>As direct proxy, as a bare Wayland type, something like <code>WlFoo</code>. This form is the
+closest to the protocol object, and its methods map to the requests of the interface of
+this object.</li>
+<li>As a <code>Proxy&lt;WlFoo&gt;</code>. In this form, you can manipulate the proxy as a proxy, rather than
+as a protocol object. This lets you do things like check if the underlying object is still
+alive, retrieve its ID, or access the user data associated with it (see below).</li>
+<li>As an <code>Attached&lt;WlFoo&gt;</code>. This form is very similar to the bare <code>WlFoo</code>, but it additionnaly
+allows you to send requests that create new objects (doing so with a bare <code>WlFoo</code> will panic).</li>
+<li>As a <code>Main&lt;WlFoo&gt;</code>. This form is similar to <code>Attached&lt;WlFoo&gt;</code>, but additionnaly allows you to
+change the event handler associated with the Wayland object.</li>
 </ul>
-<p><code>wl_surface</code>s are notified when they enter or leave an output, but cannot know where they are
-located in the coordinate space of the output. The &quot;current output&quot; of a surface which is visible
-on more than one output is the one displaying the largest fraction of it.</p>
-<p> </p>
-<hr />
-<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
-<p>For example, the <code>wl_shell::set_fullscreen</code> request can optionally be given an output as
-argument, if the client wants its surface to be set to fullscreen on a particular output.</p>
-</div>
+<p>We will soon explain the role of event handlers and <code>Main&lt;_&gt;</code> and <code>Attached&lt;_&gt;</code> proxies in the
+context of event queues, but before that, a quick word about user data.</p>
+<h2><a class="header" href="#user-data" id="user-data">User data</a></h2>
+<p><code>wayland-client</code> makes it possible to associate some data with a protocol object, via the
+<a href="https://docs.rs/wayland-client/*/wayland_client/struct.Proxy.html#method.user_data"><code>Proxy&lt;_&gt;::user_data()</code></a>
+method. This method gives you access to a <code>&amp;UserData</code> value, which holds the associated data.
+The important part is that <em>all proxies associated to the same protocol object give you access
+to the same <code>&amp;UserData</code></em>. The value you associate with it is thus attached to the protocol
+object, rather than the proxy. This mechanism is largely used accross wayland apps, as it is
+not rare to have several proxies for the same object.</p>
+<p>The <a href="https://docs.rs/wayland-client/*/wayland_client/struct.UserData.html"><code>UserData</code></a> type is a
+set-once style container: you can only set its value once, and then you can get a <code>&amp;</code>-reference
+to its contents provided you know the type of the stored value. If you need the associated data
+to be mutable, you need to handle interior-mutability (by storing a <code>RefCell</code> or a <code>Mutex</code> for
+example).</p>
+<p>Lets now discuss event queues.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="../../wayland/p_core/seat.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../client/general/intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
 
                         
-                            <a rel="next" href="../../wayland/p_core/data_device.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../../client/general/event_queues.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -202,13 +236,13 @@ argument, if the client wants its surface to be set to fullscreen on a particula
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a rel="prev" href="../../wayland/p_core/seat.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../client/general/intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
 
                 
-                    <a rel="next" href="../../wayland/p_core/data_device.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../../client/general/event_queues.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 
