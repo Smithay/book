@@ -1,3 +1,3 @@
-# Writing compositors
+# Wayland Compositors
 
-WIP
+Work in Progress.
