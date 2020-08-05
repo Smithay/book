@@ -1,0 +1,346 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Drawing to a Window - The Smithay Handbook</title>
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="../../client/intro.html"><strong aria-hidden="true">1.</strong> Wayland apps</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/general/intro.html"><strong aria-hidden="true">1.1.</strong> General principles</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/general/objects.html"><strong aria-hidden="true">1.1.1.</strong> Objects</a></li><li class="chapter-item expanded "><a href="../../client/general/event_queues.html"><strong aria-hidden="true">1.1.2.</strong> Event queues and filters</a></li><li class="chapter-item expanded "><a href="../../client/general/initializing.html"><strong aria-hidden="true">1.1.3.</strong> Initializing an app</a></li><li class="chapter-item expanded "><a href="../../client/general/registry.html"><strong aria-hidden="true">1.1.4.</strong> The registry and globals</a></li></ol></li><li class="chapter-item expanded "><a href="../../client/sctk/intro.html"><strong aria-hidden="true">1.2.</strong> Getting started with SCTK</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/sctk/environment.html"><strong aria-hidden="true">1.2.1.</strong> The Environment</a></li><li class="chapter-item expanded "><a href="../../client/sctk/window.html"><strong aria-hidden="true">1.2.2.</strong> Creating a Window</a></li><li class="chapter-item expanded "><a href="../../client/sctk/drawing.html" class="active"><strong aria-hidden="true">1.2.3.</strong> Drawing to a Window</a></li><li class="chapter-item expanded "><a href="../../client/sctk/image_viewer.html"><strong aria-hidden="true">1.2.4.</strong> Exercice: an image viewer</a></li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.</strong> Processing user input</li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">1.3.1.</strong> The seats</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.2.</strong> Pointers</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.3.</strong> Keyboards</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.4.</strong> Touchscreens</li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.4.</strong> Multiple outputs and HiDPI</li><li class="chapter-item expanded "><strong aria-hidden="true">1.5.</strong> Cliboard and Drag'n'Drop</li><li class="chapter-item expanded "><strong aria-hidden="true">1.6.</strong> Drawing with OpenGL</li></ol></li><li class="chapter-item expanded "><a href="../../server/intro.html"><strong aria-hidden="true">2.</strong> Wayland Compositors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">The Smithay Handbook</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#drawing-to-a-window" id="drawing-to-a-window">Drawing to a Window</a></h1>
+<p>Drawing to a surface is done by attaching buffers to it, though the <a href="https://docs.rs/wayland-client/*/wayland_client/protocol/wl_surface/struct.WlSurface.html#method.attach"><code>WlSurface::attach()</code></a> method.
+This method takes as argument an optional <a href="https://docs.rs/wayland-client/*/wayland_client/protocol/wl_buffer/index.html"><code>WlBuffer</code></a>, and coordinates of this buffer relative to the
+current content. This last bit allows to control in which direction the rectangle of the surface should
+grow or shrink, but is pretty anecdotical. Most of the tme you will just set these to <code>(0, 0)</code>.</p>
+<p>The <code>Option&lt;&amp;WlBuffer&gt;</code> is the main part of drawing. A buffer defines the totality of the contents of
+a surface, including its size. It is mostly a reference to an array of pixels that the Wayland server
+will use to fill the surface contents. Updating the contents of a surface amounts to attaching a new
+buffer to it, replacing the previous one. Attaching <code>None</code> to a surface erases its content, causing the
+surface to be hidden by the server.</p>
+<p>The act of drawing is this creating a <a href="https://docs.rs/wayland-client/*/wayland_client/protocol/wl_buffer/index.html"><code>WlBuffer</code></a> refering to an array of pixels with the appropriate
+content. There are two main approaches for producing such a buffer: drawing to shared memory, or via
+OpenGL/Vulkan. We will now focus on the first method, leaving OpenGL and Vulkan for later.</p>
+<h2><a class="header" href="#shared-memory" id="shared-memory">Shared Memory</a></h2>
+<p>The principle of shared memory for drawing content is that the client first creates a memory-backed file
+(for example using <a href="https://man7.org/linux/man-pages/man2/memfd_create.2.html"><code>memfd_create</code></a>), and shares its file descriptor with the server. The client can
+then draw its content by writing to the file, and creates buffer pointing to the appropriate part of the
+file, similarly to a rust slice pointing to part of a <code>Vec</code>. The client can thus write the content of
+several different buffers to the same file, avoiding the need to open many file descriptors (file descriptor
+leaks are a real thing!).</p>
+<p>When a buffer has been attached to a surface ans submitted to the compositor, its associated pixel array
+should no longer be changed until it has finished reading it, or graphical glitches may occur. As a result,
+clients are encouraged to do double-buffering: maintaining two shared memory files, and drawing to one while
+the other is in use by the server.</p>
+<p>As one can expect, the capability to create buffers backend by shared memory is represented, by a global:
+<a href="https://docs.rs/wayland-client/*/wayland_client/protocol/wl_shm/index.html"><code>wl_shm</code></a>. However as previously, SCTK provides an abstraction to make handling such shared memory easier:
+the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.DoubleMemPool.html"><code>DoubleMemPool</code></a>. As its name can let you guess, it also manages double-buffering.</p>
+<p>We can create a <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.DoubleMemPool.html"><code>DoubleMemPool</code></a> from the environment using the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/environment/struct.Environment.html#method.create_double_pool"><code>Environment::create_double_pool()</code></a> method:</p>
+<pre><pre class="playground"><code class="language-rust no_run">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let double_pool = environment.create_double_pool(|_| {})
+    .expect(&quot;Failed to create a memory-backed file.&quot;);
+<span class="boring">}
+</span></code></pre></pre>
+<p>The <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.DoubleMemPool.html"><code>DoubleMemPool</code></a> keeps track automatically of which of its underlying memory pool is still being used by the
+server, allowing us to use the other. If at some point we try to draw and both are still in use, <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.DoubleMemPool.html"><code>DoubleMemPool</code></a>
+will not let us access any pool. If that happens, the callback we gave to <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/environment/struct.Environment.html#method.create_double_pool"><code>Environment::create_double_pool()</code></a> will
+be invoked as soon as one pool is free again and we can draw. We will not be doing such reactive drawing in this
+example, so we just pass an empty callback.</p>
+<h2><a class="header" href="#drawing-on-the-memory-pool" id="drawing-on-the-memory-pool">Drawing on the memory pool</a></h2>
+<p>When we want to draw, we can start by invoking <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.DoubleMemPool.html"><code>DoubleMemPool::pool()</code></a>, which gives us access to a free
+<a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.MemPool.html"><code>MemPool</code></a> or <code>None</code> if both are currently in use. Once we have it, we can write to it like any file, it
+implements the <a href="https://doc.rust-lang.org/stable/std/io/trait.Write.html"><code>std::io::Write</code></a> and <a href="https://doc.rust-lang.org/stable/std/io/trait.Seek.html"><code>std::io::Seek</code></a> traits.</p>
+<p>For this example, let's just fill the window with red. We will be writing the pixel contents in ARGB8888 format.
+This means that each pixel will be represented by 4 bytes: Alpha, Red, Green and Blue values. Our fully opaque
+red is thus <code>#FFD00000</code>, or <code>&amp;[0xFF, 0xD0, 0, 0]</code>.</p>
+<p>To draw this content, we shall first ensure that the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.MemPool.html"><code>MemPool</code></a> is large enough to store those contents,
+then seek back to the beginning of the file, and write enough of these pixels to fill the whole surface.</p>
+<pre><pre class="playground"><code class="language-rust no_run">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::io::{Write, Seek, SeekFrom, BufWriter}
+// Only try to draw if there is a free pool
+if let Some(pool) = double_pool.pool() {
+    // number of pixels in the surface
+    let pxcount = width * height;
+    // number of bytes corresponding to these pixels
+    let bytecount = 4*pxcount;
+
+    // Resize the pool accordingly. It is important to use this method
+    // rather than just let the memory file grow by writing to it, because
+    // it tells the server about the new size of the file. Note that a
+    // memory pool can never shrink, so if the size we request is smaller than
+    // its current size, this call will do nothing.
+    pool.resize(bytecount).unwrap();
+
+    // Now, seek to the beggining of the memory file, to overwrite its contents
+    pool.seek(SeekFrom::Start(0)).unwrap();
+
+    // Finally do the actual drawing. We use a BufWriter to increase performance
+    {
+        let mut writer = BufWriter::new(&amp;mut *pool);
+        for _ in 0..pxcount {
+            writer.write_all(&amp;[0xFF, 0xD0, 0x00, 0x00]).unwrap();
+        }
+        writer.flush().unwrap();
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h2><a class="header" href="#creating-and-attaching-the-buffer" id="creating-and-attaching-the-buffer">Creating and attaching the buffer</a></h2>
+<p>Once the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.MemPool.html"><code>MemPool</code></a> contains the correct pixels, we can create a buffer from it using the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.MemPool.html#method.buffer"><code>MemPool::buffer()</code></a> method.
+This method requires several arguments to correctly define the buffer relative to the memory pool:</p>
+<ul>
+<li><code>offset</code>: how many bytes from the start of the pool does the buffer start</li>
+<li><code>width</code>: the width of the buffer in pixels</li>
+<li><code>height</code>: the height of the buffer in pixels</li>
+<li><code>stride</code>: the number of bytes between the start of each line</li>
+<li><code>format</code>: the pixel format used for interpreting the bytes (in our case <code>Format::Argb8888</code>)</li>
+</ul>
+<p>The pixel stream from the memory pool is thus interpreted by the server as one line after another, from left to right
+and from top to bottom. In our case, the <code>offset</code> is 0, as we wrote our content at the start of the pool. The width
+and height are the dimensions of the content we've drawn. Here <code>stride</code> is just <code>width * 4</code>, as there are 4 bytes per pixel.</p>
+<p>We can thus create our buffer using:</p>
+<pre><pre class="playground"><code class="language-rust no_run">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use smithay_client_toolkit::wl_shm::Format;
+
+let buffer = pool.buffer(0, width, height, 4*height, Format::Argb8888);
+<span class="boring">}
+</span></code></pre></pre>
+<p>And finally, the last remaining thing to do is to attach this buffer to the surface, declare the damage, and commit the surface.
+Declaring the damage tells the server which part of the content actually changed since the last submitted buffer. This allows
+it to optimize its drawing process to only update parts of the screen that need updating. For this example, we will simply
+declare the whole buffer as damaged.</p>
+<pre><pre class="playground"><code class="language-rust no_run">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>surface.attach(Some(&amp;buffer), 0, 0);
+surface.damage_buffer(0, 0, width, height);
+surface.commit();
+<span class="boring">}
+</span></code></pre></pre>
+<p>The <code>commit()</code> call is necessary because the state of the surface is double-buffered. We are changing two properties of the
+surface here: its attached buffer, and the parts that are damaged. Once we've sent these requests the server will keep these
+new properties on hold, and apply them atomically when we send the <code>commit</code> request.</p>
+<p>With this, you are now able to display content on a Wayland window, congratulations! To wrap all this together, the next
+page will be an exercice to code a simple image viewer app: it'll display an image and stretch its content when resized.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../../client/sctk/window.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="../../client/sctk/image_viewer.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="../../client/sctk/window.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="../../client/sctk/image_viewer.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

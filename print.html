@@ -91,7 +91,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="client/intro.html"><strong aria-hidden="true">1.</strong> Wayland apps</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="client/general/intro.html"><strong aria-hidden="true">1.1.</strong> General principles</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="client/general/objects.html"><strong aria-hidden="true">1.1.1.</strong> Objects</a></li><li class="chapter-item expanded "><a href="client/general/event_queues.html"><strong aria-hidden="true">1.1.2.</strong> Event queues and filters</a></li><li class="chapter-item expanded "><a href="client/general/initializing.html"><strong aria-hidden="true">1.1.3.</strong> Initializing an app</a></li><li class="chapter-item expanded "><a href="client/general/registry.html"><strong aria-hidden="true">1.1.4.</strong> The registry and globals</a></li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.2.</strong> Getting started with SCTK</li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">1.2.1.</strong> The Environment</li><li class="chapter-item expanded "><strong aria-hidden="true">1.2.2.</strong> Creating a Window</li><li class="chapter-item expanded "><strong aria-hidden="true">1.2.3.</strong> Drawing to a Window</li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.</strong> Processing user input</li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">1.3.1.</strong> The seats</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.2.</strong> Pointers</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.3.</strong> Keyboards</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.4.</strong> Touchscreens</li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.4.</strong> Multiple outputs and HiDPI</li><li class="chapter-item expanded "><strong aria-hidden="true">1.5.</strong> Cliboard and Drag'n'Drop</li></ol></li><li class="chapter-item expanded "><a href="server/intro.html"><strong aria-hidden="true">2.</strong> Wayland Compositors</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="client/intro.html"><strong aria-hidden="true">1.</strong> Wayland apps</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="client/general/intro.html"><strong aria-hidden="true">1.1.</strong> General principles</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="client/general/objects.html"><strong aria-hidden="true">1.1.1.</strong> Objects</a></li><li class="chapter-item expanded "><a href="client/general/event_queues.html"><strong aria-hidden="true">1.1.2.</strong> Event queues and filters</a></li><li class="chapter-item expanded "><a href="client/general/initializing.html"><strong aria-hidden="true">1.1.3.</strong> Initializing an app</a></li><li class="chapter-item expanded "><a href="client/general/registry.html"><strong aria-hidden="true">1.1.4.</strong> The registry and globals</a></li></ol></li><li class="chapter-item expanded "><a href="client/sctk/intro.html"><strong aria-hidden="true">1.2.</strong> Getting started with SCTK</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="client/sctk/environment.html"><strong aria-hidden="true">1.2.1.</strong> The Environment</a></li><li class="chapter-item expanded "><a href="client/sctk/window.html"><strong aria-hidden="true">1.2.2.</strong> Creating a Window</a></li><li class="chapter-item expanded "><a href="client/sctk/drawing.html"><strong aria-hidden="true">1.2.3.</strong> Drawing to a Window</a></li><li class="chapter-item expanded "><a href="client/sctk/image_viewer.html"><strong aria-hidden="true">1.2.4.</strong> Exercice: an image viewer</a></li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.</strong> Processing user input</li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">1.3.1.</strong> The seats</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.2.</strong> Pointers</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.3.</strong> Keyboards</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.4.</strong> Touchscreens</li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.4.</strong> Multiple outputs and HiDPI</li><li class="chapter-item expanded "><strong aria-hidden="true">1.5.</strong> Cliboard and Drag'n'Drop</li><li class="chapter-item expanded "><strong aria-hidden="true">1.6.</strong> Drawing with OpenGL</li></ol></li><li class="chapter-item expanded "><a href="server/intro.html"><strong aria-hidden="true">2.</strong> Wayland Compositors</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -490,6 +490,353 @@ fn main() {
     }
 }
 </code></pre></pre>
+<h1><a class="header" href="#getting-started-with-sctk" id="getting-started-with-sctk">Getting started with SCTK</a></h1>
+<p>In the previous section we explored the general structure of the Wayland protocol,
+as well as how a Wayland app is initialized using the display and the registry to
+get the list of globals.</p>
+<p>We will now introduce <a href="https://docs.rs/smithay-client-toolkit">SCTK</a> (short for
+<em>Smithay Client Toolkit</em>), a toolkit crate that provides various abstractions to
+simplify large parts of the plumbing required to make a Wayland app. This section
+will cover the steps to setup an app using SCTK, create a window and draw to it.</p>
+<h1><a class="header" href="#the-environment" id="the-environment">The Environment</a></h1>
+<p>SCTK provides a system that handles the listing and instanciation of globals
+needed by your app: the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/environment/struct.Environment.html"><code>Environment</code></a>. This system is highly modular, but
+SCTK also provides a preset for it, that will automatically instanciate all
+the globals needed for a regular app. This preset comes in the form of two macros:
+<a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/macro.default_environment.html"><code>default_environment!</code></a>
+and <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/macro.init_default_environment.html"><code>init_default_environment!</code></a>.</p>
+<p>The first one is used to declare the environment struct for your app. We will use the <code>desktop</code> preset,
+and we need to also provide a name, this example will use <code>MyApp</code>, but you can use anything. The second
+macro needs to be called for initializing the environment, and we need to give it the <code>desktop</code> preset
+as well.</p>
+<p>The <code>init_default_environment!</code> takes care of connecting to the Wayland socket, creating an event queue,
+and initializing the environment on it. On success it returns a tuple of 3 values:</p>
+<ul>
+<li>The environment, of type <code>Environment&lt;MyApp&gt;</code></li>
+<li>The <code>Display</code></li>
+<li>The <code>EventQueue</code> the environment is associated with</li>
+</ul>
+<p>The environment will then provide several methods mapping the functionality of the various underlying
+globals. SCTK generally provides an higher-level interface to the underlying functionality than what
+the Wayland protocol directly encodes via its globals.</p>
+<p>The previous example of listing all globals can be reframed as such using the environment system:</p>
+<pre><pre class="playground"><code class="language-rust no_run">use smithay_client_toolkit::{default_environment, init_default_environment};
+
+default_environment!(MyApp, desktop);
+
+fn main() {
+    let (environment, display, event_queue) = init_default_environment!(MyApp, desktop)
+        .expect(&quot;Failed to initialize the Wayland environment.&quot;);
+    
+    // environment.manager is the underlying GlobalManager
+    println!(&quot;Available globals:&quot;);
+    for (name, interface, version) in environment.manager.list() {
+        println!(&quot;{}: {} (version {})&quot;, name, interface, version);
+    }
+
+}
+</code></pre></pre>
+<h1><a class="header" href="#creating-a-window" id="creating-a-window">Creating a Window</a></h1>
+<p>In order to display content on Wayland, it is necessary to first understand a central
+concept of the Wayland protocol: the surfaces.</p>
+<h2><a class="header" href="#surfaces" id="surfaces">Surfaces</a></h2>
+<p>One of the core globals of the Wayland protocol is the <a href="https://docs.rs/wayland-client/*/wayland_client/protocol/wl_compositor/index.html"><code>wl_compositor</code></a>. It allows the creation
+of surfaces (object with the interface <a href="https://docs.rs/wayland-client/*/wayland_client/protocol/wl_surface/index.html"><code>wl_surface</code></a>), which are the main building block for
+displaying content to the screen.</p>
+<p>You can think of a surface as a canvas. In order to display content to the screen, it is needed
+to draw the content on the surface (see <a href="client/sctk/./drawing.html">next page</a>), and to assign a <em>role</em> to it.</p>
+<p>Roles are how Wayland apps tell the server what a surface is meant to be. The most central role is
+the role of a &quot;shell surface&quot;: this surface is meant to be a window the user can interact with.
+However other roles are possible, such as assigning a surface to replace the pointer icon.</p>
+<p>SCTK's environment provides a quick method for creating new surfaces: <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/environment/struct.Environment.html#method.create_surface"><code>Environment::create_surface()</code></a>.</p>
+<h2><a class="header" href="#sctks-window" id="sctks-window">SCTK's Window</a></h2>
+<p>The Wayland protocol defines an other global, <code>xdg_shell</code> which is used to create the appropriate objects
+for assigning the &quot;shell surface&quot; role to a surface. For this current quickstart however, we don't need
+to dig into its complexity, instead we can use the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/window/struct.Window.html"><code>Window</code></a> adapter provided by SCTK, which handles most
+of the plumbing for us.</p>
+<p>We can create a <code>Window</code> by using the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/environment/struct.Environment.html#method.create_window"><code>Environment::create_window()</code></a> method. It requires us to provide
+a <code>WlSurface</code> which will be the base of this window, initial dimensions for the window, and a callback
+to process events generated by the user manipulation the Window. The <code>Window</code> provided by SCTK will take
+care of declaring the surface as being a shell surface, and of drawing some simple decorations for the
+window if the environment does not provide them. The drawing of these decorations is also a modular element,
+and we will use there the implementation provided by SCTK, that we pass as a type parameter.</p>
+<pre><pre class="playground"><code class="language-rust no_run">use smithay_client_toolkit::{
+    default_environment, init_default_environment,
+    window::ConceptFrame,
+};
+
+default_environment!(MyApp, desktop);
+
+fn main() {
+    let (environment, display, event_queue) = init_default_environment!(MyApp, desktop)
+        .expect(&quot;Failed to initialize the Wayland environment.&quot;);
+    
+    let surface = environment.create_surface();
+
+    let window = environment.create_window::&lt;ConceptFrame&gt;(
+        surface,    // the surface this window is based on
+        (800, 600), // the initial dimensions
+        |event, dispatch_data| {
+            /* A closure to handle the window-related events */
+        }
+    ).expect(&quot;Unable to setup the window.&quot;);
+}
+</code></pre></pre>
+<h2><a class="header" href="#window-events" id="window-events">Window events</a></h2>
+<p>The <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/window/enum.Event.html"><code>Event</code></a> generated by the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/window/struct.Window.html"><code>Window</code></a> are of three kind:</p>
+<p>The first is <code>Event::Close</code>. It is sent to you when the user has requested that the window be closed
+(for example by clicking the relevant button on the decorations). Depending on the desktop environment,
+the window may or may not have been hidden by the Wayland server, so you cannot rely on it, you need to
+hide your window, either by dropping the <code>Window</code> (and maybe exiting your program if that's what is intended),
+or by submitting empty content to the surface (see <a href="client/sctk/./drawing.html">next page</a>).</p>
+<p>The second kind is <code>Event::Refresh</code>. This event is used by the window to tell you it needs to redraw
+the decorations. This is not done automatically because it is a costly operation. You will generally
+want to manually trigger it by calling <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/window/struct.Window.html#method.refresh"><code>Window::refresh</code></a> just before redrawing the contents of your
+window.</p>
+<p>The last kind is <code>Event::Configure</code>. This event tells you that something about the state of the
+window has changed. If the <code>new_size</code> field is <code>Some()</code>, this means that the Wayland server is
+suggesting a new size to your window, most likely the result of a resizing action from the user.
+The <code>state</code> fields provides a list of state about your window (is it maximized, or in the process
+of being resized ?), that you may need to properly draw your contents (see <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/window/enum.State.html"><code>State</code></a> for the details).
+This event implies that the decorations need to be redrawn.</p>
+<p>Note that when your window is in the process of being resized by the user, the Wayland server will
+send <em>a lot</em> of <code>Configure</code> events with new sizes. Attempting to redraw your content in response to
+every one of them will render your app extremely laggy. Your app actually only needs to process the last
+one of the batch to behave correctly, as such it is good practice to buffer their content into some
+global state (using the <code>DispatchData</code> for example) and process this accumulated data once the dispatching
+process of the event queue is finished.</p>
+<p>Furthermore, unless your app is fullscreen, the size suggested by the Wayland server is a non-binding
+suggestion, you are free to ignore it, or to adjust it (if your app should only resize itself in increments
+for example).</p>
+<p>The structure of an app processing its window events into a global state would look like that:</p>
+<pre><pre class="playground"><code class="language-rust no_run">use smithay_client_toolkit::{
+    default_environment, init_default_environment,
+    window::{ConceptFrame, Event as WindowEvent},
+};
+
+default_environment!(MyApp, desktop);
+
+struct MyState {
+    new_size: Option&lt;(u32, u32)&gt;,
+    close_requested: bool,
+    refresh_requested: bool,
+    /* The rest of the state of your app */
+}
+
+fn main() {
+    let (environment, display, mut event_queue) =
+        init_default_environment!(MyApp, desktop)
+        .expect(&quot;Failed to initialize the Wayland environment.&quot;);
+    
+    let surface = environment.create_surface();
+
+    let window = environment.create_window::&lt;ConceptFrame&gt;(
+        surface,    // the surface this window is based on
+        (800, 600), // the initial dimensions
+        |event, dispatch_data| {
+            // We acess the global state through `DispatchData`
+            let state = dispatch_data.get::&lt;MyState&gt;();
+            match event {
+                // Store the request to close the window or refresh the frame to process
+                // it later in the main loop
+                WindowEvent::Close =&gt; state.close_requested = true,
+                WindowEvent::Refresh =&gt; state.refresh_requested = true,
+                // If the configure event contains a new size, overwrite the currently
+                // stored new_size with it
+                WindowEvent::Configure { new_size, .. } =&gt; if new_size.is_some() {
+                    state.new_size = new_size
+                }
+            };
+        }
+    ).expect(&quot;Unable to setup the window.&quot;);
+
+    // Initialize the global state, for use in the main loop
+    let mut global_state = MyState {
+        new_size: None,
+        close_requested: false,
+        refresh_requested: false,
+        /* The rest of the state of your app */
+    };
+
+    // The mail event loop of the program
+    loop {
+        // Provide the global state to dispatch(), so that the Window
+        // callback can access it
+        event_queue.dispatch(
+            &amp;mut global_state,
+            |_,_,_| panic!(&quot;An event was received not assigned to any callback!&quot;)
+        ).expect(&quot;Wayland connection lost!&quot;);
+
+        if state.close_requested {
+            // The user requested to close the app, exit the loop
+            break;
+        }
+        // If we changed size, we need to tell it to the Window, so that it draws
+        // decorations with the correct size. And we thus need to tell it *before*
+        // calling the refresh() method.
+        if let Some((w, h)) = state.new_size {
+            window.resize(w, h);
+        }
+        if state.refresh_requested || state.new_size.is_some() {
+            // refresh the decorations if needed &amp; reset the refresh flag
+            window.refresh();
+            state.refresh_requested = false;
+        }
+
+        /*
+         * We can now redraw our contents if needed: is we have a new size,
+         * or if the run of our app requires us to redraw. See next page about
+         * how to draw to a surface.
+         */
+    }
+}
+</code></pre></pre>
+<p>Let's continue to the next page to see how we can actually draw content to this Window.</p>
+<h1><a class="header" href="#drawing-to-a-window" id="drawing-to-a-window">Drawing to a Window</a></h1>
+<p>Drawing to a surface is done by attaching buffers to it, though the <a href="https://docs.rs/wayland-client/*/wayland_client/protocol/wl_surface/struct.WlSurface.html#method.attach"><code>WlSurface::attach()</code></a> method.
+This method takes as argument an optional <a href="https://docs.rs/wayland-client/*/wayland_client/protocol/wl_buffer/index.html"><code>WlBuffer</code></a>, and coordinates of this buffer relative to the
+current content. This last bit allows to control in which direction the rectangle of the surface should
+grow or shrink, but is pretty anecdotical. Most of the tme you will just set these to <code>(0, 0)</code>.</p>
+<p>The <code>Option&lt;&amp;WlBuffer&gt;</code> is the main part of drawing. A buffer defines the totality of the contents of
+a surface, including its size. It is mostly a reference to an array of pixels that the Wayland server
+will use to fill the surface contents. Updating the contents of a surface amounts to attaching a new
+buffer to it, replacing the previous one. Attaching <code>None</code> to a surface erases its content, causing the
+surface to be hidden by the server.</p>
+<p>The act of drawing is this creating a <a href="https://docs.rs/wayland-client/*/wayland_client/protocol/wl_buffer/index.html"><code>WlBuffer</code></a> refering to an array of pixels with the appropriate
+content. There are two main approaches for producing such a buffer: drawing to shared memory, or via
+OpenGL/Vulkan. We will now focus on the first method, leaving OpenGL and Vulkan for later.</p>
+<h2><a class="header" href="#shared-memory" id="shared-memory">Shared Memory</a></h2>
+<p>The principle of shared memory for drawing content is that the client first creates a memory-backed file
+(for example using <a href="https://man7.org/linux/man-pages/man2/memfd_create.2.html"><code>memfd_create</code></a>), and shares its file descriptor with the server. The client can
+then draw its content by writing to the file, and creates buffer pointing to the appropriate part of the
+file, similarly to a rust slice pointing to part of a <code>Vec</code>. The client can thus write the content of
+several different buffers to the same file, avoiding the need to open many file descriptors (file descriptor
+leaks are a real thing!).</p>
+<p>When a buffer has been attached to a surface ans submitted to the compositor, its associated pixel array
+should no longer be changed until it has finished reading it, or graphical glitches may occur. As a result,
+clients are encouraged to do double-buffering: maintaining two shared memory files, and drawing to one while
+the other is in use by the server.</p>
+<p>As one can expect, the capability to create buffers backend by shared memory is represented, by a global:
+<a href="https://docs.rs/wayland-client/*/wayland_client/protocol/wl_shm/index.html"><code>wl_shm</code></a>. However as previously, SCTK provides an abstraction to make handling such shared memory easier:
+the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.DoubleMemPool.html"><code>DoubleMemPool</code></a>. As its name can let you guess, it also manages double-buffering.</p>
+<p>We can create a <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.DoubleMemPool.html"><code>DoubleMemPool</code></a> from the environment using the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/environment/struct.Environment.html#method.create_double_pool"><code>Environment::create_double_pool()</code></a> method:</p>
+<pre><pre class="playground"><code class="language-rust no_run">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let double_pool = environment.create_double_pool(|_| {})
+    .expect(&quot;Failed to create a memory-backed file.&quot;);
+<span class="boring">}
+</span></code></pre></pre>
+<p>The <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.DoubleMemPool.html"><code>DoubleMemPool</code></a> keeps track automatically of which of its underlying memory pool is still being used by the
+server, allowing us to use the other. If at some point we try to draw and both are still in use, <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.DoubleMemPool.html"><code>DoubleMemPool</code></a>
+will not let us access any pool. If that happens, the callback we gave to <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/environment/struct.Environment.html#method.create_double_pool"><code>Environment::create_double_pool()</code></a> will
+be invoked as soon as one pool is free again and we can draw. We will not be doing such reactive drawing in this
+example, so we just pass an empty callback.</p>
+<h2><a class="header" href="#drawing-on-the-memory-pool" id="drawing-on-the-memory-pool">Drawing on the memory pool</a></h2>
+<p>When we want to draw, we can start by invoking <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.DoubleMemPool.html"><code>DoubleMemPool::pool()</code></a>, which gives us access to a free
+<a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.MemPool.html"><code>MemPool</code></a> or <code>None</code> if both are currently in use. Once we have it, we can write to it like any file, it
+implements the <a href="https://doc.rust-lang.org/stable/std/io/trait.Write.html"><code>std::io::Write</code></a> and <a href="https://doc.rust-lang.org/stable/std/io/trait.Seek.html"><code>std::io::Seek</code></a> traits.</p>
+<p>For this example, let's just fill the window with red. We will be writing the pixel contents in ARGB8888 format.
+This means that each pixel will be represented by 4 bytes: Alpha, Red, Green and Blue values. Our fully opaque
+red is thus <code>#FFD00000</code>, or <code>&amp;[0xFF, 0xD0, 0, 0]</code>.</p>
+<p>To draw this content, we shall first ensure that the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.MemPool.html"><code>MemPool</code></a> is large enough to store those contents,
+then seek back to the beginning of the file, and write enough of these pixels to fill the whole surface.</p>
+<pre><pre class="playground"><code class="language-rust no_run">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::io::{Write, Seek, SeekFrom, BufWriter}
+// Only try to draw if there is a free pool
+if let Some(pool) = double_pool.pool() {
+    // number of pixels in the surface
+    let pxcount = width * height;
+    // number of bytes corresponding to these pixels
+    let bytecount = 4*pxcount;
+
+    // Resize the pool accordingly. It is important to use this method
+    // rather than just let the memory file grow by writing to it, because
+    // it tells the server about the new size of the file. Note that a
+    // memory pool can never shrink, so if the size we request is smaller than
+    // its current size, this call will do nothing.
+    pool.resize(bytecount).unwrap();
+
+    // Now, seek to the beggining of the memory file, to overwrite its contents
+    pool.seek(SeekFrom::Start(0)).unwrap();
+
+    // Finally do the actual drawing. We use a BufWriter to increase performance
+    {
+        let mut writer = BufWriter::new(&amp;mut *pool);
+        for _ in 0..pxcount {
+            writer.write_all(&amp;[0xFF, 0xD0, 0x00, 0x00]).unwrap();
+        }
+        writer.flush().unwrap();
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h2><a class="header" href="#creating-and-attaching-the-buffer" id="creating-and-attaching-the-buffer">Creating and attaching the buffer</a></h2>
+<p>Once the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.MemPool.html"><code>MemPool</code></a> contains the correct pixels, we can create a buffer from it using the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.MemPool.html#method.buffer"><code>MemPool::buffer()</code></a> method.
+This method requires several arguments to correctly define the buffer relative to the memory pool:</p>
+<ul>
+<li><code>offset</code>: how many bytes from the start of the pool does the buffer start</li>
+<li><code>width</code>: the width of the buffer in pixels</li>
+<li><code>height</code>: the height of the buffer in pixels</li>
+<li><code>stride</code>: the number of bytes between the start of each line</li>
+<li><code>format</code>: the pixel format used for interpreting the bytes (in our case <code>Format::Argb8888</code>)</li>
+</ul>
+<p>The pixel stream from the memory pool is thus interpreted by the server as one line after another, from left to right
+and from top to bottom. In our case, the <code>offset</code> is 0, as we wrote our content at the start of the pool. The width
+and height are the dimensions of the content we've drawn. Here <code>stride</code> is just <code>width * 4</code>, as there are 4 bytes per pixel.</p>
+<p>We can thus create our buffer using:</p>
+<pre><pre class="playground"><code class="language-rust no_run">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use smithay_client_toolkit::wl_shm::Format;
+
+let buffer = pool.buffer(0, width, height, 4*height, Format::Argb8888);
+<span class="boring">}
+</span></code></pre></pre>
+<p>And finally, the last remaining thing to do is to attach this buffer to the surface, declare the damage, and commit the surface.
+Declaring the damage tells the server which part of the content actually changed since the last submitted buffer. This allows
+it to optimize its drawing process to only update parts of the screen that need updating. For this example, we will simply
+declare the whole buffer as damaged.</p>
+<pre><pre class="playground"><code class="language-rust no_run">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>surface.attach(Some(&amp;buffer), 0, 0);
+surface.damage_buffer(0, 0, width, height);
+surface.commit();
+<span class="boring">}
+</span></code></pre></pre>
+<p>The <code>commit()</code> call is necessary because the state of the surface is double-buffered. We are changing two properties of the
+surface here: its attached buffer, and the parts that are damaged. Once we've sent these requests the server will keep these
+new properties on hold, and apply them atomically when we send the <code>commit</code> request.</p>
+<p>With this, you are now able to display content on a Wayland window, congratulations! To wrap all this together, the next
+page will be an exercice to code a simple image viewer app: it'll display an image and stretch its content when resized.</p>
+<h1><a class="header" href="#exercice-an-image-viewer" id="exercice-an-image-viewer">Exercice: an image viewer</a></h1>
+<p>This exercise aims at allowing you to put together all the things we have seen in this introduction
+to SCTK. The goal is to write an app that loads an image from disk and displays it as the only
+content of its window. It should react to resizing by stretching the image so that it fills the
+size given to the window.</p>
+<h2><a class="header" href="#using-the-image-crate" id="using-the-image-crate">Using the <code>image</code> crate</a></h2>
+<p>Manipulating images is not the main goal of this exercise, so you can just use the <code>image</code> crate to
+do it for you. In particular:</p>
+<ul>
+<li><a href="https://docs.rs/image/0.23.8/image/fn.open.html"><code>image::open</code></a> can load an image file from disk</li>
+<li><a href="https://docs.rs/image/0.23.8/image/imageops/fn.resize.html"><code>image::imageops::resize</code></a> can be used
+to resize the image accordingly</li>
+</ul>
+<h2><a class="header" href="#general-advice" id="general-advice">General advice</a></h2>
+<p>To organize your program, you'll probably find it useful to split the actual drawing code into its
+own function, taking as argument the <code>&amp;mut MemPool</code> to use, the <code>&amp;WlSurface</code> to which commit the buffer,
+the requested dimensions, and the image.</p>
+<p>The <code>xdg_shell</code> global, used by <code>Window</code>, requires you to wait until you have received at least one
+<code>Configure</code> event before drawing your content. Commiting a buffer before you've received it will be
+considered as a protocol error by the server, which will cause it to kill your connection.</p>
+<p>Be careful about the pixel format, <code>image</code> provides you with the pixels in RGBA format, but the Wayland
+server will expect them as ARGB.</p>
+<h2><a class="header" href="#solution" id="solution">Solution</a></h2>
+<p>A solution to this exercice with detailed comments can be found as the
+<a href="https://github.com/Smithay/client-toolkit/blob/master/examples/image_viewer.rs"><code>image_viewer.rs</code> example of SCTK</a>.</p>
 <h1><a class="header" href="#wayland-compositors" id="wayland-compositors">Wayland Compositors</a></h1>
 <p>Work in Progress.</p>
 

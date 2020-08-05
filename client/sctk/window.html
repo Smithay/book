@@ -1,0 +1,382 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Creating a Window - The Smithay Handbook</title>
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="../../client/intro.html"><strong aria-hidden="true">1.</strong> Wayland apps</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/general/intro.html"><strong aria-hidden="true">1.1.</strong> General principles</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/general/objects.html"><strong aria-hidden="true">1.1.1.</strong> Objects</a></li><li class="chapter-item expanded "><a href="../../client/general/event_queues.html"><strong aria-hidden="true">1.1.2.</strong> Event queues and filters</a></li><li class="chapter-item expanded "><a href="../../client/general/initializing.html"><strong aria-hidden="true">1.1.3.</strong> Initializing an app</a></li><li class="chapter-item expanded "><a href="../../client/general/registry.html"><strong aria-hidden="true">1.1.4.</strong> The registry and globals</a></li></ol></li><li class="chapter-item expanded "><a href="../../client/sctk/intro.html"><strong aria-hidden="true">1.2.</strong> Getting started with SCTK</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/sctk/environment.html"><strong aria-hidden="true">1.2.1.</strong> The Environment</a></li><li class="chapter-item expanded "><a href="../../client/sctk/window.html" class="active"><strong aria-hidden="true">1.2.2.</strong> Creating a Window</a></li><li class="chapter-item expanded "><a href="../../client/sctk/drawing.html"><strong aria-hidden="true">1.2.3.</strong> Drawing to a Window</a></li><li class="chapter-item expanded "><a href="../../client/sctk/image_viewer.html"><strong aria-hidden="true">1.2.4.</strong> Exercice: an image viewer</a></li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.</strong> Processing user input</li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">1.3.1.</strong> The seats</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.2.</strong> Pointers</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.3.</strong> Keyboards</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.4.</strong> Touchscreens</li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.4.</strong> Multiple outputs and HiDPI</li><li class="chapter-item expanded "><strong aria-hidden="true">1.5.</strong> Cliboard and Drag'n'Drop</li><li class="chapter-item expanded "><strong aria-hidden="true">1.6.</strong> Drawing with OpenGL</li></ol></li><li class="chapter-item expanded "><a href="../../server/intro.html"><strong aria-hidden="true">2.</strong> Wayland Compositors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">The Smithay Handbook</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#creating-a-window" id="creating-a-window">Creating a Window</a></h1>
+<p>In order to display content on Wayland, it is necessary to first understand a central
+concept of the Wayland protocol: the surfaces.</p>
+<h2><a class="header" href="#surfaces" id="surfaces">Surfaces</a></h2>
+<p>One of the core globals of the Wayland protocol is the <a href="https://docs.rs/wayland-client/*/wayland_client/protocol/wl_compositor/index.html"><code>wl_compositor</code></a>. It allows the creation
+of surfaces (object with the interface <a href="https://docs.rs/wayland-client/*/wayland_client/protocol/wl_surface/index.html"><code>wl_surface</code></a>), which are the main building block for
+displaying content to the screen.</p>
+<p>You can think of a surface as a canvas. In order to display content to the screen, it is needed
+to draw the content on the surface (see <a href="./drawing.html">next page</a>), and to assign a <em>role</em> to it.</p>
+<p>Roles are how Wayland apps tell the server what a surface is meant to be. The most central role is
+the role of a &quot;shell surface&quot;: this surface is meant to be a window the user can interact with.
+However other roles are possible, such as assigning a surface to replace the pointer icon.</p>
+<p>SCTK's environment provides a quick method for creating new surfaces: <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/environment/struct.Environment.html#method.create_surface"><code>Environment::create_surface()</code></a>.</p>
+<h2><a class="header" href="#sctks-window" id="sctks-window">SCTK's Window</a></h2>
+<p>The Wayland protocol defines an other global, <code>xdg_shell</code> which is used to create the appropriate objects
+for assigning the &quot;shell surface&quot; role to a surface. For this current quickstart however, we don't need
+to dig into its complexity, instead we can use the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/window/struct.Window.html"><code>Window</code></a> adapter provided by SCTK, which handles most
+of the plumbing for us.</p>
+<p>We can create a <code>Window</code> by using the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/environment/struct.Environment.html#method.create_window"><code>Environment::create_window()</code></a> method. It requires us to provide
+a <code>WlSurface</code> which will be the base of this window, initial dimensions for the window, and a callback
+to process events generated by the user manipulation the Window. The <code>Window</code> provided by SCTK will take
+care of declaring the surface as being a shell surface, and of drawing some simple decorations for the
+window if the environment does not provide them. The drawing of these decorations is also a modular element,
+and we will use there the implementation provided by SCTK, that we pass as a type parameter.</p>
+<pre><pre class="playground"><code class="language-rust no_run">use smithay_client_toolkit::{
+    default_environment, init_default_environment,
+    window::ConceptFrame,
+};
+
+default_environment!(MyApp, desktop);
+
+fn main() {
+    let (environment, display, event_queue) = init_default_environment!(MyApp, desktop)
+        .expect(&quot;Failed to initialize the Wayland environment.&quot;);
+    
+    let surface = environment.create_surface();
+
+    let window = environment.create_window::&lt;ConceptFrame&gt;(
+        surface,    // the surface this window is based on
+        (800, 600), // the initial dimensions
+        |event, dispatch_data| {
+            /* A closure to handle the window-related events */
+        }
+    ).expect(&quot;Unable to setup the window.&quot;);
+}
+</code></pre></pre>
+<h2><a class="header" href="#window-events" id="window-events">Window events</a></h2>
+<p>The <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/window/enum.Event.html"><code>Event</code></a> generated by the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/window/struct.Window.html"><code>Window</code></a> are of three kind:</p>
+<p>The first is <code>Event::Close</code>. It is sent to you when the user has requested that the window be closed
+(for example by clicking the relevant button on the decorations). Depending on the desktop environment,
+the window may or may not have been hidden by the Wayland server, so you cannot rely on it, you need to
+hide your window, either by dropping the <code>Window</code> (and maybe exiting your program if that's what is intended),
+or by submitting empty content to the surface (see <a href="./drawing.html">next page</a>).</p>
+<p>The second kind is <code>Event::Refresh</code>. This event is used by the window to tell you it needs to redraw
+the decorations. This is not done automatically because it is a costly operation. You will generally
+want to manually trigger it by calling <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/window/struct.Window.html#method.refresh"><code>Window::refresh</code></a> just before redrawing the contents of your
+window.</p>
+<p>The last kind is <code>Event::Configure</code>. This event tells you that something about the state of the
+window has changed. If the <code>new_size</code> field is <code>Some()</code>, this means that the Wayland server is
+suggesting a new size to your window, most likely the result of a resizing action from the user.
+The <code>state</code> fields provides a list of state about your window (is it maximized, or in the process
+of being resized ?), that you may need to properly draw your contents (see <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/window/enum.State.html"><code>State</code></a> for the details).
+This event implies that the decorations need to be redrawn.</p>
+<p>Note that when your window is in the process of being resized by the user, the Wayland server will
+send <em>a lot</em> of <code>Configure</code> events with new sizes. Attempting to redraw your content in response to
+every one of them will render your app extremely laggy. Your app actually only needs to process the last
+one of the batch to behave correctly, as such it is good practice to buffer their content into some
+global state (using the <code>DispatchData</code> for example) and process this accumulated data once the dispatching
+process of the event queue is finished.</p>
+<p>Furthermore, unless your app is fullscreen, the size suggested by the Wayland server is a non-binding
+suggestion, you are free to ignore it, or to adjust it (if your app should only resize itself in increments
+for example).</p>
+<p>The structure of an app processing its window events into a global state would look like that:</p>
+<pre><pre class="playground"><code class="language-rust no_run">use smithay_client_toolkit::{
+    default_environment, init_default_environment,
+    window::{ConceptFrame, Event as WindowEvent},
+};
+
+default_environment!(MyApp, desktop);
+
+struct MyState {
+    new_size: Option&lt;(u32, u32)&gt;,
+    close_requested: bool,
+    refresh_requested: bool,
+    /* The rest of the state of your app */
+}
+
+fn main() {
+    let (environment, display, mut event_queue) =
+        init_default_environment!(MyApp, desktop)
+        .expect(&quot;Failed to initialize the Wayland environment.&quot;);
+    
+    let surface = environment.create_surface();
+
+    let window = environment.create_window::&lt;ConceptFrame&gt;(
+        surface,    // the surface this window is based on
+        (800, 600), // the initial dimensions
+        |event, dispatch_data| {
+            // We acess the global state through `DispatchData`
+            let state = dispatch_data.get::&lt;MyState&gt;();
+            match event {
+                // Store the request to close the window or refresh the frame to process
+                // it later in the main loop
+                WindowEvent::Close =&gt; state.close_requested = true,
+                WindowEvent::Refresh =&gt; state.refresh_requested = true,
+                // If the configure event contains a new size, overwrite the currently
+                // stored new_size with it
+                WindowEvent::Configure { new_size, .. } =&gt; if new_size.is_some() {
+                    state.new_size = new_size
+                }
+            };
+        }
+    ).expect(&quot;Unable to setup the window.&quot;);
+
+    // Initialize the global state, for use in the main loop
+    let mut global_state = MyState {
+        new_size: None,
+        close_requested: false,
+        refresh_requested: false,
+        /* The rest of the state of your app */
+    };
+
+    // The mail event loop of the program
+    loop {
+        // Provide the global state to dispatch(), so that the Window
+        // callback can access it
+        event_queue.dispatch(
+            &amp;mut global_state,
+            |_,_,_| panic!(&quot;An event was received not assigned to any callback!&quot;)
+        ).expect(&quot;Wayland connection lost!&quot;);
+
+        if state.close_requested {
+            // The user requested to close the app, exit the loop
+            break;
+        }
+        // If we changed size, we need to tell it to the Window, so that it draws
+        // decorations with the correct size. And we thus need to tell it *before*
+        // calling the refresh() method.
+        if let Some((w, h)) = state.new_size {
+            window.resize(w, h);
+        }
+        if state.refresh_requested || state.new_size.is_some() {
+            // refresh the decorations if needed &amp; reset the refresh flag
+            window.refresh();
+            state.refresh_requested = false;
+        }
+
+        /*
+         * We can now redraw our contents if needed: is we have a new size,
+         * or if the run of our app requires us to redraw. See next page about
+         * how to draw to a surface.
+         */
+    }
+}
+</code></pre></pre>
+<p>Let's continue to the next page to see how we can actually draw content to this Window.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../../client/sctk/environment.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="../../client/sctk/drawing.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="../../client/sctk/environment.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="../../client/sctk/drawing.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>
