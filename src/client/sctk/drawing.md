@@ -24,7 +24,7 @@ file, similarly to a rust slice pointing to part of a `Vec`. The client can thus
 several different buffers to the same file, avoiding the need to open many file descriptors (file descriptor
 leaks are a real thing!).
 
-When a buffer has been attached to a surface ans submitted to the compositor, its associated pixel array
+When a buffer has been attached to a surface and submitted to the compositor, its associated pixel array
 should no longer be changed until it has finished reading it, or graphical glitches may occur. As a result,
 clients are encouraged to do double-buffering: maintaining two shared memory files, and drawing to one while
 the other is in use by the server.
