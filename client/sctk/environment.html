@@ -157,16 +157,16 @@
                     <main>
                         <h1><a class="header" href="#the-environment" id="the-environment">The Environment</a></h1>
 <p>SCTK provides a system that handles the listing and instanciation of globals
-needed by your app: the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/environment/struct.Environment.html"><code>Environment</code></a>. This system is highly modular, but
+needed by your app: the <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/environment/struct.Environment.html"><code>Environment</code></a>. This system is highly modular, but
 SCTK also provides a preset for it, that will automatically instanciate all
 the globals needed for a regular app. This preset comes in the form of two macros:
-<a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/macro.default_environment.html"><code>default_environment!</code></a>
-and <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/macro.init_default_environment.html"><code>init_default_environment!</code></a>.</p>
+<a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/macro.default_environment.html"><code>default_environment!</code></a>
+and <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/macro.new_default_environment.html"><code>new_default_environment!</code></a>.</p>
 <p>The first one is used to declare the environment struct for your app. We will use the <code>desktop</code> preset,
 and we need to also provide a name, this example will use <code>MyApp</code>, but you can use anything. The second
 macro needs to be called for initializing the environment, and we need to give it the <code>desktop</code> preset
 as well.</p>
-<p>The <code>init_default_environment!</code> takes care of connecting to the Wayland socket, creating an event queue,
+<p>The <code>new_default_environment!</code> takes care of connecting to the Wayland socket, creating an event queue,
 and initializing the environment on it. On success it returns a tuple of 3 values:</p>
 <ul>
 <li>The environment, of type <code>Environment&lt;MyApp&gt;</code></li>
@@ -177,20 +177,19 @@ and initializing the environment on it. On success it returns a tuple of 3 value
 globals. SCTK generally provides an higher-level interface to the underlying functionality than what
 the Wayland protocol directly encodes via its globals.</p>
 <p>The previous example of listing all globals can be reframed as such using the environment system:</p>
-<pre><pre class="playground"><code class="language-rust no_run">use smithay_client_toolkit::{default_environment, init_default_environment};
+<pre><pre class="playground"><code class="language-rust no_run">use smithay_client_toolkit::{default_environment, new_default_environment};
 
 default_environment!(MyApp, desktop);
 
 fn main() {
-    let (environment, display, event_queue) = init_default_environment!(MyApp, desktop)
+    let (environment, display, event_queue) = new_default_environment!(MyApp, desktop)
         .expect(&quot;Failed to initialize the Wayland environment.&quot;);
-    
+
     // environment.manager is the underlying GlobalManager
     println!(&quot;Available globals:&quot;);
     for (name, interface, version) in environment.manager.list() {
         println!(&quot;{}: {} (version {})&quot;, name, interface, version);
     }
-
 }
 </code></pre></pre>
 

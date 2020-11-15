@@ -377,7 +377,7 @@ fn main() {
     let display = Display::connect_to_env().expect(&quot;Failed to find a Wayland socket.&quot;);
 
     let mut event_queue = display.create_event_queue();
-    let attached_display = display.attach(&amp;event_queue.token());
+    let attached_display = display.attach(event_queue.token());
 
     /*
     * Proceed to initialize the rest of your app
@@ -424,7 +424,7 @@ created from this global</li>
 is the highest version it supports. The server must support all lower versions as well.</p>
 <p>Upon receiving this list, the client can then instanciate the globals it whishes to use into
 protocol objects using the
-<a href="https://docs.rs/wayland-client/0.27.0/wayland_client/protocol/wl_registry/struct.WlRegistry.html#method.bind"><code>bind</code></a>
+<a href="https://docs.rs/wayland-client/*/wayland_client/protocol/wl_registry/struct.WlRegistry.html#method.bind"><code>bind</code></a>
 method of the registry.</p>
 <h2><a class="header" href="#the-two-kinds-of-globals" id="the-two-kinds-of-globals">The two kinds of globals</a></h2>
 <p>The various globals that a Wayland server can advertize can be roughtly classified in two kinds,
@@ -444,7 +444,7 @@ them using the appropriate requests.</p>
 <h2><a class="header" href="#the-globalmanager" id="the-globalmanager">The GlobalManager</a></h2>
 <p>Tracking the list of globals, their versions, and instanciating them requires some work that can be
 automated away, as such, <code>wayland-client</code> provides an abstraction which simplifies this work for you,
-the <a href="https://docs.rs/wayland-client/0.27.0/wayland_client/struct.GlobalManager.html"><code>GlobalManager</code></a>.
+the <a href="https://docs.rs/wayland-client/*/wayland_client/struct.GlobalManager.html"><code>GlobalManager</code></a>.
 SCTK further provides other abstractions on top of it, for more convenience, which will be presented
 in the following sections. The rest of the client-side half of book will be dedicated to understanding
 the different globals and how to use them.</p>
@@ -500,16 +500,16 @@ simplify large parts of the plumbing required to make a Wayland app. This sectio
 will cover the steps to setup an app using SCTK, create a window and draw to it.</p>
 <h1><a class="header" href="#the-environment" id="the-environment">The Environment</a></h1>
 <p>SCTK provides a system that handles the listing and instanciation of globals
-needed by your app: the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/environment/struct.Environment.html"><code>Environment</code></a>. This system is highly modular, but
+needed by your app: the <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/environment/struct.Environment.html"><code>Environment</code></a>. This system is highly modular, but
 SCTK also provides a preset for it, that will automatically instanciate all
 the globals needed for a regular app. This preset comes in the form of two macros:
-<a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/macro.default_environment.html"><code>default_environment!</code></a>
-and <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/macro.init_default_environment.html"><code>init_default_environment!</code></a>.</p>
+<a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/macro.default_environment.html"><code>default_environment!</code></a>
+and <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/macro.new_default_environment.html"><code>new_default_environment!</code></a>.</p>
 <p>The first one is used to declare the environment struct for your app. We will use the <code>desktop</code> preset,
 and we need to also provide a name, this example will use <code>MyApp</code>, but you can use anything. The second
 macro needs to be called for initializing the environment, and we need to give it the <code>desktop</code> preset
 as well.</p>
-<p>The <code>init_default_environment!</code> takes care of connecting to the Wayland socket, creating an event queue,
+<p>The <code>new_default_environment!</code> takes care of connecting to the Wayland socket, creating an event queue,
 and initializing the environment on it. On success it returns a tuple of 3 values:</p>
 <ul>
 <li>The environment, of type <code>Environment&lt;MyApp&gt;</code></li>
@@ -520,20 +520,19 @@ and initializing the environment on it. On success it returns a tuple of 3 value
 globals. SCTK generally provides an higher-level interface to the underlying functionality than what
 the Wayland protocol directly encodes via its globals.</p>
 <p>The previous example of listing all globals can be reframed as such using the environment system:</p>
-<pre><pre class="playground"><code class="language-rust no_run">use smithay_client_toolkit::{default_environment, init_default_environment};
+<pre><pre class="playground"><code class="language-rust no_run">use smithay_client_toolkit::{default_environment, new_default_environment};
 
 default_environment!(MyApp, desktop);
 
 fn main() {
-    let (environment, display, event_queue) = init_default_environment!(MyApp, desktop)
+    let (environment, display, event_queue) = new_default_environment!(MyApp, desktop)
         .expect(&quot;Failed to initialize the Wayland environment.&quot;);
-    
+
     // environment.manager is the underlying GlobalManager
     println!(&quot;Available globals:&quot;);
     for (name, interface, version) in environment.manager.list() {
         println!(&quot;{}: {} (version {})&quot;, name, interface, version);
     }
-
 }
 </code></pre></pre>
 <h1><a class="header" href="#creating-a-window" id="creating-a-window">Creating a Window</a></h1>
@@ -548,42 +547,43 @@ to draw the content on the surface (see <a href="client/sctk/./drawing.html">nex
 <p>Roles are how Wayland apps tell the server what a surface is meant to be. The most central role is
 the role of a &quot;shell surface&quot;: this surface is meant to be a window the user can interact with.
 However other roles are possible, such as assigning a surface to replace the pointer icon.</p>
-<p>SCTK's environment provides a quick method for creating new surfaces: <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/environment/struct.Environment.html#method.create_surface"><code>Environment::create_surface()</code></a>.</p>
+<p>SCTK's environment provides a quick method for creating new surfaces: <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/environment/struct.Environment.html#method.create_surface"><code>Environment::create_surface()</code></a>.</p>
 <h2><a class="header" href="#sctks-window" id="sctks-window">SCTK's Window</a></h2>
 <p>The Wayland protocol defines an other global, <code>xdg_shell</code> which is used to create the appropriate objects
 for assigning the &quot;shell surface&quot; role to a surface. For this current quickstart however, we don't need
-to dig into its complexity, instead we can use the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/window/struct.Window.html"><code>Window</code></a> adapter provided by SCTK, which handles most
+to dig into its complexity, instead we can use the <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/window/struct.Window.html"><code>Window</code></a> adapter provided by SCTK, which handles most
 of the plumbing for us.</p>
-<p>We can create a <code>Window</code> by using the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/environment/struct.Environment.html#method.create_window"><code>Environment::create_window()</code></a> method. It requires us to provide
+<p>We can create a <code>Window</code> by using the <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/environment/struct.Environment.html#method.create_window"><code>Environment::create_window()</code></a> method. It requires us to provide
 a <code>WlSurface</code> which will be the base of this window, initial dimensions for the window, and a callback
 to process events generated by the user manipulation the Window. The <code>Window</code> provided by SCTK will take
 care of declaring the surface as being a shell surface, and of drawing some simple decorations for the
 window if the environment does not provide them. The drawing of these decorations is also a modular element,
 and we will use there the implementation provided by SCTK, that we pass as a type parameter.</p>
 <pre><pre class="playground"><code class="language-rust no_run">use smithay_client_toolkit::{
-    default_environment, init_default_environment,
-    window::ConceptFrame,
+    default_environment, new_default_environment,
+    window::ConceptFrame
 };
 
 default_environment!(MyApp, desktop);
 
 fn main() {
-    let (environment, display, event_queue) = init_default_environment!(MyApp, desktop)
+    let (environment, display, event_queue) = new_default_environment!(MyApp, desktop)
         .expect(&quot;Failed to initialize the Wayland environment.&quot;);
-    
-    let surface = environment.create_surface();
 
-    let window = environment.create_window::&lt;ConceptFrame&gt;(
-        surface,    // the surface this window is based on
-        (800, 600), // the initial dimensions
-        |event, dispatch_data| {
-            /* A closure to handle the window-related events */
-        }
-    ).expect(&quot;Unable to setup the window.&quot;);
+    let surface = environment.create_surface().detach();
+
+    let window = environment
+        .create_window::&lt;ConceptFrame, _&gt;(
+            surface,    // the surface this window is based on
+            None,       // theme manager
+            (800, 600), // the initial dimensions
+            |event, dispatch_data| { /* A closure to handle the window-related events */ },
+        )
+        .expect(&quot;Unable to setup the window.&quot;);
 }
 </code></pre></pre>
 <h2><a class="header" href="#window-events" id="window-events">Window events</a></h2>
-<p>The <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/window/enum.Event.html"><code>Event</code></a> generated by the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/window/struct.Window.html"><code>Window</code></a> are of three kind:</p>
+<p>The <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/window/enum.Event.html"><code>Event</code></a> generated by the <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/window/struct.Window.html"><code>Window</code></a> are of three kind:</p>
 <p>The first is <code>Event::Close</code>. It is sent to you when the user has requested that the window be closed
 (for example by clicking the relevant button on the decorations). Depending on the desktop environment,
 the window may or may not have been hidden by the Wayland server, so you cannot rely on it, you need to
@@ -591,13 +591,13 @@ hide your window, either by dropping the <code>Window</code> (and maybe exiting 
 or by submitting empty content to the surface (see <a href="client/sctk/./drawing.html">next page</a>).</p>
 <p>The second kind is <code>Event::Refresh</code>. This event is used by the window to tell you it needs to redraw
 the decorations. This is not done automatically because it is a costly operation. You will generally
-want to manually trigger it by calling <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/window/struct.Window.html#method.refresh"><code>Window::refresh</code></a> just before redrawing the contents of your
+want to manually trigger it by calling <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/window/struct.Window.html#method.refresh"><code>Window::refresh</code></a> just before redrawing the contents of your
 window.</p>
 <p>The last kind is <code>Event::Configure</code>. This event tells you that something about the state of the
 window has changed. If the <code>new_size</code> field is <code>Some()</code>, this means that the Wayland server is
 suggesting a new size to your window, most likely the result of a resizing action from the user.
 The <code>state</code> fields provides a list of state about your window (is it maximized, or in the process
-of being resized ?), that you may need to properly draw your contents (see <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/window/enum.State.html"><code>State</code></a> for the details).
+of being resized ?), that you may need to properly draw your contents (see <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/window/enum.State.html"><code>State</code></a> for the details).
 This event implies that the decorations need to be redrawn.</p>
 <p>Note that when your window is in the process of being resized by the user, the Wayland server will
 send <em>a lot</em> of <code>Configure</code> events with new sizes. Attempting to redraw your content in response to
@@ -610,7 +610,7 @@ suggestion, you are free to ignore it, or to adjust it (if your app should only 
 for example).</p>
 <p>The structure of an app processing its window events into a global state would look like that:</p>
 <pre><pre class="playground"><code class="language-rust no_run">use smithay_client_toolkit::{
-    default_environment, init_default_environment,
+    default_environment, new_default_environment,
     window::{ConceptFrame, Event as WindowEvent},
 };
 
@@ -624,18 +624,19 @@ struct MyState {
 }
 
 fn main() {
-    let (environment, display, mut event_queue) =
-        init_default_environment!(MyApp, desktop)
+    let (environment, _display, mut event_queue) =
+        new_default_environment!(MyApp, desktop)
         .expect(&quot;Failed to initialize the Wayland environment.&quot;);
-    
-    let surface = environment.create_surface();
 
-    let window = environment.create_window::&lt;ConceptFrame&gt;(
+    let surface = environment.create_surface().detach();
+
+    let mut window = environment.create_window::&lt;ConceptFrame, _&gt;(
         surface,    // the surface this window is based on
+        None,       // theme manager
         (800, 600), // the initial dimensions
-        |event, dispatch_data| {
+        |event, mut dispatch_data| {
             // We acess the global state through `DispatchData`
-            let state = dispatch_data.get::&lt;MyState&gt;();
+            let state = dispatch_data.get::&lt;MyState&gt;().unwrap();
             match event {
                 // Store the request to close the window or refresh the frame to process
                 // it later in the main loop
@@ -667,20 +668,20 @@ fn main() {
             |_,_,_| panic!(&quot;An event was received not assigned to any callback!&quot;)
         ).expect(&quot;Wayland connection lost!&quot;);
 
-        if state.close_requested {
+        if global_state.close_requested {
             // The user requested to close the app, exit the loop
             break;
         }
         // If we changed size, we need to tell it to the Window, so that it draws
         // decorations with the correct size. And we thus need to tell it *before*
         // calling the refresh() method.
-        if let Some((w, h)) = state.new_size {
+        if let Some((w, h)) = global_state.new_size {
             window.resize(w, h);
         }
-        if state.refresh_requested || state.new_size.is_some() {
+        if global_state.refresh_requested || global_state.new_size.is_some() {
             // refresh the decorations if needed &amp; reset the refresh flag
             window.refresh();
-            state.refresh_requested = false;
+            global_state.refresh_requested = false;
         }
 
         /*
@@ -718,33 +719,33 @@ clients are encouraged to do double-buffering: maintaining two shared memory fil
 the other is in use by the server.</p>
 <p>As one can expect, the capability to create buffers backend by shared memory is represented, by a global:
 <a href="https://docs.rs/wayland-client/*/wayland_client/protocol/wl_shm/index.html"><code>wl_shm</code></a>. However as previously, SCTK provides an abstraction to make handling such shared memory easier:
-the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.DoubleMemPool.html"><code>DoubleMemPool</code></a>. As its name can let you guess, it also manages double-buffering.</p>
-<p>We can create a <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.DoubleMemPool.html"><code>DoubleMemPool</code></a> from the environment using the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/environment/struct.Environment.html#method.create_double_pool"><code>Environment::create_double_pool()</code></a> method:</p>
+the <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/shm/struct.DoubleMemPool.html"><code>DoubleMemPool</code></a>. As its name can let you guess, it also manages double-buffering.</p>
+<p>We can create a <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/shm/struct.DoubleMemPool.html"><code>DoubleMemPool</code></a> from the environment using the <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/environment/struct.Environment.html#method.create_double_pool"><code>Environment::create_double_pool()</code></a> method:</p>
 <pre><pre class="playground"><code class="language-rust no_run">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>let double_pool = environment.create_double_pool(|_| {})
+</span>let mut double_pool = environment.create_double_pool(|_| {})
     .expect(&quot;Failed to create a memory-backed file.&quot;);
 <span class="boring">}
 </span></code></pre></pre>
-<p>The <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.DoubleMemPool.html"><code>DoubleMemPool</code></a> keeps track automatically of which of its underlying memory pool is still being used by the
-server, allowing us to use the other. If at some point we try to draw and both are still in use, <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.DoubleMemPool.html"><code>DoubleMemPool</code></a>
-will not let us access any pool. If that happens, the callback we gave to <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/environment/struct.Environment.html#method.create_double_pool"><code>Environment::create_double_pool()</code></a> will
+<p>The <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/shm/struct.DoubleMemPool.html"><code>DoubleMemPool</code></a> keeps track automatically of which of its underlying memory pool is still being used by the
+server, allowing us to use the other. If at some point we try to draw and both are still in use, <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/shm/struct.DoubleMemPool.html"><code>DoubleMemPool</code></a>
+will not let us access any pool. If that happens, the callback we gave to <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/environment/struct.Environment.html#method.create_double_pool"><code>Environment::create_double_pool()</code></a> will
 be invoked as soon as one pool is free again and we can draw. We will not be doing such reactive drawing in this
 example, so we just pass an empty callback.</p>
 <h2><a class="header" href="#drawing-on-the-memory-pool" id="drawing-on-the-memory-pool">Drawing on the memory pool</a></h2>
-<p>When we want to draw, we can start by invoking <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.DoubleMemPool.html"><code>DoubleMemPool::pool()</code></a>, which gives us access to a free
-<a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.MemPool.html"><code>MemPool</code></a> or <code>None</code> if both are currently in use. Once we have it, we can write to it like any file, it
+<p>When we want to draw, we can start by invoking <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/shm/struct.DoubleMemPool.html"><code>DoubleMemPool::pool()</code></a>, which gives us access to a free
+<a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/shm/struct.MemPool.html"><code>MemPool</code></a> or <code>None</code> if both are currently in use. Once we have it, we can write to it like any file, it
 implements the <a href="https://doc.rust-lang.org/stable/std/io/trait.Write.html"><code>std::io::Write</code></a> and <a href="https://doc.rust-lang.org/stable/std/io/trait.Seek.html"><code>std::io::Seek</code></a> traits.</p>
 <p>For this example, let's just fill the window with red. We will be writing the pixel contents in ARGB8888 format.
 This means that each pixel will be represented by 4 bytes: Alpha, Red, Green and Blue values. Our fully opaque
 red is thus <code>#FFD00000</code>, or <code>&amp;[0xFF, 0xD0, 0, 0]</code>.</p>
-<p>To draw this content, we shall first ensure that the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.MemPool.html"><code>MemPool</code></a> is large enough to store those contents,
+<p>To draw this content, we shall first ensure that the <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/shm/struct.MemPool.html"><code>MemPool</code></a> is large enough to store those contents,
 then seek back to the beginning of the file, and write enough of these pixels to fill the whole surface.</p>
 <pre><pre class="playground"><code class="language-rust no_run">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>use std::io::{Write, Seek, SeekFrom, BufWriter}
+</span>use std::io::{Write, Seek, SeekFrom, BufWriter};
 // Only try to draw if there is a free pool
 if let Some(pool) = double_pool.pool() {
     // number of pixels in the surface
@@ -774,7 +775,7 @@ if let Some(pool) = double_pool.pool() {
 <span class="boring">}
 </span></code></pre></pre>
 <h2><a class="header" href="#creating-and-attaching-the-buffer" id="creating-and-attaching-the-buffer">Creating and attaching the buffer</a></h2>
-<p>Once the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.MemPool.html"><code>MemPool</code></a> contains the correct pixels, we can create a buffer from it using the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.MemPool.html#method.buffer"><code>MemPool::buffer()</code></a> method.
+<p>Once the <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/shm/struct.MemPool.html"><code>MemPool</code></a> contains the correct pixels, we can create a buffer from it using the <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/shm/struct.MemPool.html#method.buffer"><code>MemPool::buffer()</code></a> method.
 This method requires several arguments to correctly define the buffer relative to the memory pool:</p>
 <ul>
 <li><code>offset</code>: how many bytes from the start of the pool does the buffer start</li>
@@ -790,9 +791,9 @@ and height are the dimensions of the content we've drawn. Here <code>stride</cod
 <pre><pre class="playground"><code class="language-rust no_run">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>use smithay_client_toolkit::wl_shm::Format;
+</span>use smithay_client_toolkit::shm::Format;
 
-let buffer = pool.buffer(0, width, height, 4*height, Format::Argb8888);
+let buffer = pool.buffer(0, width, height, 4 * height, Format::Argb8888);
 <span class="boring">}
 </span></code></pre></pre>
 <p>And finally, the last remaining thing to do is to attach this buffer to the surface, declare the damage, and commit the surface.

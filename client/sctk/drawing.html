@@ -181,33 +181,33 @@ clients are encouraged to do double-buffering: maintaining two shared memory fil
 the other is in use by the server.</p>
 <p>As one can expect, the capability to create buffers backend by shared memory is represented, by a global:
 <a href="https://docs.rs/wayland-client/*/wayland_client/protocol/wl_shm/index.html"><code>wl_shm</code></a>. However as previously, SCTK provides an abstraction to make handling such shared memory easier:
-the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.DoubleMemPool.html"><code>DoubleMemPool</code></a>. As its name can let you guess, it also manages double-buffering.</p>
-<p>We can create a <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.DoubleMemPool.html"><code>DoubleMemPool</code></a> from the environment using the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/environment/struct.Environment.html#method.create_double_pool"><code>Environment::create_double_pool()</code></a> method:</p>
+the <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/shm/struct.DoubleMemPool.html"><code>DoubleMemPool</code></a>. As its name can let you guess, it also manages double-buffering.</p>
+<p>We can create a <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/shm/struct.DoubleMemPool.html"><code>DoubleMemPool</code></a> from the environment using the <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/environment/struct.Environment.html#method.create_double_pool"><code>Environment::create_double_pool()</code></a> method:</p>
 <pre><pre class="playground"><code class="language-rust no_run">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>let double_pool = environment.create_double_pool(|_| {})
+</span>let mut double_pool = environment.create_double_pool(|_| {})
     .expect(&quot;Failed to create a memory-backed file.&quot;);
 <span class="boring">}
 </span></code></pre></pre>
-<p>The <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.DoubleMemPool.html"><code>DoubleMemPool</code></a> keeps track automatically of which of its underlying memory pool is still being used by the
-server, allowing us to use the other. If at some point we try to draw and both are still in use, <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.DoubleMemPool.html"><code>DoubleMemPool</code></a>
-will not let us access any pool. If that happens, the callback we gave to <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/environment/struct.Environment.html#method.create_double_pool"><code>Environment::create_double_pool()</code></a> will
+<p>The <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/shm/struct.DoubleMemPool.html"><code>DoubleMemPool</code></a> keeps track automatically of which of its underlying memory pool is still being used by the
+server, allowing us to use the other. If at some point we try to draw and both are still in use, <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/shm/struct.DoubleMemPool.html"><code>DoubleMemPool</code></a>
+will not let us access any pool. If that happens, the callback we gave to <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/environment/struct.Environment.html#method.create_double_pool"><code>Environment::create_double_pool()</code></a> will
 be invoked as soon as one pool is free again and we can draw. We will not be doing such reactive drawing in this
 example, so we just pass an empty callback.</p>
 <h2><a class="header" href="#drawing-on-the-memory-pool" id="drawing-on-the-memory-pool">Drawing on the memory pool</a></h2>
-<p>When we want to draw, we can start by invoking <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.DoubleMemPool.html"><code>DoubleMemPool::pool()</code></a>, which gives us access to a free
-<a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.MemPool.html"><code>MemPool</code></a> or <code>None</code> if both are currently in use. Once we have it, we can write to it like any file, it
+<p>When we want to draw, we can start by invoking <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/shm/struct.DoubleMemPool.html"><code>DoubleMemPool::pool()</code></a>, which gives us access to a free
+<a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/shm/struct.MemPool.html"><code>MemPool</code></a> or <code>None</code> if both are currently in use. Once we have it, we can write to it like any file, it
 implements the <a href="https://doc.rust-lang.org/stable/std/io/trait.Write.html"><code>std::io::Write</code></a> and <a href="https://doc.rust-lang.org/stable/std/io/trait.Seek.html"><code>std::io::Seek</code></a> traits.</p>
 <p>For this example, let's just fill the window with red. We will be writing the pixel contents in ARGB8888 format.
 This means that each pixel will be represented by 4 bytes: Alpha, Red, Green and Blue values. Our fully opaque
 red is thus <code>#FFD00000</code>, or <code>&amp;[0xFF, 0xD0, 0, 0]</code>.</p>
-<p>To draw this content, we shall first ensure that the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.MemPool.html"><code>MemPool</code></a> is large enough to store those contents,
+<p>To draw this content, we shall first ensure that the <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/shm/struct.MemPool.html"><code>MemPool</code></a> is large enough to store those contents,
 then seek back to the beginning of the file, and write enough of these pixels to fill the whole surface.</p>
 <pre><pre class="playground"><code class="language-rust no_run">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>use std::io::{Write, Seek, SeekFrom, BufWriter}
+</span>use std::io::{Write, Seek, SeekFrom, BufWriter};
 // Only try to draw if there is a free pool
 if let Some(pool) = double_pool.pool() {
     // number of pixels in the surface
@@ -237,7 +237,7 @@ if let Some(pool) = double_pool.pool() {
 <span class="boring">}
 </span></code></pre></pre>
 <h2><a class="header" href="#creating-and-attaching-the-buffer" id="creating-and-attaching-the-buffer">Creating and attaching the buffer</a></h2>
-<p>Once the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.MemPool.html"><code>MemPool</code></a> contains the correct pixels, we can create a buffer from it using the <a href="https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.MemPool.html#method.buffer"><code>MemPool::buffer()</code></a> method.
+<p>Once the <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/shm/struct.MemPool.html"><code>MemPool</code></a> contains the correct pixels, we can create a buffer from it using the <a href="https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/shm/struct.MemPool.html#method.buffer"><code>MemPool::buffer()</code></a> method.
 This method requires several arguments to correctly define the buffer relative to the memory pool:</p>
 <ul>
 <li><code>offset</code>: how many bytes from the start of the pool does the buffer start</li>
@@ -253,9 +253,9 @@ and height are the dimensions of the content we've drawn. Here <code>stride</cod
 <pre><pre class="playground"><code class="language-rust no_run">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>use smithay_client_toolkit::wl_shm::Format;
+</span>use smithay_client_toolkit::shm::Format;
 
-let buffer = pool.buffer(0, width, height, 4*height, Format::Argb8888);
+let buffer = pool.buffer(0, width, height, 4 * height, Format::Argb8888);
 <span class="boring">}
 </span></code></pre></pre>
 <p>And finally, the last remaining thing to do is to attach this buffer to the surface, declare the damage, and commit the surface.

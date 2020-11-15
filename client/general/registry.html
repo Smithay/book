@@ -183,7 +183,7 @@ created from this global</li>
 is the highest version it supports. The server must support all lower versions as well.</p>
 <p>Upon receiving this list, the client can then instanciate the globals it whishes to use into
 protocol objects using the
-<a href="https://docs.rs/wayland-client/0.27.0/wayland_client/protocol/wl_registry/struct.WlRegistry.html#method.bind"><code>bind</code></a>
+<a href="https://docs.rs/wayland-client/*/wayland_client/protocol/wl_registry/struct.WlRegistry.html#method.bind"><code>bind</code></a>
 method of the registry.</p>
 <h2><a class="header" href="#the-two-kinds-of-globals" id="the-two-kinds-of-globals">The two kinds of globals</a></h2>
 <p>The various globals that a Wayland server can advertize can be roughtly classified in two kinds,
@@ -203,7 +203,7 @@ them using the appropriate requests.</p>
 <h2><a class="header" href="#the-globalmanager" id="the-globalmanager">The GlobalManager</a></h2>
 <p>Tracking the list of globals, their versions, and instanciating them requires some work that can be
 automated away, as such, <code>wayland-client</code> provides an abstraction which simplifies this work for you,
-the <a href="https://docs.rs/wayland-client/0.27.0/wayland_client/struct.GlobalManager.html"><code>GlobalManager</code></a>.
+the <a href="https://docs.rs/wayland-client/*/wayland_client/struct.GlobalManager.html"><code>GlobalManager</code></a>.
 SCTK further provides other abstractions on top of it, for more convenience, which will be presented
 in the following sections. The rest of the client-side half of book will be dedicated to understanding
 the different globals and how to use them.</p>
