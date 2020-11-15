@@ -36,7 +36,7 @@ the [`DoubleMemPool`]. As its name can let you guess, it also manages double-buf
 We can create a [`DoubleMemPool`] from the environment using the [`Environment::create_double_pool()`] method:
 
 ```rust,no_run
-let double_pool = environment.create_double_pool(|_| {})
+let mut double_pool = environment.create_double_pool(|_| {})
     .expect("Failed to create a memory-backed file.");
 ```
 
@@ -60,7 +60,7 @@ To draw this content, we shall first ensure that the [`MemPool`] is large enough
 then seek back to the beginning of the file, and write enough of these pixels to fill the whole surface.
 
 ```rust,no_run
-use std::io::{Write, Seek, SeekFrom, BufWriter}
+use std::io::{Write, Seek, SeekFrom, BufWriter};
 // Only try to draw if there is a free pool
 if let Some(pool) = double_pool.pool() {
     // number of pixels in the surface
@@ -107,9 +107,9 @@ and height are the dimensions of the content we've drawn. Here `stride` is just 
 We can thus create our buffer using:
 
 ```rust,no_run
-use smithay_client_toolkit::wl_shm::Format;
+use smithay_client_toolkit::shm::Format;
 
-let buffer = pool.buffer(0, width, height, 4*height, Format::Argb8888);
+let buffer = pool.buffer(0, width, height, 4 * height, Format::Argb8888);
 ```
 
 And finally, the last remaining thing to do is to attach this buffer to the surface, declare the damage, and commit the surface.
