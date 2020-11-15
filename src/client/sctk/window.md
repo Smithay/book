@@ -181,9 +181,9 @@ Let's continue to the next page to see how we can actually draw content to this 
 
 [`wl_compositor`]: https://docs.rs/wayland-client/*/wayland_client/protocol/wl_compositor/index.html
 [`wl_surface`]: https://docs.rs/wayland-client/*/wayland_client/protocol/wl_surface/index.html
-[`Environment::create_surface()`]: https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/environment/struct.Environment.html#method.create_surface
-[`Window`]: https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/window/struct.Window.html
-[`Environment::create_window()`]: https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/environment/struct.Environment.html#method.create_window
-[`Event`]: https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/window/enum.Event.html
-[`Window::refresh`]: https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/window/struct.Window.html#method.refresh
-[`State`]: https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/window/enum.State.html
+[`Environment::create_surface()`]: https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/environment/struct.Environment.html#method.create_surface
+[`Window`]: https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/window/struct.Window.html
+[`Environment::create_window()`]: https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/environment/struct.Environment.html#method.create_window
+[`Event`]: https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/window/enum.Event.html
+[`Window::refresh`]: https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/window/struct.Window.html#method.refresh
+[`State`]: https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/window/enum.State.html
