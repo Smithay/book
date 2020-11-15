@@ -17,7 +17,7 @@ fn main() {
     let display = Display::connect_to_env().expect("Failed to find a Wayland socket.");
 
     let mut event_queue = display.create_event_queue();
-    let attached_display = display.attach(&event_queue.token());
+    let attached_display = display.attach(event_queue.token());
 
     /*
     * Proceed to initialize the rest of your app

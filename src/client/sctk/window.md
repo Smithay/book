@@ -34,25 +34,26 @@ and we will use there the implementation provided by SCTK, that we pass as a typ
 
 ```rust,no_run
 use smithay_client_toolkit::{
-    default_environment, init_default_environment,
-    window::ConceptFrame,
+    default_environment, new_default_environment,
+    window::ConceptFrame
 };
 
 default_environment!(MyApp, desktop);
 
 fn main() {
-    let (environment, display, event_queue) = init_default_environment!(MyApp, desktop)
+    let (environment, display, event_queue) = new_default_environment!(MyApp, desktop)
         .expect("Failed to initialize the Wayland environment.");
-    
-    let surface = environment.create_surface();
 
-    let window = environment.create_window::<ConceptFrame>(
-        surface,    // the surface this window is based on
-        (800, 600), // the initial dimensions
-        |event, dispatch_data| {
-            /* A closure to handle the window-related events */
-        }
-    ).expect("Unable to setup the window.");
+    let surface = environment.create_surface().detach();
+
+    let window = environment
+        .create_window::<ConceptFrame, _>(
+            surface,    // the surface this window is based on
+            None,       // theme manager
+            (800, 600), // the initial dimensions
+            |event, dispatch_data| { /* A closure to handle the window-related events */ },
+        )
+        .expect("Unable to setup the window.");
 }
 ```
 
@@ -93,7 +94,7 @@ The structure of an app processing its window events into a global state would l
 
 ```rust,no_run
 use smithay_client_toolkit::{
-    default_environment, init_default_environment,
+    default_environment, new_default_environment,
     window::{ConceptFrame, Event as WindowEvent},
 };
 
@@ -107,18 +108,19 @@ struct MyState {
 }
 
 fn main() {
-    let (environment, display, mut event_queue) =
-        init_default_environment!(MyApp, desktop)
+    let (environment, _display, mut event_queue) =
+        new_default_environment!(MyApp, desktop)
         .expect("Failed to initialize the Wayland environment.");
-    
-    let surface = environment.create_surface();
 
-    let window = environment.create_window::<ConceptFrame>(
+    let surface = environment.create_surface().detach();
+
+    let mut window = environment.create_window::<ConceptFrame, _>(
         surface,    // the surface this window is based on
+        None,       // theme manager
         (800, 600), // the initial dimensions
-        |event, dispatch_data| {
+        |event, mut dispatch_data| {
             // We acess the global state through `DispatchData`
-            let state = dispatch_data.get::<MyState>();
+            let state = dispatch_data.get::<MyState>().unwrap();
             match event {
                 // Store the request to close the window or refresh the frame to process
                 // it later in the main loop
@@ -150,20 +152,20 @@ fn main() {
             |_,_,_| panic!("An event was received not assigned to any callback!")
         ).expect("Wayland connection lost!");
 
-        if state.close_requested {
+        if global_state.close_requested {
             // The user requested to close the app, exit the loop
             break;
         }
         // If we changed size, we need to tell it to the Window, so that it draws
         // decorations with the correct size. And we thus need to tell it *before*
         // calling the refresh() method.
-        if let Some((w, h)) = state.new_size {
+        if let Some((w, h)) = global_state.new_size {
             window.resize(w, h);
         }
-        if state.refresh_requested || state.new_size.is_some() {
+        if global_state.refresh_requested || global_state.new_size.is_some() {
             // refresh the decorations if needed & reset the refresh flag
             window.refresh();
-            state.refresh_requested = false;
+            global_state.refresh_requested = false;
         }
 
         /*
