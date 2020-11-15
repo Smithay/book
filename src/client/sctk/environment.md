@@ -4,8 +4,8 @@ SCTK provides a system that handles the listing and instanciation of globals
 needed by your app: the [`Environment`]. This system is highly modular, but
 SCTK also provides a preset for it, that will automatically instanciate all
 the globals needed for a regular app. This preset comes in the form of two macros:
-[`default_environment!`](https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/macro.default_environment.html)
-and [`new_default_environment!`](https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/macro.new_default_environment.html).
+[`default_environment!`](https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/macro.default_environment.html)
+and [`new_default_environment!`](https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/macro.new_default_environment.html).
 
 The first one is used to declare the environment struct for your app. We will use the `desktop` preset,
 and we need to also provide a name, this example will use `MyApp`, but you can use anything. The second
@@ -33,14 +33,13 @@ default_environment!(MyApp, desktop);
 fn main() {
     let (environment, display, event_queue) = new_default_environment!(MyApp, desktop)
         .expect("Failed to initialize the Wayland environment.");
-    
+
     // environment.manager is the underlying GlobalManager
     println!("Available globals:");
     for (name, interface, version) in environment.manager.list() {
         println!("{}: {} (version {})", name, interface, version);
     }
-
 }
 ```
 
-[`Environment`]: https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/environment/struct.Environment.html
+[`Environment`]: https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/environment/struct.Environment.html

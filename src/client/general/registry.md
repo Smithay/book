@@ -32,7 +32,7 @@ is the highest version it supports. The server must support all lower versions a
 
 Upon receiving this list, the client can then instanciate the globals it whishes to use into
 protocol objects using the
-[`bind`](https://docs.rs/wayland-client/0.27.0/wayland_client/protocol/wl_registry/struct.WlRegistry.html#method.bind)
+[`bind`](https://docs.rs/wayland-client/*/wayland_client/protocol/wl_registry/struct.WlRegistry.html#method.bind)
 method of the registry.
 
 ## The two kinds of globals
@@ -59,7 +59,7 @@ them using the appropriate requests.
 
 Tracking the list of globals, their versions, and instanciating them requires some work that can be
 automated away, as such, `wayland-client` provides an abstraction which simplifies this work for you,
-the [`GlobalManager`](https://docs.rs/wayland-client/0.27.0/wayland_client/struct.GlobalManager.html).
+the [`GlobalManager`](https://docs.rs/wayland-client/*/wayland_client/struct.GlobalManager.html).
 SCTK further provides other abstractions on top of it, for more convenience, which will be presented
 in the following sections. The rest of the client-side half of book will be dedicated to understanding
 the different globals and how to use them.

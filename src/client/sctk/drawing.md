@@ -134,10 +134,10 @@ page will be an exercice to code a simple image viewer app: it'll display an ima
 [`WlBuffer`]: https://docs.rs/wayland-client/*/wayland_client/protocol/wl_buffer/index.html
 [`memfd_create`]: https://man7.org/linux/man-pages/man2/memfd_create.2.html
 [`wl_shm`]: https://docs.rs/wayland-client/*/wayland_client/protocol/wl_shm/index.html
-[`DoubleMemPool`]: https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.DoubleMemPool.html
-[`Environment::create_double_pool()`]: https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/environment/struct.Environment.html#method.create_double_pool
-[`DoubleMemPool::pool()`]: https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.DoubleMemPool.html
-[`MemPool`]: https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.MemPool.html
+[`DoubleMemPool`]: https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/shm/struct.DoubleMemPool.html
+[`Environment::create_double_pool()`]: https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/environment/struct.Environment.html#method.create_double_pool
+[`DoubleMemPool::pool()`]: https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/shm/struct.DoubleMemPool.html
+[`MemPool`]: https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/shm/struct.MemPool.html
 [`std::io::Write`]: https://doc.rust-lang.org/stable/std/io/trait.Write.html
 [`std::io::Seek`]: https://doc.rust-lang.org/stable/std/io/trait.Seek.html
-[`MemPool::buffer()`]: https://docs.rs/smithay-client-toolkit/0.10.0/smithay_client_toolkit/shm/struct.MemPool.html#method.buffer
+[`MemPool::buffer()`]: https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/shm/struct.MemPool.html#method.buffer
