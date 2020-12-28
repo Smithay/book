@@ -1,4 +1,4 @@
-# Exercice: an image viewer
+# Exercise: an image viewer
 
 This exercise aims at allowing you to put together all the things we have seen in this introduction
 to SCTK. The goal is to write an app that loads an image from disk and displays it as the only
@@ -21,7 +21,7 @@ own function, taking as argument the `&mut MemPool` to use, the `&WlSurface` to 
 the requested dimensions, and the image.
 
 The `xdg_shell` global, used by `Window`, requires you to wait until you have received at least one
-`Configure` event before drawing your content. Commiting a buffer before you've received it will be
+`Configure` event before drawing your content. Committing a buffer before you've received it will be
 considered as a protocol error by the server, which will cause it to kill your connection.
 
 Be careful about the pixel format, `image` provides you with the pixels in RGBA format, but the Wayland
@@ -29,5 +29,5 @@ server will expect them as ARGB.
 
 ## Solution
 
-A solution to this exercice with detailed comments can be found as the
+A solution to this exercise with detailed comments can be found as the
 [`image_viewer.rs` example of SCTK](https://github.com/Smithay/client-toolkit/blob/master/examples/image_viewer.rs).

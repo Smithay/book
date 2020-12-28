@@ -11,7 +11,7 @@ Each protocol object can be assigned to a callback, which will be invoked whenev
 this object receives an event. The event callback receives 3 arguments:
 
 - a `Main<_>` proxy to the object this event is associated to
-- a the event itself, under the form of the `Event` enum of the interface of this object
+- the event itself, under the form of the `Event` enum of the interface of this object
 - a mutable reference to the `DispatchData`, which is some global mutable state shared
   by the event queue (we will get into details about that when explaining the event queue)
 
@@ -66,7 +66,7 @@ from you, you need to tell it to do it.
 
 The simplest way to achieve that is with the
 [`EventQueue::dispatch()`](https://docs.rs/wayland-client/*/wayland_client/struct.EventQueue.html#method.dispatch)
-method. This method does 3 things:
+method. This method does three things:
 
 - Flush the outgoing buffer (when sending a request, it is not directly written to the socket but instead
   buffered, to improve performance)

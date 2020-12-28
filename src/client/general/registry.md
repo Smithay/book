@@ -4,10 +4,10 @@ The Wayland protocol is designed in a modular fashion: all capabilities proposed
 the server to clients are each represented by modules, that are called "globals" in
 the Wayland jargon.
 
-A global is a blueprint advertized by the Wayland server to its clients, that the
-client can instanciate into a Wayland protocol object, which will expose the
+A global is a blueprint advertised by the Wayland server to its clients, that the
+client can instantiate into a Wayland protocol object, which will expose the
 appropriate requests and events for interacting with the capability they represent.
-This process of advertizing and instanciating is done with an other special
+This process of advertising and instantiating is done with another special
 protocol object: the registry.
 
 ## The registry
@@ -21,33 +21,33 @@ about which globals are available.
 A global advertisement is composed of 3 values:
 
 - the global name, an `u32` identifier which represents the global within the globals list
-  (it is *not* the same thing as the protocol id of the objects created by instanciating this
+  (it is *not* the same thing as the protocol id of the objects created by instantiating this
   global)
 - the global interface, a string containing the name of the interface of the protocol objects
   created from this global
-- the global version, an `u32` greater or equal to 1, which is used for protocol versionning
+- the global version, an `u32` greater or equal to 1, which is used for protocol versioning
 
-The Wayland protocol can evolve, and the interfaces are versionned. The number the server sends
+The Wayland protocol can evolve, and the interfaces are versioned. The number the server sends
 is the highest version it supports. The server must support all lower versions as well.
 
-Upon receiving this list, the client can then instanciate the globals it whishes to use into
+Upon receiving this list, the client can then instantiate the globals it wishes to use into
 protocol objects using the
 [`bind`](https://docs.rs/wayland-client/*/wayland_client/protocol/wl_registry/struct.WlRegistry.html#method.bind)
 method of the registry.
 
 ## The two kinds of globals
 
-The various globals that a Wayland server can advertize can be roughtly classified in two kinds,
-depending on whether they can be advertized multiple times by the server.
+The various globals that a Wayland server can advertise can be roughly classified in two kinds,
+depending on whether they can be advertised multiple times by the server.
 
 *Singleton globals* represent a capability of the compositor. This is something the Wayland server
 makes possible for clients to do. They generally exist from the start, never change and are
-advertized only once.
+advertised only once.
 
 *Multi globals* however represent some device the server has access to. For example a monitor,
 or an input device. These globals can thus exist with multiplicity. For example, the
-server will advertized one `wl_output` global for each monitor that is plugged in the computer,
-each with a different `name`. Furthermore, these globals can appear or dissapear during the
+server will advertise one `wl_output` global for each monitor that is plugged in the computer,
+each with a different `name`. Furthermore, these globals can appear or disappear during the
 lifetime of the app, as such devices are plugged in or out.
 
 The registry `Global` event signals a new global, while its `GlobalRemove` event signals that a
@@ -57,8 +57,8 @@ them using the appropriate requests.
 
 ## The GlobalManager
 
-Tracking the list of globals, their versions, and instanciating them requires some work that can be
-automated away, as such, `wayland-client` provides an abstraction which simplifies this work for you,
+Tracking the list of globals, their versions, and instantiating them requires some work that can be
+automated away. As such, `wayland-client` provides an abstraction which simplifies this work for you,
 the [`GlobalManager`](https://docs.rs/wayland-client/*/wayland_client/struct.GlobalManager.html).
 SCTK further provides other abstractions on top of it, for more convenience, which will be presented
 in the following sections. The rest of the client-side half of book will be dedicated to understanding

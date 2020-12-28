@@ -1,8 +1,8 @@
 # The Environment
 
-SCTK provides a system that handles the listing and instanciation of globals
+SCTK provides a system that handles the listing and instantiation of globals
 needed by your app: the [`Environment`]. This system is highly modular, but
-SCTK also provides a preset for it, that will automatically instanciate all
+SCTK also provides a preset for it, that will automatically instantiate all
 the globals needed for a regular app. This preset comes in the form of two macros:
 [`default_environment!`](https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/macro.default_environment.html)
 and [`new_default_environment!`](https://docs.rs/smithay-client-toolkit/*/smithay_client_toolkit/macro.new_default_environment.html).
@@ -17,7 +17,7 @@ and initializing the environment on it. On success it returns a tuple of 3 value
 
 - The environment, of type `Environment<MyApp>`
 - The `Display`
-- The `EventQueue` the environment is associated with
+- The `EventQueue` that the environment is associated with
 
 The environment will then provide several methods mapping the functionality of the various underlying
 globals. SCTK generally provides an higher-level interface to the underlying functionality than what
