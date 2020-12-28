@@ -12,7 +12,7 @@
     - [The Environment](./client/sctk/environment.md)
     - [Creating a Window](./client/sctk/window.md)
     - [Drawing to a Window](./client/sctk/drawing.md)
-    - [Exercice: an image viewer](./client/sctk/image_viewer.md)
+    - [Exercise: an image viewer](./client/sctk/image_viewer.md)
   - [Processing user input]()
     - [The seats]()
     - [Pointers]()

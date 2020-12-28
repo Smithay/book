@@ -15,7 +15,7 @@ about which keys are pressed by the user. An object representing a window would 
 to update its content, and receive events informing about user interaction (such as resizing).
 
 At the beginning, the protocol state contains a single object. Its identifier is 1, and its
-interface is `wl_display`. This is from it that the rest of the protocol state is setup by
+interface is `wl_display`. From this object the rest of the protocol state is setup by
 the client.
 
 ## Objects and proxies
@@ -33,7 +33,7 @@ protocol object. Furthermore, their lifetime is not tied to the protocol object'
 can outlive it. Once a protocol object has been destroyed, the proxies associated to it will
 become inert.
 
-## The 4 forms of a proxy
+## The four forms of a proxy
 
 A proxy for a protocol object can be manipulated under four forms:
 
@@ -43,9 +43,9 @@ A proxy for a protocol object can be manipulated under four forms:
 - As a `Proxy<WlFoo>`. In this form, you can manipulate the proxy as a proxy, rather than
   as a protocol object. This lets you do things like check if the underlying object is still
   alive, retrieve its ID, or access the user data associated with it (see below).
-- As an `Attached<WlFoo>`. This form is very similar to the bare `WlFoo`, but it additionnaly
+- As an `Attached<WlFoo>`. This form is very similar to the bare `WlFoo`, but it additionally
   allows you to send requests that create new objects (doing so with a bare `WlFoo` will panic).
-- As a `Main<WlFoo>`. This form is similar to `Attached<WlFoo>`, but additionnaly allows you to
+- As a `Main<WlFoo>`. This form is similar to `Attached<WlFoo>`, but additionally allows you to
   change the event handler associated with the Wayland object.
 
 We will soon explain the role of event handlers and `Main<_>` and `Attached<_>` proxies in the
@@ -58,7 +58,7 @@ context of event queues, but before that, a quick word about user data.
 method. This method gives you access to a `&UserData` value, which holds the associated data.
 The important part is that *all proxies associated to the same protocol object give you access
 to the same `&UserData`*. The value you associate with it is thus attached to the protocol
-object, rather than the proxy. This mechanism is largely used accross wayland apps, as it is
+object, rather than the proxy. This mechanism is largely used across wayland apps, as it is
 not rare to have several proxies for the same object.
 
 The [`UserData`](https://docs.rs/wayland-client/*/wayland_client/struct.UserData.html) type is a

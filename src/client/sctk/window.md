@@ -6,7 +6,7 @@ concept of the Wayland protocol: the surfaces.
 ## Surfaces
 
 One of the core globals of the Wayland protocol is the [`wl_compositor`]. It allows the creation
-of surfaces (object with the interface [`wl_surface`]), which are the main building block for
+of surfaces (objects with the interface [`wl_surface`]), which are the main building block for
 displaying content to the screen.
 
 You can think of a surface as a canvas. In order to display content to the screen, it is needed
@@ -20,7 +20,7 @@ SCTK's environment provides a quick method for creating new surfaces: [`Environm
 
 ## SCTK's Window
 
-The Wayland protocol defines an other global, `xdg_shell` which is used to create the appropriate objects
+The Wayland protocol defines another global, `xdg_shell` which is used to create the appropriate objects
 for assigning the "shell surface" role to a surface. For this current quickstart however, we don't need
 to dig into its complexity, instead we can use the [`Window`] adapter provided by SCTK, which handles most
 of the plumbing for us.

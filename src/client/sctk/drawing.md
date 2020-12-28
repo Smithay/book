@@ -3,7 +3,7 @@
 Drawing to a surface is done by attaching buffers to it, though the [`WlSurface::attach()`] method.
 This method takes as argument an optional [`WlBuffer`], and coordinates of this buffer relative to the
 current content. This last bit allows to control in which direction the rectangle of the surface should
-grow or shrink, but is pretty anecdotical. Most of the tme you will just set these to `(0, 0)`.
+grow or shrink, but is pretty anecdotal. Most of the time you will just set these to `(0, 0)`.
 
 The `Option<&WlBuffer>` is the main part of drawing. A buffer defines the totality of the contents of
 a surface, including its size. It is mostly a reference to an array of pixels that the Wayland server
@@ -11,7 +11,7 @@ will use to fill the surface contents. Updating the contents of a surface amount
 buffer to it, replacing the previous one. Attaching `None` to a surface erases its content, causing the
 surface to be hidden by the server.
 
-The act of drawing is this creating a [`WlBuffer`] refering to an array of pixels with the appropriate
+The act of drawing is thus creating a [`WlBuffer`] referring to an array of pixels with the appropriate
 content. There are two main approaches for producing such a buffer: drawing to shared memory, or via
 OpenGL/Vulkan. We will now focus on the first method, leaving OpenGL and Vulkan for later.
 
@@ -19,7 +19,7 @@ OpenGL/Vulkan. We will now focus on the first method, leaving OpenGL and Vulkan 
 
 The principle of shared memory for drawing content is that the client first creates a memory-backed file
 (for example using [`memfd_create`]), and shares its file descriptor with the server. The client can
-then draw its content by writing to the file, and creates buffer pointing to the appropriate part of the
+then draw its content by writing to the file, and create buffers pointing to the appropriate part of the
 file, similarly to a rust slice pointing to part of a `Vec`. The client can thus write the content of
 several different buffers to the same file, avoiding the need to open many file descriptors (file descriptor
 leaks are a real thing!).
@@ -29,7 +29,7 @@ should no longer be changed until it has finished reading it, or graphical glitc
 clients are encouraged to do double-buffering: maintaining two shared memory files, and drawing to one while
 the other is in use by the server.
 
-As one can expect, the capability to create buffers backend by shared memory is represented, by a global:
+As one can expect, the capability to create buffers backend by shared memory is represented by a global:
 [`wl_shm`]. However as previously, SCTK provides an abstraction to make handling such shared memory easier:
 the [`DoubleMemPool`]. As its name can let you guess, it also manages double-buffering.
 
@@ -40,7 +40,7 @@ let mut double_pool = environment.create_double_pool(|_| {})
     .expect("Failed to create a memory-backed file.");
 ```
 
-The [`DoubleMemPool`] keeps track automatically of which of its underlying memory pool is still being used by the
+The [`DoubleMemPool`] keeps automatically track of which of its underlying memory pools is still being used by the
 server, allowing us to use the other. If at some point we try to draw and both are still in use, [`DoubleMemPool`]
 will not let us access any pool. If that happens, the callback we gave to [`Environment::create_double_pool()`] will
 be invoked as soon as one pool is free again and we can draw. We will not be doing such reactive drawing in this
@@ -128,7 +128,7 @@ surface here: its attached buffer, and the parts that are damaged. Once we've se
 new properties on hold, and apply them atomically when we send the `commit` request.
 
 With this, you are now able to display content on a Wayland window, congratulations! To wrap all this together, the next
-page will be an exercice to code a simple image viewer app: it'll display an image and stretch its content when resized.
+page will be an exercise to code a simple image viewer app: it'll display an image and stretch its content when resized.
 
 [`WlSurface::attach()`]: https://docs.rs/wayland-client/*/wayland_client/protocol/wl_surface/struct.WlSurface.html#method.attach
 [`WlBuffer`]: https://docs.rs/wayland-client/*/wayland_client/protocol/wl_buffer/index.html
