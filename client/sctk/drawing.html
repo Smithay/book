@@ -228,8 +228,9 @@ if let Some(pool) = double_pool.pool() {
     // Finally do the actual drawing. We use a BufWriter to increase performance
     {
         let mut writer = BufWriter::new(&amp;mut *pool);
+        let pixel: u32 = 0xFF_D0_00_00;
         for _ in 0..pxcount {
-            writer.write_all(&amp;[0xFF, 0xD0, 0x00, 0x00]).unwrap();
+            writer.write_all(&amp;pixel.to_ne_bytes()).unwrap();
         }
         writer.flush().unwrap();
     }
