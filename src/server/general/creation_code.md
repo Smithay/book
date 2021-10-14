@@ -1,38 +1,27 @@
-This is the full example code of the section on creation of a `Display` and event loops. You can read about the full details [here](./creation.md).
+This is the full example code of the section on creation of a `Display` and event loops. You can read an explanation of the code [here](./creation.md).
 
-```rust,no_run
-use std::{
-    cell::RefCell,
-    env,
-    rc::Rc,
-    sync::{Arc, atomic::{AtomicBool, Ordering}},
-    time::Duration
-};
-use calloop::{EventLoop, Interest, LoopHandle, Mode, PostAction, generic::Generic},
-use wayland_server::Display;
-
+```rust
+/// Internal compositor state.
+///
+/// For now this does very little other than keep the `Display` alive and indicate whether the
+/// event loop should continue.
+#[derive(Debug)]
 struct State {
-    display: Rc<RefCell<Display>>,
-    running: Arc<AtomicBool>,
+    pub display: Rc<RefCell<Display>>,
+    /// Whether the event loop should continue being driven.
+    pub continue_loop: bool,
 }
 
-fn main() {
+fn main() -> Result<(), Box<dyn Error>> {
     // Create the display.
     let display = Rc::new(RefCell::new(Display::new()));
-    // Event loop to drive the display
-    let mut event_loop = EventLoop::try_new().unwrap();
-    let running = Arc::new(AtomicBool::new(true));
+    let mut event_loop = calloop::EventLoop::try_new()?;
 
-    // Create the state objects to track the server side state.
-    let mut state = State {
-        display: display.clone(),
-        running: running.clone(),
-    };
+    // Insert the wayland source so the display may be notified when a client has sent a request.
+    insert_wayland_source(event_loop.handle(), &*display.borrow())?;
 
-    initialize_connection(&mut state, event_loop.handle());
-
-    let socket_name = state
-        .display
+    // Expose a socket to allow clients to connect to the compositor.
+    let socket_name = display
         .borrow_mut()
         .add_socket_auto()
         .expect("Failed to add wayland socket")
@@ -42,36 +31,59 @@ fn main() {
     println!("Listening on wayland socket {}", socket_name);
     env::set_var("WAYLAND_DISPLAY", &socket_name);
 
-    while state.running.load(Ordering::SeqCst) {
-        // Dispatch events so that pending events get processed by their callbacks.
-        if event_loop
-            .dispatch(Duration::from_millis(16), &mut state)
-            .is_err()
-        {
-            state.running.store(false, Ordering::SeqCst);
-        } else {
-            // Finally we need to flush events to the clients so clients may respond to server events.
-            // Failure to do this will mean the client will wait indefinitely.
-            display.borrow_mut().flush_clients(&mut state);
+    let mut state = State {
+        display,
+        continue_loop: true,
+    };
+
+    // Signal used to shut down the event loop.
+    let signal = event_loop.get_signal();
+
+    // Run the event loop
+    event_loop.run(None, &mut state, |state| {
+        if !state.continue_loop {
+            // Signal the event loop to stop.
+            signal.stop();
+            return;
         }
-    }
+
+        let display = state.display.clone();
+        // Send events to clients.
+        // You must flush events to clients or else the clients may never send new requests.
+        display.borrow_mut().flush_clients(state);
+    })?;
+
+    Ok(())
 }
 
-fn initialize_connection(state: &mut State, handle: LoopHandle<'static, State>) {
+/// Inserts an event source into the event loop that is notified when a client has sent a request.
+fn insert_wayland_source(
+    handle: calloop::LoopHandle<'static, State>,
+    display: &Display,
+) -> Result<(), Box<dyn Error>> {
     handle.insert_source(
-        Generic::from_fd(state.display.borrow().get_poll_fd(), Interest::READ, Mode::Level),
+        calloop::generic::Generic::from_fd(
+            display.get_poll_fd(), // The file descriptor which indicates there are pending messages
+            calloop::Interest::READ,
+            calloop::Mode::Level
+        ),
+        // This callback is invoked when the poll file descriptor has had activity, indicating there are
+        // pending messages.
         move |_, _, state: &mut State| {
             let display = state.display.clone();
             let mut display = display.borrow_mut();
 
+            // Display::dispatch will process any queued up requests and send those events to any objects
+            // created on the server.
             if let Err(e) = display.dispatch(Duration::from_millis(0), state) {
-                state.running.store(false, Ordering::SeqCst);
+                state.continue_loop = false;
                 Err(e)
             } else {
-                Ok(PostAction::Continue)
+                Ok(calloop::PostAction::Continue)
             }
-        }
-    )
-    .expect("Failed to initialize wayland event source");
+        },
+    )?;
+
+    Ok(())
 }
 ```

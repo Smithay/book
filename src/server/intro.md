@@ -1,9 +1,8 @@
 # Wayland Compositors
 
-This part of the book is dedicated to Wayland compositors.
+This part of the book is dedicated to Wayland compositors, which provide a Wayland environment for Wayland applications to run inside.
 
-The first section goes into detail on the fundamentals of the server side of the Wayland protocol
-and then the absolutely minimal compositor.
+The first section will be dedicated to the fundamentals of the wayland protocol on the server side, and how a
+compositor handles requests from clients, sends events to clients and advertises globals to clients using `wayland-server`. 
 
-The following sections introduce [Smithay](https://github.com/Smithay/smithay) and explores how to
-use the framework.
+The later sections explore using [`smithay`](https://github.com/Smithay/smithay) and how to use the useful abstractions provided to implement a full fledged compositor.
