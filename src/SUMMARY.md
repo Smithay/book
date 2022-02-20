@@ -1,9 +1,9 @@
 # Summary
 
 [Introduction](./intro.md)
-
+- [Test](./test.md) <!-- Remove this when possible -->
 - [Wayland apps](./client/intro.md)
-  - [General principles](./client/general/intro.md)
+<!--  - [General principles](./client/general/intro.md)
     - [Objects](./client/general/objects.md)
     - [Event queues and filters](./client/general/event_queues.md)
     - [Initializing an app](./client/general/initializing.md)
@@ -21,4 +21,5 @@
   - [Multiple outputs and HiDPI]()
   - [Cliboard and Drag'n'Drop]()
   - [Drawing with OpenGL]()
+-->
 - [Wayland Compositors](./server/intro.md)

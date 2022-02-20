@@ -2,3 +2,6 @@
 title = "The Smithay Handbook"
 author = "Victor \"Levans\" Berger"
 description = ""
+
+[output.html]
+git-repository-url = "https://github.com/Smithay/book"

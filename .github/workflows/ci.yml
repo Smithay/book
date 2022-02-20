@@ -1,0 +1,74 @@
+name: github pages
+
+on:
+  push:
+    pull_request:
+
+jobs:
+  ci:
+    strategy:
+      fail-fast: false
+      matrix:
+        rust: ['stable', 'beta']
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Cargo cache
+        uses: actions/cache@v1
+        with:
+          path: ~/.cargo
+          key: cargo-${{ matrix.rust }}
+
+      - name: Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust }}
+          override: true
+
+      - name: Install system dependencies
+        run: sudo apt-get install libxkbcommon-dev libwayland-dev
+
+      - name: Test
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          components: rustfmt, clippy
+
+      - name: Cargo fmt
+        run: cargo fmt --all -- --check
+
+      - name: Install system dependencies
+        run: sudo apt-get install libxkbcommon-dev libwayland-dev
+
+      - name: Clippy
+        run: cargo clippy -- -D warnings
+
+  book:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup mdBook
+        uses: peaceiris/actions-mdbook@v1
+        with:
+          mdbook-version: '0.4.15'
+
+      - name: Build book
+        run: mdbook build
