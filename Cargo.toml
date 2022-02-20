@@ -1,0 +1,30 @@
+[package]
+name = "smithay-book"
+version = "0.0.1"
+edition = "2021"
+publish = false
+
+[lib]
+path = "lib.rs"
+
+[dependencies]
+# Wayland crates
+wayland-backend = "0.1.0-alpha5"
+wayland-client = "0.30.0-alpha5"
+wayland-server = "0.30.0-alpha5"
+
+smithay-client-toolkit = { git = "https://github.com/Smithay/client-toolkit", branch = "rework-wayland-rs-0.30" }
+
+# TODO: 0.30 smithay should be used here when ready.
+
+calloop = "0.9.3"
+
+# Other dependencies as needed.
+
+# Here we create bin targets so each chapter's code may be tested.
+#
+# New entries should be categorized into sections just like the SUMMARY.md in the book.
+
+[[bin]]
+name = "test"
+path = "./src/test.rs"
