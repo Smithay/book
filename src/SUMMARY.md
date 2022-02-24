@@ -1,11 +1,10 @@
 # Summary
 
 [Introduction](./intro.md)
-- [Test](./test.md) <!-- Remove this when possible -->
 - [Wayland apps](./client/intro.md)
-<!--  - [General principles](./client/general/intro.md)
-    - [Objects](./client/general/objects.md)
-    - [Event queues and filters](./client/general/event_queues.md)
+  - [General principles](./client/general/intro.md)
+    - [The Wayland protocol](./client/general/protocol.md)
+<!--    - [Event queues and filters](./client/general/event_queues.md)
     - [Initializing an app](./client/general/initializing.md)
     - [The registry and globals](./client/general/registry.md)
   - [Getting started with SCTK](./client/sctk/intro.md)
