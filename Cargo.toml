@@ -26,5 +26,5 @@ calloop = "0.9.3"
 # New entries should be categorized into sections just like the SUMMARY.md in the book.
 
 [[bin]]
-name = "test"
-path = "./src/test.rs"
+name = "client_intro"
+path = "./src/client/general/intro.rs"
