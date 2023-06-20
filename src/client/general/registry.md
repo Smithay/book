@@ -13,10 +13,8 @@ protocol object: the registry.
 ## The registry
 
 The registry is a protocol object with interface `wl_registry`. It is created from
-an attached `wl_display` via its
-[`get_registry()`](https://docs.rs/wayland-client/*/wayland_client/protocol/wl_display/struct.WlDisplay.html#method.get_registry)
-method. Upon creation, the server will send it a stream of events telling the client
-about which globals are available.
+an attached `wl_display` via its [`get_registry()`] method. Upon creation, the server will send it a stream
+of events telling the client about which globals are available.
 
 A global advertisement is composed of 3 values:
 
@@ -31,9 +29,7 @@ The Wayland protocol can evolve, and the interfaces are versioned. The number th
 is the highest version it supports. The server must support all lower versions as well.
 
 Upon receiving this list, the client can then instantiate the globals it wishes to use into
-protocol objects using the
-[`bind`](https://docs.rs/wayland-client/*/wayland_client/protocol/wl_registry/struct.WlRegistry.html#method.bind)
-method of the registry.
+protocol objects using the [`bind`] method of the registry.
 
 ## The two kinds of globals
 
@@ -55,56 +51,84 @@ given global has been removed. When a such a global is removed, all the protocol
 from it will generally become inert, and the client is then expected to do cleanup by destroying
 them using the appropriate requests.
 
-## The GlobalManager
+## Global helpers in `wayland-client`
 
-Tracking the list of globals, their versions, and instantiating them requires some work that can be
-automated away. As such, `wayland-client` provides an abstraction which simplifies this work for you,
-the [`GlobalManager`](https://docs.rs/wayland-client/*/wayland_client/struct.GlobalManager.html).
-SCTK further provides other abstractions on top of it, for more convenience, which will be presented
-in the following sections. The rest of the client-side half of book will be dedicated to understanding
-the different globals and how to use them.
+Tracking the list of globals, their versions, and instantiating them requires some work. `wayland-client`
+provides [`GlobalList`] helper that can automate part of this, by providing you with an initial list of
+globals at the startup of your app. This allows you proceed to the initialization of your app and state
+in a linear fashion, rather than doing so in the callbacks of your [`Dispatch`] implementation for registry.
+This does not replace that implementation though, and you still need to provide it to handle dynamic global
+creation or destruction.
 
-Before jumping to that, lets put all this together with a small app that connects to the wayland server,
-receives the list of globals, and prints them to the console:
+Using this abstraction, we can put together a small app that connects to the wayland server,
+receives the list of globals, and prints them to the console.
 
-```rust
-use wayland_client::{Display, GlobalManager};
+The main entry point for using this global helpers is the [`registry_queue_init`] function. This function
+takes a reference to your [`Connection`] as argument, an will internally:
+
+1. Create an [`EventQueue`]
+2. Create a `wl_registry` object, and do an initial blocking roundtrip with the server to retrieve the list
+   of globals
+3. Return a [`GlobalList`] containing this list of globals, as well as the created [`EventQueue`] that you can
+   then use in your app.
+
+The created registry is registered to that event queue, and a proxy to it can be accessed via the
+[`GlobalList::registry()`] method of the returned [`GlobalList`].
+
+```rust,no_run
+use wayland_client::{
+    Connection, Dispatch, QueueHandle,
+    globals::{registry_queue_init, Global, GlobalListContents},
+    protocol::wl_registry,
+};
+
+// We need a State struct even if we don't use it
+struct State;
+
+
+// You need to provide a Dispatch<WlRegistry, GlobalListContents> impl for your app
+impl Dispatch<wl_registry::WlRegistry, GlobalListContents> for State {
+    fn event(
+        state: &mut State,
+        proxy: &wl_registry::WlRegistry,
+        event: wl_registry::Event,
+        // The `GlobalListContents` is a container with an up-to-date list of
+        // the currently existing globals
+        data: &GlobalListContents,
+        conn: &Connection,
+        qhandle: &QueueHandle<State>,
+    ) {
+        /*
+         * This simple program does not handle dynamic global events,
+         * so we don't do anything here.
+         */
+    }
+}
 
 fn main() {
-    // Connect to the server
-    let display = Display::connect_to_env().unwrap();
+    let connection = Connection::connect_to_env().unwrap();
+    let (globals, queue) = registry_queue_init::<State>(&connection).unwrap();
 
-    // Create the event queue
-    let mut event_queue = display.create_event_queue();
-    // Attach the display
-    let attached_display = display.attach(event_queue.token());
-
-    // We use the GlobalManager convenience provided by the crate, it covers
-    // most classic use cases and avoids us the trouble to manually implement
-    // the registry
-    let globals = GlobalManager::new(&attached_display);
-
-    // sync_roundtrip is a special kind of dispatching for the event queue.
-    // Rather than just blocking once waiting for replies, it'll block
-    // in a loop until the server has signalled that it has processed and
-    // replied accordingly to all requests previously sent by the client.
-    //
-    // In our case, this allows us to be sure that after this call returns,
-    // we have received the full list of globals.
-    event_queue.sync_roundtrip(
-        // we don't use a global state for this example
-        &mut (),
-        // The only object that can receive events is the WlRegistry, and the
-        // GlobalManager already takes care of assigning it to a callback, so
-        // we cannot receive orphan events at this point
-        |_, _, _| unreachable!()
-    ).unwrap();
-
-    // GlobalManager::list() provides a list of all globals advertized by the
-    // server
-    println!("Available globals:");
-    for (name, interface, version) in globals.list() {
-        println!("{}: {} (version {})", name, interface, version);
+    // Print the contents of the list
+    // We cannot iterate the list directly because of thread-safety constraints,
+    // so we clone it and iterate on the returned Vec
+    for global in globals.contents().clone_list() {
+        println!(
+            "Global #{} with interface \"{}\" and version {}",
+            global.name,
+            global.interface,
+            global.version
+        );
     }
 }
 ```
+
+This first section gave you a general overview of how the Wayland protocol and the `wayland-client` crate
+work. In the next section, we'll start to work with SCTK (Smithay's Client ToolKit), a crate designed to
+provide several abstractions that simplify all the plumbing needed to create a Wayland app.
+
+[`get_registry()`]: https://docs.rs/wayland-client/latest/wayland_client/protocol/wl_display/struct.WlDisplay.html#method.get_registry
+[`bind`]: https://docs.rs/wayland-client/*/wayland_client/protocol/wl_registry/struct.WlRegistry.html#method.bind
+[`GlobalList`]: https://docs.rs/wayland-client/latest/wayland_client/globals/struct.GlobalList.html
+[`Dispatch`]: https://docs.rs/wayland-client/latest/wayland_client/trait.Dispatch.html
+[`registry_queue_init`]: https://docs.rs/wayland-client/latest/wayland_client/globals/fn.registry_queue_init.html

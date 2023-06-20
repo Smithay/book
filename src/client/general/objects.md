@@ -33,38 +33,23 @@ protocol object. Furthermore, their lifetime is not tied to the protocol object'
 can outlive it. Once a protocol object has been destroyed, the proxies associated to it will
 become inert.
 
-## The four forms of a proxy
-
-A proxy for a protocol object can be manipulated under four forms:
-
-- As direct proxy, as a bare Wayland type, something like `WlFoo`. This form is the
-  closest to the protocol object, and its methods map to the requests of the interface of
-  this object.
-- As a `Proxy<WlFoo>`. In this form, you can manipulate the proxy as a proxy, rather than
-  as a protocol object. This lets you do things like check if the underlying object is still
-  alive, retrieve its ID, or access the user data associated with it (see below).
-- As an `Attached<WlFoo>`. This form is very similar to the bare `WlFoo`, but it additionally
-  allows you to send requests that create new objects (doing so with a bare `WlFoo` will panic).
-- As a `Main<WlFoo>`. This form is similar to `Attached<WlFoo>`, but additionally allows you to
-  change the event handler associated with the Wayland object.
-
-We will soon explain the role of event handlers and `Main<_>` and `Attached<_>` proxies in the
-context of event queues, but before that, a quick word about user data.
+Each kind of protocol object is represented by a different Rust type, all of them implementing the
+[`Proxy`] trait. Sending requests to the server is done by invoking methods on that object.
 
 ## User data
 
-`wayland-client` makes it possible to associate some data with a protocol object, via the
-[`Proxy<_>::user_data()`](https://docs.rs/wayland-client/*/wayland_client/struct.Proxy.html#method.user_data)
-method. This method gives you access to a `&UserData` value, which holds the associated data.
-The important part is that *all proxies associated to the same protocol object give you access
-to the same `&UserData`*. The value you associate with it is thus attached to the protocol
-object, rather than the proxy. This mechanism is largely used across wayland apps, as it is
-not rare to have several proxies for the same object.
+`wayland-client` makes it possible to associate some data with a protocol object. This data is set
+when the object is created, and can be accessed from any proxy representing this object via the
+[`Proxy::data()`] method. This user data mechanism comes with two important limitations:
 
-The [`UserData`](https://docs.rs/wayland-client/*/wayland_client/struct.UserData.html) type is a
-set-once style container: you can only set its value once, and then you can get a `&`-reference
-to its contents provided you know the type of the stored value. If you need the associated data
-to be mutable, you need to handle interior-mutability (by storing a `RefCell` or a `Mutex` for
-example).
+- You can only get an immutable `&` reference to the stored value. This means that if you need this
+  value to be writable, you need to handle interior mutability by yourself.
+- The [`Proxy::data()`] is generic, and you need to know beforehand what is the type of the stored
+  value. If the wrong type is provided as parameter, the function will return `None`.
 
-Lets now discuss event queues.
+Lets now discuss the mechanism by which `wayland-client` handles the stream of events from the server
+and allows you to process it: event queues and dispatching.
+
+[`Proxy`]: https://docs.rs/wayland-client/latest/wayland_client/trait.Proxy.html
+[`Proxy::data()`]: https://docs.rs/wayland-client/latest/wayland_client/trait.Proxy.html#tymethod.data
+
