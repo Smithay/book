@@ -1,118 +1,144 @@
-# Event queues and filters
+# Event queues and dispatching
 
-If the [`Display`] is the heart of your Wayland app, the [`EventQueue`] will be its
+If the [`Connection`] is the heart of your Wayland app, the [`EventQueue`] will be its
 backbone. As described in the previous section, messages are sent in both directions,
-and so far we only discussed how to send requests (using the methods of bare proxies),
-but not how to receive events. This is done via event queues and callbacks.
+and so far we only discussed how to send requests (using the methods of proxies),
+but not how to receive events. This is done via a dispatching mechanism powered by the
+event queues.
 
-## Event callbacks
+## State and dispatching
 
-Each protocol object can be assigned to a callback, which will be invoked whenever
-this object receives an event. The event callback receives 3 arguments:
+Generally, an app built using `wayland-client` will be structured as a central type,
+which we refer to as the *state* of the app. This type needs to provide several methods
+that are used as callbacks by `wayland-client` to deliver events from the server.
 
-- a `Main<_>` proxy to the object this event is associated to
-- the event itself, under the form of the `Event` enum of the interface of this object
-- a mutable reference to the `DispatchData`, which is some global mutable state shared
-  by the event queue (we will get into details about that when explaining the event queue)
+Providing these methods is done by implementing the [`Dispatch`] trait on your state. This
+is a parametric trait with two type parameters: the first one is a Wayland interface, and
+the second is the type of the user data you want to associate with this kind of object.
 
-This callback should then contain the logic of your program for handling this event. This
-may require anything from just storing the new information somewhere to process it later,
-to directly responding to the server by sending a request, from within the callback.
-
-The direct way to assign a callback to an object is via the 
-[`Main<_>::quick_assign()`](https://docs.rs/wayland-client/*/wayland_client/struct.Main.html#method.quick_assign)
-method, which requires to be given a callback under the form of an `FnMut` closure. You can
-thus capture values in the callback, but it must be a `'static` closure, so it cannot
-capture references, only values (this implies it must be a `move` closure if it captures
-anything).
-
-An alternative approach is to use a [`Filter`]. You can think of filters as a `Rc<_>` wrapper
-around a closure. Filters allow you to use the same closure to process events from several
-objects, making state sharing easier. They are a more advanced use, and we shall come back to
-them later.
-
-## Event queues and Attached proxies
-
-[`EventQueue`]s are the type which actually read events from the Wayland socket, and
-invoke your appropriate callbacks. All protocol objects are associated at creation to an
-event queue so that their events are processed.
-
-This is where the `Attached<_>` proxies come into play. Given a `Proxy<_>`, you can attach
-it to an [`EventQueue`] like so, using a event queue token:
+For example, to handle events sent to a `WlSurface` object, with user data `MyUserData`, you
+would provide the following implementation:
 
 ```rust,no_run
-let attached_proxy = proxy.attach(&event_queue.token());
-```
-
-Attaching a proxy only affects the proxy, not the protocol object. The effect is that whenever
-a request is sent that creates a new object, this newly created object will be associated to
-the event queue to which its creator proxy is attached. Given an object must always be associated
-with an event queue, requests creating new object are thus only allowed from `Attached<_>`
-proxies. `Main<_>` proxies behave like `Attached<_>` ones, being attached to the same queue
-as the one the underlying object is associated to. Creating new objects directly from the
-same event queue as their parent object is by far the most frequent case.
-
-[`EventQueue`]s are cannot be shared between threads (they are `!Send` and `!Sync`),
-this mechanism thus allow to associate different objects to different queues, and
-potentially different threads, and is required for handling that in a threadsafe way.
-Following that, `Attached<WlFoo>` and `Main<WlFoo>` are not `Send` either, while
-`WlFoo` and `Proxy<WlFoo>` are.
-
-## Dispatching event queues
-
-To receive events, it is necessary to read the Wayland socket and call the appropriate callbacks.
-We call this process "dispatching", and as `wayland-client` does not take the control-flow away
-from you, you need to tell it to do it.
-
-The simplest way to achieve that is with the
-[`EventQueue::dispatch()`](https://docs.rs/wayland-client/*/wayland_client/struct.EventQueue.html#method.dispatch)
-method. This method does three things:
-
-- Flush the outgoing buffer (when sending a request, it is not directly written to the socket but instead
-  buffered, to improve performance)
-- Read pending events from the socket, if none are available block until some are received, and distribute
-  these events to the internal buffer of their target event queue
-- Empty the internal buffer of the event queue on which the method was called by invoking the appropriate
-  callbacks
-
-This method also requires you to provide two additional arguments:
-
-- A mutable reference to some value `&mut T`: this reference is accessible from all callbacks invoked by this
-  event queue as the `&mut DispatchData` argument. If they wish to use it, the callbacks need to handle the
-  downcasting using the methods provided by [`DispatchData`], in a similar fashion as `Any`. This value is
-  typically used to serve as the global state of your app.
-- A fallback closure. This closure will be invoked for all events associated to an object which has not been
-  assigned to a callback using `quick_assign()` or `assign()`. This is aimed at providing an alternative
-  way to handle messages in a more centralized fashion, but at the moment the API is still very limited.
-  You can check [this Github issue](https://github.com/Smithay/wayland-rs/issues/287) to follow its evolution.
-
-If most of your logic resides in callbacks, the main loop of your app can thus be as simple as:
-
-```rust,no_run
-loop {
-    let ret = event_queue.dispatch(
-        &mut global_state,
-        |_,_,_| panic!("An event was received not assigned to any callback!")
-    );
-    if let Err(e) = ret {
-        // Some error was returned, this means that the Wayland connection is lost
-        // most of the time there is nothing more to do than print a nice error message
-        // and exit
+impl Dispatch<WlSurface, MyUserData> for Mystate {
+    fn event(
+        state: &mut Self,
+        proxy: &WlSurface,
+        event: <WlSurface as Proxy>::Event,
+        data: &MyUserData,
+        conn: &Connection
+        qhandle: &QueueHandle<MyState>
+    ) {
+        /*
+         * Here is your logic for handling the event
+         */
     }
 }
 ```
 
-If you need a more complex handling of the dispatching (in the case of a multithreaded app, or
-if you have more than one source of events to handle), the three steps (flushing the outgoing buffer,
-reading the socket, and dispatching the events) can be done independently using respectively
-[`Display::flush()`](https://docs.rs/wayland-client/*/wayland_client/struct.Display.html#method.flush),
-[`EventQueue::prepare_read()`](https://docs.rs/wayland-client/*/wayland_client/struct.EventQueue.html#method.prepare_read), and
-[`EventQueue::dispatch_pending()`](https://docs.rs/wayland-client/*/wayland_client/struct.EventQueue.html#method.dispatch_pending).
+Let's explain the arguments of this method one by one:
 
-Having this in mind, let's see in the next part how to proceed to the initial setup of a Wayland app.
+1. As you can see, the method does not take `&mut Self` as argument, but instead `state: &mut Self`. This is
+   related to a mechanism of `wayland-client` that allows composition by delegating `Dispatch` implementations
+   to fields of your state struct. This is detailed below.
+2. The second argument is a proxy representing the Wayland object with which this event is associated
+3. The first argument is an enum representing the content of the event. You are thus expected to match it
+   in order to process it.
+4. The fourth argument is a reference to the user data associated with this object.
+5. The fifth argument is a reference to the underlying [`Connection`]. Most of the time you will not need to
+   use it, but it some circumstances it can be needed.
+6. The last argument is a handle to the [`EventLoop`] currently handling this object. You will need it if you
+   want to invoke requests that create new objects.
+  
+Note that the event enums are marked as `#[non_exhaustive]`, as new events can be introduced in later
+revisions of the Wayland protocol. The Wayland protocol has a versioning system for objects (which this is
+details later in this book), as a result your app will not receive these new events unless you explicitly opt
+in by requiring a higher version from the server. Nevertheless, `wayland-client` still needs to statically
+support them. These enums being non-exhaustive thus allows the crate to handle new versions of the protocol
+without it being a breaking change.
 
+As a result, when you implement the [`Dispatch`] trait you need to keep an eye on which version of the object
+you're going to work with, and construct your match accordingly. Having a catch-all `_ => unreachable!()` arm
+is here an easy way to ensure you are not ignoring events that you can actually receive.
 
-[`Display`]: https://docs.rs/wayland-client/*/wayland_client/struct.Display.html
+Another important point no note is that the [`Dispatch`] trait is parameterized by the user data type. This
+means that you can provide two different implementations for the same Wayland interface, and the event queue
+will invoke one or the other depending on which type of user data was provided when the object was created.
+
+## Event queues
+
+In some cases however, having a single state may be limiting. Some apps have their logic clearly separated in
+independent parts, and may want to have these parts run concurrently on multiple threads. To handle this,
+`wayland-client` has a concept of [`EventQueue`]. Most apps will be fine with a single event queue, but the
+principle is the same with one or more.
+
+Event queues are created from the [`Connection`] with the [`Connection::new_event_queue()`] method. Both this
+method and the [`EventQueue`] struct have a type parameter, which is the type of your state struct. This means
+that an event queue can only be used with a single type as state. This allows `wayland-client` to statically
+ensure that your app provides all the needed [`Dispatch`] implementations.
+
+Once the event queue is created, you can retrieve its handle with the [`EventQueue::handle()`] method. This
+handle is required by all methods that create a new Wayland object, and allows you to specify which event queue
+(and thus which state) should handle the events for this object.
+
+For a simple app where the Wayland connection is the only source of events to process, the main structure of
+the program would then look like this:
+
+```rust,no_run
+use wayland_client::Connection;
+
+let connection = Connection::connect_to_env().unwrap();
+let mut event_queue = connection.new_event_queue();
+
+/*
+ * Here the initialization code of your app...
+ */
+
+// And the main loop:
+//
+// This assumes that the `state` struct contains an `exit` boolean field, that is
+// set to true when the app decided it should exit.
+while !state.exit {
+    event_queue.blocking_dispatch(&mut state).expect("Wayland connection lost!");
+}
+```
+
+The [`EventQueue::blocking_dispatch()`] method will put your app to sleep and wait until new events from the
+server are available, dispatch them to the appropriate [`Dispatch`] methods of the `state`, and then return.
+
+If it returns an error, then the Wayland connection has already been closed and can no longer be used. This
+would typically happen in two main situations: either your app triggered a protocol error and the connection
+was killed by the server, or the server has shut down.
+
+While this simple structure is sufficient for this introduction, more advanced programs generally don't want
+to just sleep waiting for events. For example a game or a video player needs to continue to update its
+contents even if no event occurs. [`EventQueue`] provides other methods to dispatch events in a non-blocking
+way, see its API documentation for more details.
+
+## Dispatch delegation
+
+`wayland-client` also provides means to provide a generic implementation of [`Dispatch`] that downstream
+crates or modules may use in a composition-like fashion. SCTK heavily uses this mechanism to provide generic
+and modular helpers, so while you'll probably not need to *implement* such helpers at first, it is important
+to have a general idea of how they work to use them.
+
+The general structure of this mechanism is as follows:
+
+1. You provide a sub-state type that contains the data necessary to handle the events of the subset of
+   interfaces your helper should manage.
+2. You provide generic implementations of the [`Dispatch`] trait on this sub-state type, by explicitly making
+   its third type parameter as generic (rather than letting it default to `Self`)
+3. The downstream module will then have your sub-state as a field of its state struct, and use the
+   [`delegate_dispatch!`] macro to delegate its [`Dispatch`] implementation to your helper.
+
+See the API documentation of [`Dispatch`] and [`delegate_dispatch!`] for more details and examples.
+
+With all this context given, we are now ready to initialize our first app!
+
+[`Connection`]: https://docs.rs/wayland-client/latest/wayland_client/struct.Connection.html
 [`EventQueue`]: https://docs.rs/wayland-client/*/wayland_client/struct.EventQueue.html
-[`Filter`]: https://docs.rs/wayland-client/*/wayland_client/struct.Filter.html
-[`DispatchData`]: https://docs.rs/wayland-client/*/wayland_client/struct.DispatchData.html
+[`Dispatch`]: https://docs.rs/wayland-client/latest/wayland_client/trait.Dispatch.html
+[`Connection::new_event_queue()`]: https://docs.rs/wayland-client/latest/wayland_client/struct.Connection.html#method.new_event_queue
+[`EventQueue::handle()`]: https://docs.rs/wayland-client/0.30.2/wayland_client/struct.EventQueue.html#method.handle
+[`EventQueue::blocking_dispatch()`]: https://docs.rs/wayland-client/0.30.2/wayland_client/struct.EventQueue.html#method.blocking_dispatch
+[`delegate_dispatch!`]: https://docs.rs/wayland-client/0.30.2/wayland_client/macro.delegate_dispatch.html

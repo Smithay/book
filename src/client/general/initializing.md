@@ -1,41 +1,47 @@
 # Initializing an app
 
 As described previously, once initialized, `wayland-client` provides you with
-a [`Display`] object, representing your wayland connection. This is *not* a
-proxy for the initial `WlDisplay` protocol object, but it derefs to
-`&Proxy<WlDisplay>`, for convenience.
+a [`Connection`] object, representing your wayland connection.
 
-The first things to do are thus to create an event queue and attach the `WlDisplay`
-proxy to it, so that objects created from it will be attached to this event queue.
+From this connection, we can then recover the [`WlDisplay`] proxy, which represents the initial
+`wl_display` object, the starting point of your Wayland interactions.
+
+We also need to create and [`EventQueue`], which will be needed to process the events from all our objects.
 
 The skeleton of a Wayland app may thus look like this:
 
 ```rust,no_run
-use wayland_client::Display;
+use wayland_client::Connection;
 
 fn main() {
-    let display = Display::connect_to_env().expect("Failed to find a Wayland socket.");
+    let connection = Connection::connect_to_env()
+                        .expect("Failed to find a Wayland socket.");
 
-    let mut event_queue = display.create_event_queue();
-    let attached_display = display.attach(event_queue.token());
+    // initialize your State struct
+    let my_state = State::new();
+
+    let mut event_queue = connection.new_event_queue();
+    let display = connection.display();
 
     /*
     * Proceed to initialize the rest of your app
     */
 
-    // and the main loop
-    loop {
-        event_queue.dispatch(&mut global_state, |_,_,_| panic!("Orphan event"))
-            .expect("Wayland connection lost.");
-
-        /*
-        * Additionnal global processing
-        */
+    // And the main loop:
+    //
+    // This assumes that the `state` struct contains an `exit` boolean field,
+    // that is set to true when the app decided it should exit.
+    while !state.exit {
+        event_queue
+            .blocking_dispatch(&mut state)
+            .expect("Wayland connection lost!");
     }
 }
 ```
 
-With that in place, we can now proceed to the final core concept of the protocol: the globals
-and the registry.
+With that in place, we can now proceed to the last core concept of the protocol: the globals and the
+registry.
 
-[`Display`]: https://docs.rs/wayland-client/*/wayland_client/struct.Display.html
+[`Connection`]: https://docs.rs/wayland-client/latest/wayland_client/struct.Connection.html
+[`WlDisplay`]: https://docs.rs/wayland-client/0.30.2/wayland_client/protocol/wl_display/struct.WlDisplay.html
+[`EventQueue`]: https://docs.rs/wayland-client/*/wayland_client/struct.EventQueue.html

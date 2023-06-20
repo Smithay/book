@@ -5,7 +5,7 @@
 - [Wayland apps](./client/intro.md)
   - [General principles](./client/general/intro.md)
     - [Objects](./client/general/objects.md)
-    - [Event queues and filters](./client/general/event_queues.md)
+    - [Event queues and dispatching](./client/general/event_queues.md)
     - [Initializing an app](./client/general/initializing.md)
     - [The registry and globals](./client/general/registry.md)
   - [Getting started with SCTK](./client/sctk/intro.md)
