@@ -89,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="../../client/intro.html"><strong aria-hidden="true">1.</strong> Wayland apps</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/general/intro.html"><strong aria-hidden="true">1.1.</strong> General principles</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/general/objects.html"><strong aria-hidden="true">1.1.1.</strong> Objects</a></li><li class="chapter-item expanded "><a href="../../client/general/event_queues.html"><strong aria-hidden="true">1.1.2.</strong> Event queues and filters</a></li><li class="chapter-item expanded "><a href="../../client/general/initializing.html"><strong aria-hidden="true">1.1.3.</strong> Initializing an app</a></li><li class="chapter-item expanded "><a href="../../client/general/registry.html" class="active"><strong aria-hidden="true">1.1.4.</strong> The registry and globals</a></li></ol></li><li class="chapter-item expanded "><a href="../../client/sctk/intro.html"><strong aria-hidden="true">1.2.</strong> Getting started with SCTK</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/sctk/environment.html"><strong aria-hidden="true">1.2.1.</strong> The Environment</a></li><li class="chapter-item expanded "><a href="../../client/sctk/window.html"><strong aria-hidden="true">1.2.2.</strong> Creating a Window</a></li><li class="chapter-item expanded "><a href="../../client/sctk/drawing.html"><strong aria-hidden="true">1.2.3.</strong> Drawing to a Window</a></li><li class="chapter-item expanded "><a href="../../client/sctk/image_viewer.html"><strong aria-hidden="true">1.2.4.</strong> Exercise: an image viewer</a></li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.</strong> Processing user input</li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">1.3.1.</strong> The seats</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.2.</strong> Pointers</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.3.</strong> Keyboards</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.4.</strong> Touchscreens</li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.4.</strong> Multiple outputs and HiDPI</li><li class="chapter-item expanded "><strong aria-hidden="true">1.5.</strong> Cliboard and Drag'n'Drop</li><li class="chapter-item expanded "><strong aria-hidden="true">1.6.</strong> Drawing with OpenGL</li></ol></li><li class="chapter-item expanded "><a href="../../server/intro.html"><strong aria-hidden="true">2.</strong> Wayland Compositors</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="../../client/intro.html"><strong aria-hidden="true">1.</strong> Wayland apps</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/general/intro.html"><strong aria-hidden="true">1.1.</strong> General principles</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/general/objects.html"><strong aria-hidden="true">1.1.1.</strong> Objects</a></li><li class="chapter-item expanded "><a href="../../client/general/event_queues.html"><strong aria-hidden="true">1.1.2.</strong> Event queues and dispatching</a></li><li class="chapter-item expanded "><a href="../../client/general/initializing.html"><strong aria-hidden="true">1.1.3.</strong> Initializing an app</a></li><li class="chapter-item expanded "><a href="../../client/general/registry.html" class="active"><strong aria-hidden="true">1.1.4.</strong> The registry and globals</a></li></ol></li><li class="chapter-item expanded "><a href="../../client/sctk/intro.html"><strong aria-hidden="true">1.2.</strong> Getting started with SCTK</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/sctk/environment.html"><strong aria-hidden="true">1.2.1.</strong> The Environment</a></li><li class="chapter-item expanded "><a href="../../client/sctk/window.html"><strong aria-hidden="true">1.2.2.</strong> Creating a Window</a></li><li class="chapter-item expanded "><a href="../../client/sctk/drawing.html"><strong aria-hidden="true">1.2.3.</strong> Drawing to a Window</a></li><li class="chapter-item expanded "><a href="../../client/sctk/image_viewer.html"><strong aria-hidden="true">1.2.4.</strong> Exercise: an image viewer</a></li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.</strong> Processing user input</li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">1.3.1.</strong> The seats</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.2.</strong> Pointers</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.3.</strong> Keyboards</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.4.</strong> Touchscreens</li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.4.</strong> Multiple outputs and HiDPI</li><li class="chapter-item expanded "><strong aria-hidden="true">1.5.</strong> Cliboard and Drag'n'Drop</li><li class="chapter-item expanded "><strong aria-hidden="true">1.6.</strong> Drawing with OpenGL</li></ol></li><li class="chapter-item expanded "><a href="../../server/intro.html"><strong aria-hidden="true">2.</strong> Wayland Compositors</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -166,10 +166,8 @@ This process of advertising and instantiating is done with another special
 protocol object: the registry.</p>
 <h2><a class="header" href="#the-registry" id="the-registry">The registry</a></h2>
 <p>The registry is a protocol object with interface <code>wl_registry</code>. It is created from
-an attached <code>wl_display</code> via its
-<a href="https://docs.rs/wayland-client/*/wayland_client/protocol/wl_display/struct.WlDisplay.html#method.get_registry"><code>get_registry()</code></a>
-method. Upon creation, the server will send it a stream of events telling the client
-about which globals are available.</p>
+an attached <code>wl_display</code> via its <a href="https://docs.rs/wayland-client/latest/wayland_client/protocol/wl_display/struct.WlDisplay.html#method.get_registry"><code>get_registry()</code></a> method. Upon creation, the server will send it a stream
+of events telling the client about which globals are available.</p>
 <p>A global advertisement is composed of 3 values:</p>
 <ul>
 <li>the global name, an <code>u32</code> identifier which represents the global within the globals list
@@ -182,9 +180,7 @@ created from this global</li>
 <p>The Wayland protocol can evolve, and the interfaces are versioned. The number the server sends
 is the highest version it supports. The server must support all lower versions as well.</p>
 <p>Upon receiving this list, the client can then instantiate the globals it wishes to use into
-protocol objects using the
-<a href="https://docs.rs/wayland-client/*/wayland_client/protocol/wl_registry/struct.WlRegistry.html#method.bind"><code>bind</code></a>
-method of the registry.</p>
+protocol objects using the <a href="https://docs.rs/wayland-client/*/wayland_client/protocol/wl_registry/struct.WlRegistry.html#method.bind"><code>bind</code></a> method of the registry.</p>
 <h2><a class="header" href="#the-two-kinds-of-globals" id="the-two-kinds-of-globals">The two kinds of globals</a></h2>
 <p>The various globals that a Wayland server can advertise can be roughly classified in two kinds,
 depending on whether they can be advertised multiple times by the server.</p>
@@ -200,55 +196,75 @@ lifetime of the app, as such devices are plugged in or out.</p>
 given global has been removed. When a such a global is removed, all the protocol objects derived
 from it will generally become inert, and the client is then expected to do cleanup by destroying
 them using the appropriate requests.</p>
-<h2><a class="header" href="#the-globalmanager" id="the-globalmanager">The GlobalManager</a></h2>
-<p>Tracking the list of globals, their versions, and instantiating them requires some work that can be
-automated away. As such, <code>wayland-client</code> provides an abstraction which simplifies this work for you,
-the <a href="https://docs.rs/wayland-client/*/wayland_client/struct.GlobalManager.html"><code>GlobalManager</code></a>.
-SCTK further provides other abstractions on top of it, for more convenience, which will be presented
-in the following sections. The rest of the client-side half of book will be dedicated to understanding
-the different globals and how to use them.</p>
-<p>Before jumping to that, lets put all this together with a small app that connects to the wayland server,
-receives the list of globals, and prints them to the console:</p>
-<pre><pre class="playground"><code class="language-rust">use wayland_client::{Display, GlobalManager};
+<h2><a class="header" href="#global-helpers-in-wayland-client" id="global-helpers-in-wayland-client">Global helpers in <code>wayland-client</code></a></h2>
+<p>Tracking the list of globals, their versions, and instantiating them requires some work. <code>wayland-client</code>
+provides <a href="https://docs.rs/wayland-client/latest/wayland_client/globals/struct.GlobalList.html"><code>GlobalList</code></a> helper that can automate part of this, by providing you with an initial list of
+globals at the startup of your app. This allows you proceed to the initialization of your app and state
+in a linear fashion, rather than doing so in the callbacks of your <a href="https://docs.rs/wayland-client/latest/wayland_client/trait.Dispatch.html"><code>Dispatch</code></a> implementation for registry.
+This does not replace that implementation though, and you still need to provide it to handle dynamic global
+creation or destruction.</p>
+<p>Using this abstraction, we can put together a small app that connects to the wayland server,
+receives the list of globals, and prints them to the console.</p>
+<p>The main entry point for using this global helpers is the <a href="https://docs.rs/wayland-client/latest/wayland_client/globals/fn.registry_queue_init.html"><code>registry_queue_init</code></a> function. This function
+takes a reference to your [<code>Connection</code>] as argument, an will internally:</p>
+<ol>
+<li>Create an [<code>EventQueue</code>]</li>
+<li>Create a <code>wl_registry</code> object, and do an initial blocking roundtrip with the server to retrieve the list
+of globals</li>
+<li>Return a <a href="https://docs.rs/wayland-client/latest/wayland_client/globals/struct.GlobalList.html"><code>GlobalList</code></a> containing this list of globals, as well as the created [<code>EventQueue</code>] that you can
+then use in your app.</li>
+</ol>
+<p>The created registry is registered to that event queue, and a proxy to it can be accessed via the
+[<code>GlobalList::registry()</code>] method of the returned <a href="https://docs.rs/wayland-client/latest/wayland_client/globals/struct.GlobalList.html"><code>GlobalList</code></a>.</p>
+<pre><pre class="playground"><code class="language-rust no_run">use wayland_client::{
+    Connection, Dispatch, QueueHandle,
+    globals::{registry_queue_init, Global, GlobalListContents},
+    protocol::wl_registry,
+};
+
+// We need a State struct even if we don't use it
+struct State;
+
+
+// You need to provide a Dispatch&lt;WlRegistry, GlobalListContents&gt; impl for your app
+impl Dispatch&lt;wl_registry::WlRegistry, GlobalListContents&gt; for State {
+    fn event(
+        state: &amp;mut State,
+        proxy: &amp;wl_registry::WlRegistry,
+        event: wl_registry::Event,
+        // The `GlobalListContents` is a container with an up-to-date list of
+        // the currently existing globals
+        data: &amp;GlobalListContents,
+        conn: &amp;Connection,
+        qhandle: &amp;QueueHandle&lt;State&gt;,
+    ) {
+        /*
+         * This simple program does not handle dynamic global events,
+         * so we don't do anything here.
+         */
+    }
+}
 
 fn main() {
-    // Connect to the server
-    let display = Display::connect_to_env().unwrap();
+    let connection = Connection::connect_to_env().unwrap();
+    let (globals, queue) = registry_queue_init::&lt;State&gt;(&amp;connection).unwrap();
 
-    // Create the event queue
-    let mut event_queue = display.create_event_queue();
-    // Attach the display
-    let attached_display = display.attach(event_queue.token());
-
-    // We use the GlobalManager convenience provided by the crate, it covers
-    // most classic use cases and avoids us the trouble to manually implement
-    // the registry
-    let globals = GlobalManager::new(&amp;attached_display);
-
-    // sync_roundtrip is a special kind of dispatching for the event queue.
-    // Rather than just blocking once waiting for replies, it'll block
-    // in a loop until the server has signalled that it has processed and
-    // replied accordingly to all requests previously sent by the client.
-    //
-    // In our case, this allows us to be sure that after this call returns,
-    // we have received the full list of globals.
-    event_queue.sync_roundtrip(
-        // we don't use a global state for this example
-        &amp;mut (),
-        // The only object that can receive events is the WlRegistry, and the
-        // GlobalManager already takes care of assigning it to a callback, so
-        // we cannot receive orphan events at this point
-        |_, _, _| unreachable!()
-    ).unwrap();
-
-    // GlobalManager::list() provides a list of all globals advertized by the
-    // server
-    println!(&quot;Available globals:&quot;);
-    for (name, interface, version) in globals.list() {
-        println!(&quot;{}: {} (version {})&quot;, name, interface, version);
+    // Print the contents of the list
+    // We cannot iterate the list directly because of thread-safety constraints,
+    // so we clone it and iterate on the returned Vec
+    for global in globals.contents().clone_list() {
+        println!(
+            &quot;Global #{} with interface \&quot;{}\&quot; and version {}&quot;,
+            global.name,
+            global.interface,
+            global.version
+        );
     }
 }
 </code></pre></pre>
+<p>This first section gave you a general overview of how the Wayland protocol and the <code>wayland-client</code> crate
+work. In the next section, we'll start to work with SCTK (Smithay's Client ToolKit), a crate designed to
+provide several abstractions that simplify all the plumbing needed to create a Wayland app.</p>
 
                     </main>
 

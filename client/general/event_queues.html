@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Event queues and filters - The Smithay Handbook</title>
+        <title>Event queues and dispatching - The Smithay Handbook</title>
         
         
 
@@ -89,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="../../client/intro.html"><strong aria-hidden="true">1.</strong> Wayland apps</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/general/intro.html"><strong aria-hidden="true">1.1.</strong> General principles</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/general/objects.html"><strong aria-hidden="true">1.1.1.</strong> Objects</a></li><li class="chapter-item expanded "><a href="../../client/general/event_queues.html" class="active"><strong aria-hidden="true">1.1.2.</strong> Event queues and filters</a></li><li class="chapter-item expanded "><a href="../../client/general/initializing.html"><strong aria-hidden="true">1.1.3.</strong> Initializing an app</a></li><li class="chapter-item expanded "><a href="../../client/general/registry.html"><strong aria-hidden="true">1.1.4.</strong> The registry and globals</a></li></ol></li><li class="chapter-item expanded "><a href="../../client/sctk/intro.html"><strong aria-hidden="true">1.2.</strong> Getting started with SCTK</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/sctk/environment.html"><strong aria-hidden="true">1.2.1.</strong> The Environment</a></li><li class="chapter-item expanded "><a href="../../client/sctk/window.html"><strong aria-hidden="true">1.2.2.</strong> Creating a Window</a></li><li class="chapter-item expanded "><a href="../../client/sctk/drawing.html"><strong aria-hidden="true">1.2.3.</strong> Drawing to a Window</a></li><li class="chapter-item expanded "><a href="../../client/sctk/image_viewer.html"><strong aria-hidden="true">1.2.4.</strong> Exercise: an image viewer</a></li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.</strong> Processing user input</li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">1.3.1.</strong> The seats</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.2.</strong> Pointers</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.3.</strong> Keyboards</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.4.</strong> Touchscreens</li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.4.</strong> Multiple outputs and HiDPI</li><li class="chapter-item expanded "><strong aria-hidden="true">1.5.</strong> Cliboard and Drag'n'Drop</li><li class="chapter-item expanded "><strong aria-hidden="true">1.6.</strong> Drawing with OpenGL</li></ol></li><li class="chapter-item expanded "><a href="../../server/intro.html"><strong aria-hidden="true">2.</strong> Wayland Compositors</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="../../client/intro.html"><strong aria-hidden="true">1.</strong> Wayland apps</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/general/intro.html"><strong aria-hidden="true">1.1.</strong> General principles</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/general/objects.html"><strong aria-hidden="true">1.1.1.</strong> Objects</a></li><li class="chapter-item expanded "><a href="../../client/general/event_queues.html" class="active"><strong aria-hidden="true">1.1.2.</strong> Event queues and dispatching</a></li><li class="chapter-item expanded "><a href="../../client/general/initializing.html"><strong aria-hidden="true">1.1.3.</strong> Initializing an app</a></li><li class="chapter-item expanded "><a href="../../client/general/registry.html"><strong aria-hidden="true">1.1.4.</strong> The registry and globals</a></li></ol></li><li class="chapter-item expanded "><a href="../../client/sctk/intro.html"><strong aria-hidden="true">1.2.</strong> Getting started with SCTK</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/sctk/environment.html"><strong aria-hidden="true">1.2.1.</strong> The Environment</a></li><li class="chapter-item expanded "><a href="../../client/sctk/window.html"><strong aria-hidden="true">1.2.2.</strong> Creating a Window</a></li><li class="chapter-item expanded "><a href="../../client/sctk/drawing.html"><strong aria-hidden="true">1.2.3.</strong> Drawing to a Window</a></li><li class="chapter-item expanded "><a href="../../client/sctk/image_viewer.html"><strong aria-hidden="true">1.2.4.</strong> Exercise: an image viewer</a></li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.</strong> Processing user input</li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">1.3.1.</strong> The seats</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.2.</strong> Pointers</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.3.</strong> Keyboards</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.4.</strong> Touchscreens</li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.4.</strong> Multiple outputs and HiDPI</li><li class="chapter-item expanded "><strong aria-hidden="true">1.5.</strong> Cliboard and Drag'n'Drop</li><li class="chapter-item expanded "><strong aria-hidden="true">1.6.</strong> Drawing with OpenGL</li></ol></li><li class="chapter-item expanded "><a href="../../server/intro.html"><strong aria-hidden="true">2.</strong> Wayland Compositors</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -155,107 +155,126 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#event-queues-and-filters" id="event-queues-and-filters">Event queues and filters</a></h1>
-<p>If the <a href="https://docs.rs/wayland-client/*/wayland_client/struct.Display.html"><code>Display</code></a> is the heart of your Wayland app, the <a href="https://docs.rs/wayland-client/*/wayland_client/struct.EventQueue.html"><code>EventQueue</code></a> will be its
+                        <h1><a class="header" href="#event-queues-and-dispatching" id="event-queues-and-dispatching">Event queues and dispatching</a></h1>
+<p>If the <a href="https://docs.rs/wayland-client/latest/wayland_client/struct.Connection.html"><code>Connection</code></a> is the heart of your Wayland app, the <a href="https://docs.rs/wayland-client/*/wayland_client/struct.EventQueue.html"><code>EventQueue</code></a> will be its
 backbone. As described in the previous section, messages are sent in both directions,
-and so far we only discussed how to send requests (using the methods of bare proxies),
-but not how to receive events. This is done via event queues and callbacks.</p>
-<h2><a class="header" href="#event-callbacks" id="event-callbacks">Event callbacks</a></h2>
-<p>Each protocol object can be assigned to a callback, which will be invoked whenever
-this object receives an event. The event callback receives 3 arguments:</p>
-<ul>
-<li>a <code>Main&lt;_&gt;</code> proxy to the object this event is associated to</li>
-<li>the event itself, under the form of the <code>Event</code> enum of the interface of this object</li>
-<li>a mutable reference to the <code>DispatchData</code>, which is some global mutable state shared
-by the event queue (we will get into details about that when explaining the event queue)</li>
-</ul>
-<p>This callback should then contain the logic of your program for handling this event. This
-may require anything from just storing the new information somewhere to process it later,
-to directly responding to the server by sending a request, from within the callback.</p>
-<p>The direct way to assign a callback to an object is via the 
-<a href="https://docs.rs/wayland-client/*/wayland_client/struct.Main.html#method.quick_assign"><code>Main&lt;_&gt;::quick_assign()</code></a>
-method, which requires to be given a callback under the form of an <code>FnMut</code> closure. You can
-thus capture values in the callback, but it must be a <code>'static</code> closure, so it cannot
-capture references, only values (this implies it must be a <code>move</code> closure if it captures
-anything).</p>
-<p>An alternative approach is to use a <a href="https://docs.rs/wayland-client/*/wayland_client/struct.Filter.html"><code>Filter</code></a>. You can think of filters as a <code>Rc&lt;_&gt;</code> wrapper
-around a closure. Filters allow you to use the same closure to process events from several
-objects, making state sharing easier. They are a more advanced use, and we shall come back to
-them later.</p>
-<h2><a class="header" href="#event-queues-and-attached-proxies" id="event-queues-and-attached-proxies">Event queues and Attached proxies</a></h2>
-<p><a href="https://docs.rs/wayland-client/*/wayland_client/struct.EventQueue.html"><code>EventQueue</code></a>s are the type which actually read events from the Wayland socket, and
-invoke your appropriate callbacks. All protocol objects are associated at creation to an
-event queue so that their events are processed.</p>
-<p>This is where the <code>Attached&lt;_&gt;</code> proxies come into play. Given a <code>Proxy&lt;_&gt;</code>, you can attach
-it to an <a href="https://docs.rs/wayland-client/*/wayland_client/struct.EventQueue.html"><code>EventQueue</code></a> like so, using a event queue token:</p>
+and so far we only discussed how to send requests (using the methods of proxies),
+but not how to receive events. This is done via a dispatching mechanism powered by the
+event queues.</p>
+<h2><a class="header" href="#state-and-dispatching" id="state-and-dispatching">State and dispatching</a></h2>
+<p>Generally, an app built using <code>wayland-client</code> will be structured as a central type,
+which we refer to as the <em>state</em> of the app. This type needs to provide several methods
+that are used as callbacks by <code>wayland-client</code> to deliver events from the server.</p>
+<p>Providing these methods is done by implementing the <a href="https://docs.rs/wayland-client/latest/wayland_client/trait.Dispatch.html"><code>Dispatch</code></a> trait on your state. This
+is a parametric trait with two type parameters: the first one is a Wayland interface, and
+the second is the type of the user data you want to associate with this kind of object.</p>
+<p>For example, to handle events sent to a <code>WlSurface</code> object, with user data <code>MyUserData</code>, you
+would provide the following implementation:</p>
 <pre><pre class="playground"><code class="language-rust no_run">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>let attached_proxy = proxy.attach(&amp;event_queue.token());
-<span class="boring">}
-</span></code></pre></pre>
-<p>Attaching a proxy only affects the proxy, not the protocol object. The effect is that whenever
-a request is sent that creates a new object, this newly created object will be associated to
-the event queue to which its creator proxy is attached. Given an object must always be associated
-with an event queue, requests creating new object are thus only allowed from <code>Attached&lt;_&gt;</code>
-proxies. <code>Main&lt;_&gt;</code> proxies behave like <code>Attached&lt;_&gt;</code> ones, being attached to the same queue
-as the one the underlying object is associated to. Creating new objects directly from the
-same event queue as their parent object is by far the most frequent case.</p>
-<p><a href="https://docs.rs/wayland-client/*/wayland_client/struct.EventQueue.html"><code>EventQueue</code></a>s are cannot be shared between threads (they are <code>!Send</code> and <code>!Sync</code>),
-this mechanism thus allow to associate different objects to different queues, and
-potentially different threads, and is required for handling that in a threadsafe way.
-Following that, <code>Attached&lt;WlFoo&gt;</code> and <code>Main&lt;WlFoo&gt;</code> are not <code>Send</code> either, while
-<code>WlFoo</code> and <code>Proxy&lt;WlFoo&gt;</code> are.</p>
-<h2><a class="header" href="#dispatching-event-queues" id="dispatching-event-queues">Dispatching event queues</a></h2>
-<p>To receive events, it is necessary to read the Wayland socket and call the appropriate callbacks.
-We call this process &quot;dispatching&quot;, and as <code>wayland-client</code> does not take the control-flow away
-from you, you need to tell it to do it.</p>
-<p>The simplest way to achieve that is with the
-<a href="https://docs.rs/wayland-client/*/wayland_client/struct.EventQueue.html#method.dispatch"><code>EventQueue::dispatch()</code></a>
-method. This method does three things:</p>
-<ul>
-<li>Flush the outgoing buffer (when sending a request, it is not directly written to the socket but instead
-buffered, to improve performance)</li>
-<li>Read pending events from the socket, if none are available block until some are received, and distribute
-these events to the internal buffer of their target event queue</li>
-<li>Empty the internal buffer of the event queue on which the method was called by invoking the appropriate
-callbacks</li>
-</ul>
-<p>This method also requires you to provide two additional arguments:</p>
-<ul>
-<li>A mutable reference to some value <code>&amp;mut T</code>: this reference is accessible from all callbacks invoked by this
-event queue as the <code>&amp;mut DispatchData</code> argument. If they wish to use it, the callbacks need to handle the
-downcasting using the methods provided by <a href="https://docs.rs/wayland-client/*/wayland_client/struct.DispatchData.html"><code>DispatchData</code></a>, in a similar fashion as <code>Any</code>. This value is
-typically used to serve as the global state of your app.</li>
-<li>A fallback closure. This closure will be invoked for all events associated to an object which has not been
-assigned to a callback using <code>quick_assign()</code> or <code>assign()</code>. This is aimed at providing an alternative
-way to handle messages in a more centralized fashion, but at the moment the API is still very limited.
-You can check <a href="https://github.com/Smithay/wayland-rs/issues/287">this Github issue</a> to follow its evolution.</li>
-</ul>
-<p>If most of your logic resides in callbacks, the main loop of your app can thus be as simple as:</p>
-<pre><pre class="playground"><code class="language-rust no_run">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>loop {
-    let ret = event_queue.dispatch(
-        &amp;mut global_state,
-        |_,_,_| panic!(&quot;An event was received not assigned to any callback!&quot;)
-    );
-    if let Err(e) = ret {
-        // Some error was returned, this means that the Wayland connection is lost
-        // most of the time there is nothing more to do than print a nice error message
-        // and exit
+</span>impl Dispatch&lt;WlSurface, MyUserData&gt; for Mystate {
+    fn event(
+        state: &amp;mut Self,
+        proxy: &amp;WlSurface,
+        event: &lt;WlSurface as Proxy&gt;::Event,
+        data: &amp;MyUserData,
+        conn: &amp;Connection
+        qhandle: &amp;QueueHandle&lt;MyState&gt;
+    ) {
+        /*
+         * Here is your logic for handling the event
+         */
     }
 }
 <span class="boring">}
 </span></code></pre></pre>
-<p>If you need a more complex handling of the dispatching (in the case of a multithreaded app, or
-if you have more than one source of events to handle), the three steps (flushing the outgoing buffer,
-reading the socket, and dispatching the events) can be done independently using respectively
-<a href="https://docs.rs/wayland-client/*/wayland_client/struct.Display.html#method.flush"><code>Display::flush()</code></a>,
-<a href="https://docs.rs/wayland-client/*/wayland_client/struct.EventQueue.html#method.prepare_read"><code>EventQueue::prepare_read()</code></a>, and
-<a href="https://docs.rs/wayland-client/*/wayland_client/struct.EventQueue.html#method.dispatch_pending"><code>EventQueue::dispatch_pending()</code></a>.</p>
-<p>Having this in mind, let's see in the next part how to proceed to the initial setup of a Wayland app.</p>
+<p>Let's explain the arguments of this method one by one:</p>
+<ol>
+<li>As you can see, the method does not take <code>&amp;mut Self</code> as argument, but instead <code>state: &amp;mut Self</code>. This is
+related to a mechanism of <code>wayland-client</code> that allows composition by delegating <code>Dispatch</code> implementations
+to fields of your state struct. This is detailed below.</li>
+<li>The second argument is a proxy representing the Wayland object with which this event is associated</li>
+<li>The first argument is an enum representing the content of the event. You are thus expected to match it
+in order to process it.</li>
+<li>The fourth argument is a reference to the user data associated with this object.</li>
+<li>The fifth argument is a reference to the underlying <a href="https://docs.rs/wayland-client/latest/wayland_client/struct.Connection.html"><code>Connection</code></a>. Most of the time you will not need to
+use it, but it some circumstances it can be needed.</li>
+<li>The last argument is a handle to the [<code>EventLoop</code>] currently handling this object. You will need it if you
+want to invoke requests that create new objects.</li>
+</ol>
+<p>Note that the event enums are marked as <code>#[non_exhaustive]</code>, as new events can be introduced in later
+revisions of the Wayland protocol. The Wayland protocol has a versioning system for objects (which this is
+details later in this book), as a result your app will not receive these new events unless you explicitly opt
+in by requiring a higher version from the server. Nevertheless, <code>wayland-client</code> still needs to statically
+support them. These enums being non-exhaustive thus allows the crate to handle new versions of the protocol
+without it being a breaking change.</p>
+<p>As a result, when you implement the <a href="https://docs.rs/wayland-client/latest/wayland_client/trait.Dispatch.html"><code>Dispatch</code></a> trait you need to keep an eye on which version of the object
+you're going to work with, and construct your match accordingly. Having a catch-all <code>_ =&gt; unreachable!()</code> arm
+is here an easy way to ensure you are not ignoring events that you can actually receive.</p>
+<p>Another important point no note is that the <a href="https://docs.rs/wayland-client/latest/wayland_client/trait.Dispatch.html"><code>Dispatch</code></a> trait is parameterized by the user data type. This
+means that you can provide two different implementations for the same Wayland interface, and the event queue
+will invoke one or the other depending on which type of user data was provided when the object was created.</p>
+<h2><a class="header" href="#event-queues" id="event-queues">Event queues</a></h2>
+<p>In some cases however, having a single state may be limiting. Some apps have their logic clearly separated in
+independent parts, and may want to have these parts run concurrently on multiple threads. To handle this,
+<code>wayland-client</code> has a concept of <a href="https://docs.rs/wayland-client/*/wayland_client/struct.EventQueue.html"><code>EventQueue</code></a>. Most apps will be fine with a single event queue, but the
+principle is the same with one or more.</p>
+<p>Event queues are created from the <a href="https://docs.rs/wayland-client/latest/wayland_client/struct.Connection.html"><code>Connection</code></a> with the <a href="https://docs.rs/wayland-client/latest/wayland_client/struct.Connection.html#method.new_event_queue"><code>Connection::new_event_queue()</code></a> method. Both this
+method and the <a href="https://docs.rs/wayland-client/*/wayland_client/struct.EventQueue.html"><code>EventQueue</code></a> struct have a type parameter, which is the type of your state struct. This means
+that an event queue can only be used with a single type as state. This allows <code>wayland-client</code> to statically
+ensure that your app provides all the needed <a href="https://docs.rs/wayland-client/latest/wayland_client/trait.Dispatch.html"><code>Dispatch</code></a> implementations.</p>
+<p>Once the event queue is created, you can retrieve its handle with the <a href="https://docs.rs/wayland-client/0.30.2/wayland_client/struct.EventQueue.html#method.handle"><code>EventQueue::handle()</code></a> method. This
+handle is required by all methods that create a new Wayland object, and allows you to specify which event queue
+(and thus which state) should handle the events for this object.</p>
+<p>For a simple app where the Wayland connection is the only source of events to process, the main structure of
+the program would then look like this:</p>
+<pre><pre class="playground"><code class="language-rust no_run">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use wayland_client::Connection;
+
+let connection = Connection::connect_to_env().unwrap();
+let mut event_queue = connection.new_event_queue();
+
+/*
+ * Here the initialization code of your app...
+ */
+
+// And the main loop:
+//
+// This assumes that the `state` struct contains an `exit` boolean field, that is
+// set to true when the app decided it should exit.
+while !state.exit {
+    event_queue.blocking_dispatch(&amp;mut state).expect(&quot;Wayland connection lost!&quot;);
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>The <a href="https://docs.rs/wayland-client/0.30.2/wayland_client/struct.EventQueue.html#method.blocking_dispatch"><code>EventQueue::blocking_dispatch()</code></a> method will put your app to sleep and wait until new events from the
+server are available, dispatch them to the appropriate <a href="https://docs.rs/wayland-client/latest/wayland_client/trait.Dispatch.html"><code>Dispatch</code></a> methods of the <code>state</code>, and then return.</p>
+<p>If it returns an error, then the Wayland connection has already been closed and can no longer be used. This
+would typically happen in two main situations: either your app triggered a protocol error and the connection
+was killed by the server, or the server has shut down.</p>
+<p>While this simple structure is sufficient for this introduction, more advanced programs generally don't want
+to just sleep waiting for events. For example a game or a video player needs to continue to update its
+contents even if no event occurs. <a href="https://docs.rs/wayland-client/*/wayland_client/struct.EventQueue.html"><code>EventQueue</code></a> provides other methods to dispatch events in a non-blocking
+way, see its API documentation for more details.</p>
+<h2><a class="header" href="#dispatch-delegation" id="dispatch-delegation">Dispatch delegation</a></h2>
+<p><code>wayland-client</code> also provides means to provide a generic implementation of <a href="https://docs.rs/wayland-client/latest/wayland_client/trait.Dispatch.html"><code>Dispatch</code></a> that downstream
+crates or modules may use in a composition-like fashion. SCTK heavily uses this mechanism to provide generic
+and modular helpers, so while you'll probably not need to <em>implement</em> such helpers at first, it is important
+to have a general idea of how they work to use them.</p>
+<p>The general structure of this mechanism is as follows:</p>
+<ol>
+<li>You provide a sub-state type that contains the data necessary to handle the events of the subset of
+interfaces your helper should manage.</li>
+<li>You provide generic implementations of the <a href="https://docs.rs/wayland-client/latest/wayland_client/trait.Dispatch.html"><code>Dispatch</code></a> trait on this sub-state type, by explicitly making
+its third type parameter as generic (rather than letting it default to <code>Self</code>)</li>
+<li>The downstream module will then have your sub-state as a field of its state struct, and use the
+<a href="https://docs.rs/wayland-client/0.30.2/wayland_client/macro.delegate_dispatch.html"><code>delegate_dispatch!</code></a> macro to delegate its <a href="https://docs.rs/wayland-client/latest/wayland_client/trait.Dispatch.html"><code>Dispatch</code></a> implementation to your helper.</li>
+</ol>
+<p>See the API documentation of <a href="https://docs.rs/wayland-client/latest/wayland_client/trait.Dispatch.html"><code>Dispatch</code></a> and <a href="https://docs.rs/wayland-client/0.30.2/wayland_client/macro.delegate_dispatch.html"><code>delegate_dispatch!</code></a> for more details and examples.</p>
+<p>With all this context given, we are now ready to initialize our first app!</p>
 
                     </main>
 

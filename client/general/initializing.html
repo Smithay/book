@@ -89,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="../../client/intro.html"><strong aria-hidden="true">1.</strong> Wayland apps</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/general/intro.html"><strong aria-hidden="true">1.1.</strong> General principles</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/general/objects.html"><strong aria-hidden="true">1.1.1.</strong> Objects</a></li><li class="chapter-item expanded "><a href="../../client/general/event_queues.html"><strong aria-hidden="true">1.1.2.</strong> Event queues and filters</a></li><li class="chapter-item expanded "><a href="../../client/general/initializing.html" class="active"><strong aria-hidden="true">1.1.3.</strong> Initializing an app</a></li><li class="chapter-item expanded "><a href="../../client/general/registry.html"><strong aria-hidden="true">1.1.4.</strong> The registry and globals</a></li></ol></li><li class="chapter-item expanded "><a href="../../client/sctk/intro.html"><strong aria-hidden="true">1.2.</strong> Getting started with SCTK</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/sctk/environment.html"><strong aria-hidden="true">1.2.1.</strong> The Environment</a></li><li class="chapter-item expanded "><a href="../../client/sctk/window.html"><strong aria-hidden="true">1.2.2.</strong> Creating a Window</a></li><li class="chapter-item expanded "><a href="../../client/sctk/drawing.html"><strong aria-hidden="true">1.2.3.</strong> Drawing to a Window</a></li><li class="chapter-item expanded "><a href="../../client/sctk/image_viewer.html"><strong aria-hidden="true">1.2.4.</strong> Exercise: an image viewer</a></li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.</strong> Processing user input</li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">1.3.1.</strong> The seats</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.2.</strong> Pointers</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.3.</strong> Keyboards</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.4.</strong> Touchscreens</li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.4.</strong> Multiple outputs and HiDPI</li><li class="chapter-item expanded "><strong aria-hidden="true">1.5.</strong> Cliboard and Drag'n'Drop</li><li class="chapter-item expanded "><strong aria-hidden="true">1.6.</strong> Drawing with OpenGL</li></ol></li><li class="chapter-item expanded "><a href="../../server/intro.html"><strong aria-hidden="true">2.</strong> Wayland Compositors</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="../../client/intro.html"><strong aria-hidden="true">1.</strong> Wayland apps</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/general/intro.html"><strong aria-hidden="true">1.1.</strong> General principles</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/general/objects.html"><strong aria-hidden="true">1.1.1.</strong> Objects</a></li><li class="chapter-item expanded "><a href="../../client/general/event_queues.html"><strong aria-hidden="true">1.1.2.</strong> Event queues and dispatching</a></li><li class="chapter-item expanded "><a href="../../client/general/initializing.html" class="active"><strong aria-hidden="true">1.1.3.</strong> Initializing an app</a></li><li class="chapter-item expanded "><a href="../../client/general/registry.html"><strong aria-hidden="true">1.1.4.</strong> The registry and globals</a></li></ol></li><li class="chapter-item expanded "><a href="../../client/sctk/intro.html"><strong aria-hidden="true">1.2.</strong> Getting started with SCTK</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/sctk/environment.html"><strong aria-hidden="true">1.2.1.</strong> The Environment</a></li><li class="chapter-item expanded "><a href="../../client/sctk/window.html"><strong aria-hidden="true">1.2.2.</strong> Creating a Window</a></li><li class="chapter-item expanded "><a href="../../client/sctk/drawing.html"><strong aria-hidden="true">1.2.3.</strong> Drawing to a Window</a></li><li class="chapter-item expanded "><a href="../../client/sctk/image_viewer.html"><strong aria-hidden="true">1.2.4.</strong> Exercise: an image viewer</a></li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.</strong> Processing user input</li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">1.3.1.</strong> The seats</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.2.</strong> Pointers</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.3.</strong> Keyboards</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.4.</strong> Touchscreens</li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.4.</strong> Multiple outputs and HiDPI</li><li class="chapter-item expanded "><strong aria-hidden="true">1.5.</strong> Cliboard and Drag'n'Drop</li><li class="chapter-item expanded "><strong aria-hidden="true">1.6.</strong> Drawing with OpenGL</li></ol></li><li class="chapter-item expanded "><a href="../../server/intro.html"><strong aria-hidden="true">2.</strong> Wayland Compositors</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -157,37 +157,40 @@
                     <main>
                         <h1><a class="header" href="#initializing-an-app" id="initializing-an-app">Initializing an app</a></h1>
 <p>As described previously, once initialized, <code>wayland-client</code> provides you with
-a <a href="https://docs.rs/wayland-client/*/wayland_client/struct.Display.html"><code>Display</code></a> object, representing your wayland connection. This is <em>not</em> a
-proxy for the initial <code>WlDisplay</code> protocol object, but it derefs to
-<code>&amp;Proxy&lt;WlDisplay&gt;</code>, for convenience.</p>
-<p>The first things to do are thus to create an event queue and attach the <code>WlDisplay</code>
-proxy to it, so that objects created from it will be attached to this event queue.</p>
+a <a href="https://docs.rs/wayland-client/latest/wayland_client/struct.Connection.html"><code>Connection</code></a> object, representing your wayland connection.</p>
+<p>From this connection, we can then recover the <a href="https://docs.rs/wayland-client/0.30.2/wayland_client/protocol/wl_display/struct.WlDisplay.html"><code>WlDisplay</code></a> proxy, which represents the initial
+<code>wl_display</code> object, the starting point of your Wayland interactions.</p>
+<p>We also need to create and <a href="https://docs.rs/wayland-client/*/wayland_client/struct.EventQueue.html"><code>EventQueue</code></a>, which will be needed to process the events from all our objects.</p>
 <p>The skeleton of a Wayland app may thus look like this:</p>
-<pre><pre class="playground"><code class="language-rust no_run">use wayland_client::Display;
+<pre><pre class="playground"><code class="language-rust no_run">use wayland_client::Connection;
 
 fn main() {
-    let display = Display::connect_to_env().expect(&quot;Failed to find a Wayland socket.&quot;);
+    let connection = Connection::connect_to_env()
+                        .expect(&quot;Failed to find a Wayland socket.&quot;);
 
-    let mut event_queue = display.create_event_queue();
-    let attached_display = display.attach(event_queue.token());
+    // initialize your State struct
+    let my_state = State::new();
+
+    let mut event_queue = connection.new_event_queue();
+    let display = connection.display();
 
     /*
     * Proceed to initialize the rest of your app
     */
 
-    // and the main loop
-    loop {
-        event_queue.dispatch(&amp;mut global_state, |_,_,_| panic!(&quot;Orphan event&quot;))
-            .expect(&quot;Wayland connection lost.&quot;);
-
-        /*
-        * Additionnal global processing
-        */
+    // And the main loop:
+    //
+    // This assumes that the `state` struct contains an `exit` boolean field,
+    // that is set to true when the app decided it should exit.
+    while !state.exit {
+        event_queue
+            .blocking_dispatch(&amp;mut state)
+            .expect(&quot;Wayland connection lost!&quot;);
     }
 }
 </code></pre></pre>
-<p>With that in place, we can now proceed to the final core concept of the protocol: the globals
-and the registry.</p>
+<p>With that in place, we can now proceed to the last core concept of the protocol: the globals and the
+registry.</p>
 
                     </main>
 

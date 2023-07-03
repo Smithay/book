@@ -89,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="../../client/intro.html"><strong aria-hidden="true">1.</strong> Wayland apps</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/general/intro.html"><strong aria-hidden="true">1.1.</strong> General principles</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/general/objects.html" class="active"><strong aria-hidden="true">1.1.1.</strong> Objects</a></li><li class="chapter-item expanded "><a href="../../client/general/event_queues.html"><strong aria-hidden="true">1.1.2.</strong> Event queues and filters</a></li><li class="chapter-item expanded "><a href="../../client/general/initializing.html"><strong aria-hidden="true">1.1.3.</strong> Initializing an app</a></li><li class="chapter-item expanded "><a href="../../client/general/registry.html"><strong aria-hidden="true">1.1.4.</strong> The registry and globals</a></li></ol></li><li class="chapter-item expanded "><a href="../../client/sctk/intro.html"><strong aria-hidden="true">1.2.</strong> Getting started with SCTK</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/sctk/environment.html"><strong aria-hidden="true">1.2.1.</strong> The Environment</a></li><li class="chapter-item expanded "><a href="../../client/sctk/window.html"><strong aria-hidden="true">1.2.2.</strong> Creating a Window</a></li><li class="chapter-item expanded "><a href="../../client/sctk/drawing.html"><strong aria-hidden="true">1.2.3.</strong> Drawing to a Window</a></li><li class="chapter-item expanded "><a href="../../client/sctk/image_viewer.html"><strong aria-hidden="true">1.2.4.</strong> Exercise: an image viewer</a></li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.</strong> Processing user input</li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">1.3.1.</strong> The seats</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.2.</strong> Pointers</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.3.</strong> Keyboards</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.4.</strong> Touchscreens</li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.4.</strong> Multiple outputs and HiDPI</li><li class="chapter-item expanded "><strong aria-hidden="true">1.5.</strong> Cliboard and Drag'n'Drop</li><li class="chapter-item expanded "><strong aria-hidden="true">1.6.</strong> Drawing with OpenGL</li></ol></li><li class="chapter-item expanded "><a href="../../server/intro.html"><strong aria-hidden="true">2.</strong> Wayland Compositors</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="../../client/intro.html"><strong aria-hidden="true">1.</strong> Wayland apps</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/general/intro.html"><strong aria-hidden="true">1.1.</strong> General principles</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/general/objects.html" class="active"><strong aria-hidden="true">1.1.1.</strong> Objects</a></li><li class="chapter-item expanded "><a href="../../client/general/event_queues.html"><strong aria-hidden="true">1.1.2.</strong> Event queues and dispatching</a></li><li class="chapter-item expanded "><a href="../../client/general/initializing.html"><strong aria-hidden="true">1.1.3.</strong> Initializing an app</a></li><li class="chapter-item expanded "><a href="../../client/general/registry.html"><strong aria-hidden="true">1.1.4.</strong> The registry and globals</a></li></ol></li><li class="chapter-item expanded "><a href="../../client/sctk/intro.html"><strong aria-hidden="true">1.2.</strong> Getting started with SCTK</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../client/sctk/environment.html"><strong aria-hidden="true">1.2.1.</strong> The Environment</a></li><li class="chapter-item expanded "><a href="../../client/sctk/window.html"><strong aria-hidden="true">1.2.2.</strong> Creating a Window</a></li><li class="chapter-item expanded "><a href="../../client/sctk/drawing.html"><strong aria-hidden="true">1.2.3.</strong> Drawing to a Window</a></li><li class="chapter-item expanded "><a href="../../client/sctk/image_viewer.html"><strong aria-hidden="true">1.2.4.</strong> Exercise: an image viewer</a></li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.</strong> Processing user input</li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">1.3.1.</strong> The seats</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.2.</strong> Pointers</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.3.</strong> Keyboards</li><li class="chapter-item expanded "><strong aria-hidden="true">1.3.4.</strong> Touchscreens</li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">1.4.</strong> Multiple outputs and HiDPI</li><li class="chapter-item expanded "><strong aria-hidden="true">1.5.</strong> Cliboard and Drag'n'Drop</li><li class="chapter-item expanded "><strong aria-hidden="true">1.6.</strong> Drawing with OpenGL</li></ol></li><li class="chapter-item expanded "><a href="../../server/intro.html"><strong aria-hidden="true">2.</strong> Wayland Compositors</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -182,36 +182,20 @@ can think of proxies as something akin <code>Rc&lt;_&gt;</code> or <code>Arc&lt;
 protocol object. Furthermore, their lifetime is not tied to the protocol object's lifetime: they
 can outlive it. Once a protocol object has been destroyed, the proxies associated to it will
 become inert.</p>
-<h2><a class="header" href="#the-four-forms-of-a-proxy" id="the-four-forms-of-a-proxy">The four forms of a proxy</a></h2>
-<p>A proxy for a protocol object can be manipulated under four forms:</p>
-<ul>
-<li>As direct proxy, as a bare Wayland type, something like <code>WlFoo</code>. This form is the
-closest to the protocol object, and its methods map to the requests of the interface of
-this object.</li>
-<li>As a <code>Proxy&lt;WlFoo&gt;</code>. In this form, you can manipulate the proxy as a proxy, rather than
-as a protocol object. This lets you do things like check if the underlying object is still
-alive, retrieve its ID, or access the user data associated with it (see below).</li>
-<li>As an <code>Attached&lt;WlFoo&gt;</code>. This form is very similar to the bare <code>WlFoo</code>, but it additionally
-allows you to send requests that create new objects (doing so with a bare <code>WlFoo</code> will panic).</li>
-<li>As a <code>Main&lt;WlFoo&gt;</code>. This form is similar to <code>Attached&lt;WlFoo&gt;</code>, but additionally allows you to
-change the event handler associated with the Wayland object.</li>
-</ul>
-<p>We will soon explain the role of event handlers and <code>Main&lt;_&gt;</code> and <code>Attached&lt;_&gt;</code> proxies in the
-context of event queues, but before that, a quick word about user data.</p>
+<p>Each kind of protocol object is represented by a different Rust type, all of them implementing the
+<a href="https://docs.rs/wayland-client/latest/wayland_client/trait.Proxy.html"><code>Proxy</code></a> trait. Sending requests to the server is done by invoking methods on that object.</p>
 <h2><a class="header" href="#user-data" id="user-data">User data</a></h2>
-<p><code>wayland-client</code> makes it possible to associate some data with a protocol object, via the
-<a href="https://docs.rs/wayland-client/*/wayland_client/struct.Proxy.html#method.user_data"><code>Proxy&lt;_&gt;::user_data()</code></a>
-method. This method gives you access to a <code>&amp;UserData</code> value, which holds the associated data.
-The important part is that <em>all proxies associated to the same protocol object give you access
-to the same <code>&amp;UserData</code></em>. The value you associate with it is thus attached to the protocol
-object, rather than the proxy. This mechanism is largely used across wayland apps, as it is
-not rare to have several proxies for the same object.</p>
-<p>The <a href="https://docs.rs/wayland-client/*/wayland_client/struct.UserData.html"><code>UserData</code></a> type is a
-set-once style container: you can only set its value once, and then you can get a <code>&amp;</code>-reference
-to its contents provided you know the type of the stored value. If you need the associated data
-to be mutable, you need to handle interior-mutability (by storing a <code>RefCell</code> or a <code>Mutex</code> for
-example).</p>
-<p>Lets now discuss event queues.</p>
+<p><code>wayland-client</code> makes it possible to associate some data with a protocol object. This data is set
+when the object is created, and can be accessed from any proxy representing this object via the
+<a href="https://docs.rs/wayland-client/latest/wayland_client/trait.Proxy.html#tymethod.data"><code>Proxy::data()</code></a> method. This user data mechanism comes with two important limitations:</p>
+<ul>
+<li>You can only get an immutable <code>&amp;</code> reference to the stored value. This means that if you need this
+value to be writable, you need to handle interior mutability by yourself.</li>
+<li>The <a href="https://docs.rs/wayland-client/latest/wayland_client/trait.Proxy.html#tymethod.data"><code>Proxy::data()</code></a> is generic, and you need to know beforehand what is the type of the stored
+value. If the wrong type is provided as parameter, the function will return <code>None</code>.</li>
+</ul>
+<p>Lets now discuss the mechanism by which <code>wayland-client</code> handles the stream of events from the server
+and allows you to process it: event queues and dispatching.</p>
 
                     </main>
 
