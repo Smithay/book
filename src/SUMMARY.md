@@ -22,3 +22,8 @@
   - [Cliboard and Drag'n'Drop]()
   - [Drawing with OpenGL]()
 - [Wayland Compositors](./server/intro.md)
+  - [General principles](./server/general/intro.md)
+    - [Creating the display and the event loop](./server/general/creation.md)
+    - [Extended Display and the event loop example code](./server/general/creation_code.md)
+    - [Globals]()
+  - [Getting started with Smithay]()
