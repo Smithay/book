@@ -42,7 +42,7 @@ Let's explain the arguments of this method one by one:
    related to a mechanism of `wayland-client` that allows composition by delegating `Dispatch` implementations
    to fields of your state struct. This is detailed below.
 2. The second argument is a proxy representing the Wayland object with which this event is associated
-3. The first argument is an enum representing the content of the event. You are thus expected to match it
+3. The third argument is an enum representing the content of the event. You are thus expected to match it
    in order to process it.
 4. The fourth argument is a reference to the user data associated with this object.
 5. The fifth argument is a reference to the underlying [`Connection`]. Most of the time you will not need to
