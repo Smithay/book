@@ -61,7 +61,7 @@ As a result, when you implement the [`Dispatch`] trait you need to keep an eye o
 you're going to work with, and construct your match accordingly. Having a catch-all `_ => unreachable!()` arm
 is here an easy way to ensure you are not ignoring events that you can actually receive.
 
-Another important point no note is that the [`Dispatch`] trait is parameterized by the user data type. This
+Another important point to note is that the [`Dispatch`] trait is parameterized by the user data type. This
 means that you can provide two different implementations for the same Wayland interface, and the event queue
 will invoke one or the other depending on which type of user data was provided when the object was created.
 
